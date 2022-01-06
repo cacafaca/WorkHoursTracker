@@ -22,7 +22,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
 
         public IWindowFactory ConfigWindowFactory { get; set; }
-
+        
         public WorkHoursLogPopupViewModel()
         {
             OpenConfigCommnad = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
@@ -35,8 +35,8 @@ namespace ProCode.WorkHoursTracker.ViewModels
         {
             if (ConfigWindowFactory != null)
             {
-                ConfigWindowFactory.CreateNewWindow();
-                ConfigWindowFactory.Show();
+                ConfigWindowFactory.CreateWindow();
+                ConfigWindowFactory.ShowWindow();
             }
         }
         #endregion

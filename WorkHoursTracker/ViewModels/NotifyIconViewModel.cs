@@ -32,12 +32,13 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         private void AddLogExecute(object obj)
         {
-            if (AddLogWindowFactory != null)
+            if (WorkHoursLogPopupWindowFactory != null)
             {
-
+                WorkHoursLogPopupWindowFactory.CreateWindow();
+                WorkHoursLogPopupWindowFactory.ShowWindow();
             }
         }
 
-        public IWindowFactory AddLogWindowFactory { get; set; }
+        public IWindowFactory WorkHoursLogPopupWindowFactory { get; set; }
     }
 }
