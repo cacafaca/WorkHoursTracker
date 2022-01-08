@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,10 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         public string Log
         {
-            get { return _log; }
+            get
+            {
+                return GetLog();
+            }
             set
             {
                 _log = value;
@@ -21,8 +25,23 @@ namespace ProCode.WorkHoursTracker.ViewModels
             }
         }
 
+        private string GetLog()
+        {
+            if(_isLoaded)
+            {
+                return _log;
+            }
+            else
+            {
+                WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(new Model.Config().WorkHoursCurrentFilePath);
+                return whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log;
+            }
+        }
+
+        private bool _isLoaded;
+
         public IWindowFactory ConfigWindowFactory { get; set; }
-        
+
         public WorkHoursLogPopupViewModel()
         {
             OpenConfigCommnad = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
@@ -45,7 +64,9 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public ICommand AcceptCommnad { get; set; }
         private void AcceptExecute(object sender)
         {
-
+            WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel((new Model.Config()).WorkHoursDirectory);
+            whExcel.WorkHours.Where(wh=>wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log = Log;
+            whExcel.Write();
         }
         #endregion
     }

@@ -6,27 +6,27 @@ namespace ProCode.WorkHoursTracker.ViewModels
 {
     public class ConfigViewModel : BaseViewModel
     {
-        const string workHoursDirecorySettingsName = "WorkHoursDirectory";
+        Model.Config _config;
 
         string workHoursDirecoryOld;
-        string workHoursDirecory;
         public string WorkHoursDirectory
         {
             get
             {
-                return workHoursDirecory;
+                return _config.WorkHoursDirectory;
             }
             set
             {
-                workHoursDirecoryOld = workHoursDirecory;
-                workHoursDirecory = value;
+                workHoursDirecoryOld = _config.WorkHoursDirectory;
+                _config.WorkHoursDirectory = value;
                 OnPropertyChanged();
             }
         }
 
         public ConfigViewModel()
         {
-            WorkHoursDirectory = Properties.Settings.Default[workHoursDirecorySettingsName].ToString();
+            _config = new Model.Config();
+
             SetWorkHoursDirCommand = new RelayCommand(SetWorkingDir, CanSetWorkingDir);
             SaveCommand = new RelayCommand(Save, CanSave);
             CancelCommand = new RelayCommand(Cancel, CanCancel);
@@ -56,8 +56,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public ICommand SaveCommand { get; set; }
         private void Save(object sender)
         {
-            Properties.Settings.Default[workHoursDirecorySettingsName] = WorkHoursDirectory;
-            Properties.Settings.Default.Save();
+            _config.Save();
             if (sender is Window)
             {
                 ((Window)sender).Close();
@@ -65,7 +64,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
         private bool CanSave(object obj)
         {
-            return workHoursDirecory != workHoursDirecoryOld;
+            return _config.WorkHoursDirectory != workHoursDirecoryOld;
         }
         #endregion
 

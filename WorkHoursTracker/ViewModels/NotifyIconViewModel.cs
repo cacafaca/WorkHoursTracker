@@ -12,22 +12,37 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public ICommand AddLogCommand { get; set; }
         public ICommand ConfigCommand { get; set; }
         public ICommand ExitApplicationCommand { get; set; }
+        public ICommand OpenExcelCommand { get; set; }
 
         public NotifyIconViewModel()
         {
             AddLogCommand = new RelayCommand(AddLogExecute, new Func<object, bool>((obj) => true));
             ConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
             ExitApplicationCommand = new RelayCommand(ExitApplicationExecute, new Func<object, bool>((obj) => true));
+            OpenExcelCommand = new RelayCommand(OpenExcelExecute, new Func<object, bool>((obj) => true));
+        }
+
+        private void OpenExcelExecute(object obj)
+        {
+            WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(new Model.Config().WorkHoursCurrentFilePath);
+            whExcel.Open();
         }
 
         private void ExitApplicationExecute(object obj)
         {
-            throw new NotImplementedException();
+            if (obj != null && obj is System.Windows.Window)
+            {
+                ((System.Windows.Window)obj).Close();
+            }
         }
 
         private void ConfigExecute(object obj)
         {
-            throw new NotImplementedException();
+            if (ConfigWindowFactory != null)
+            {
+                ConfigWindowFactory.CreateWindow();
+                ConfigWindowFactory.ShowWindow();
+            }
         }
 
         private void AddLogExecute(object obj)
@@ -40,5 +55,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
 
         public IWindowFactory WorkHoursLogPopupWindowFactory { get; set; }
+        public IWindowFactory ConfigWindowFactory { get; set; }
     }
 }

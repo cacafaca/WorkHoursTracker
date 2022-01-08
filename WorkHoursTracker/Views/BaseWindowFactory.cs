@@ -28,5 +28,11 @@ namespace ProCode.WorkHoursTracker.Views
         {
             _window?.Show();
         }
+
+        public void CloseWindow()
+        {
+            _window.Close();
+            _window = null;
+        }
     }
 }

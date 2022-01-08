@@ -11,11 +11,11 @@ namespace ProCode.WorkHoursTracker
 {
     public class WorkHoursMonthlyExcel : WorkHoursMonthlyModel
     {
-        readonly string _workHoursExcelPath;
+        readonly string _workHoursExcelFilePath;
 
-        public WorkHoursMonthlyExcel(string workHoursExcelPath)
+        public WorkHoursMonthlyExcel(string workHoursExcelFilePath)
         {
-            _workHoursExcelPath = workHoursExcelPath;
+            _workHoursExcelFilePath = workHoursExcelFilePath;
             _workHours = new List<WorkHours>();
             _exceptions = new List<Exception>();
         }
@@ -30,20 +30,25 @@ namespace ProCode.WorkHoursTracker
         private List<Exception> _exceptions;
         public List<Exception> Exceptions { get { return _exceptions; } }
 
+        private void ValidateExcelPath()
+        {
+            if (string.IsNullOrWhiteSpace(_workHoursExcelFilePath))
+                throw new ArgumentException("Please provide a valid filename.", nameof(_workHoursExcelFilePath));
+        }
+
         public void Read()
         {
-            if (string.IsNullOrWhiteSpace(_workHoursExcelPath))
-                throw new ArgumentException("Please provide a valid filename.", nameof(_workHoursExcelPath));
+            ValidateExcelPath();
 
             Microsoft.Office.Interop.Excel.Application? excelApp = null;
             Microsoft.Office.Interop.Excel.Workbook? workbook = null;
             Microsoft.Office.Interop.Excel.Worksheet? worksheet = null;
             try
             {
-                if (File.Exists(_workHoursExcelPath))
+                if (File.Exists(_workHoursExcelFilePath))
                 {
                     excelApp = new Microsoft.Office.Interop.Excel.Application();
-                    workbook = excelApp.Workbooks.Open(_workHoursExcelPath);
+                    workbook = excelApp.Workbooks.Open(_workHoursExcelFilePath);
                     worksheet = workbook.Worksheets[1];    // Expecting data on first sheet, always. First sheet starts from 1, not 0!
 
                     _employee = new Employee
@@ -77,7 +82,7 @@ namespace ProCode.WorkHoursTracker
                 }
                 else
                 {
-                    throw new ArgumentException($"File '{_workHoursExcelPath}' don't exists.");
+                    throw new ArgumentException($"File '{_workHoursExcelFilePath}' don't exists.");
                 }
             }
             finally
@@ -109,6 +114,20 @@ namespace ProCode.WorkHoursTracker
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             }
+        }
+
+        public void Open()
+        {
+            ValidateExcelPath();
+
+            if (!File.Exists(_workHoursExcelFilePath))
+            {
+                File.Copy(GetTemplateFileName(), _workHoursExcelFilePath);
+            }
+
+            Microsoft.Office.Interop.Excel.Application? excelApp = new Microsoft.Office.Interop.Excel.Application();
+            Microsoft.Office.Interop.Excel.Workbook? workbook = excelApp.Workbooks.Open(_workHoursExcelFilePath);
+            excelApp.Visible = true;
         }
 
         private DateOnly? GetDateOnly(object dateObj)
@@ -163,23 +182,30 @@ namespace ProCode.WorkHoursTracker
             return time;
         }
 
+        private void CreateNewWorkHoursFile()
+        {
+            File.Copy(GetTemplateFileName(), _workHoursExcelFilePath);
+
+        }
+
         public void Write()
         {
-            if (string.IsNullOrWhiteSpace(_workHoursExcelPath))
-                throw new ArgumentException("Please provide a valid filename.", nameof(_workHoursExcelPath));
+            if (string.IsNullOrWhiteSpace(_workHoursExcelFilePath))
+                throw new ArgumentException("Please provide a valid filename.", nameof(_workHoursExcelFilePath));
 
             Microsoft.Office.Interop.Excel.Application? excelApp = null;
             Microsoft.Office.Interop.Excel.Workbook? workbook = null;
             Microsoft.Office.Interop.Excel.Worksheet? worksheet = null;
             try
             {
-                if (!File.Exists(_workHoursExcelPath))
+                // Copy copy template if requested file do not exists, because it's going to open a brand new file.
+                if (!File.Exists(_workHoursExcelFilePath))
                 {
-                    File.Copy(GetTemplateFileName(), _workHoursExcelPath);
+                    File.Copy(GetTemplateFileName(), _workHoursExcelFilePath);
                 }
 
                 excelApp = new Microsoft.Office.Interop.Excel.Application();
-                workbook = excelApp.Workbooks.Open(_workHoursExcelPath);
+                workbook = excelApp.Workbooks.Open(_workHoursExcelFilePath);
                 worksheet = workbook.Worksheets[1];    // Expecting data on first sheet, always. First sheet starts from 1, not 0!
 
                 if (_employee != null)
@@ -189,8 +215,10 @@ namespace ProCode.WorkHoursTracker
                     ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Title.Row, WorkHoursExcelMap.Title.Column]).Value = _employee.Title;
                     ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Department.Row, WorkHoursExcelMap.Department.Column]).Value = _employee.Department;
                 }
-
+                    
+                // Start date.
                 ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.StartDate.Row, WorkHoursExcelMap.StartDate.Column]).Value = _startDate.ToDateTime(new TimeOnly());
+                // Days in month.
                 ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.NumberOfWorkingDays.Row, WorkHoursExcelMap.NumberOfWorkingDays.Column]).Value = _numberOfWorkingDaysPerMonth;
 
                 if (_workHours != null)

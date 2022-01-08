@@ -4,5 +4,6 @@
     {
         void CreateWindow();
         void ShowWindow();
+        void CloseWindow();
     }
 }
