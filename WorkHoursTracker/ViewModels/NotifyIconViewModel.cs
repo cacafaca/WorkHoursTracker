@@ -22,12 +22,16 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         private void ExitApplicationExecute(object obj)
         {
-            throw new NotImplementedException();
+            System.Windows.Application.Current.Shutdown();
         }
 
         private void ConfigExecute(object obj)
         {
-            throw new NotImplementedException();
+            if ( WorkHoursLogPopupWindowFactory != null)
+            {
+                WorkHoursLogPopupWindowFactory.CreateWindow();
+                WorkHoursLogPopupWindowFactory.ShowWindow();
+            }
         }
 
         private void AddLogExecute(object obj)
