@@ -19,6 +19,18 @@ namespace ProCode.WorkHoursTracker.Views
             _windowType = windowType;
         }
 
+        public BaseWindowFactory(Window window)
+        {
+            if (window == null)
+                throw new ArgumentNullException(nameof(window));
+
+            if (!window.GetType().IsSubclassOf(typeof(Window)))
+                throw new ArgumentException("Expect Wescendant of Window type.", nameof(window));
+
+            _window = window;
+            _windowType = window.GetType();
+        }
+
         public void CreateWindow()
         {
             _window = (Window)Activator.CreateInstance(_windowType);
@@ -31,7 +43,7 @@ namespace ProCode.WorkHoursTracker.Views
 
         public void CloseWindow()
         {
-            _window.Close();
+            _window?.Close();
             _window = null;
         }
     }

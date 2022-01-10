@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace ProCode.WorkHoursTracker.ViewModels
 {
-    public class WorkHoursLogPopupViewModel : BaseViewModel
+    public class AddLogViewModel : BaseViewModel
     {
         private string _log;
 
@@ -16,7 +16,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         {
             get
             {
-                return GetLog();
+                return ReadLog();
             }
             set
             {
@@ -25,15 +25,17 @@ namespace ProCode.WorkHoursTracker.ViewModels
             }
         }
 
-        private string GetLog()
+        private string ReadLog()
         {
-            if(_isLoaded)
+            if (_isLoaded)
             {
                 return _log;
             }
             else
             {
                 WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(new Model.Config().WorkHoursCurrentFilePath);
+                whExcel.Read();
+                _isLoaded = true;
                 return whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log;
             }
         }
@@ -42,10 +44,11 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         public IWindowFactory ConfigWindowFactory { get; set; }
 
-        public WorkHoursLogPopupViewModel()
+        public AddLogViewModel()
         {
             OpenConfigCommnad = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
-            AcceptCommnad = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
+            SaveCommnad = new RelayCommand(SaveExecute, new Func<object, bool>((obj) => true));
+            _isLoaded = false;
         }
 
         #region Config command
@@ -60,13 +63,19 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
         #endregion
 
-        #region Accept commnad
-        public ICommand AcceptCommnad { get; set; }
-        private void AcceptExecute(object sender)
+        #region Save commnad
+        public ICommand SaveCommnad { get; set; }
+        private void SaveExecute(object sender)
         {
-            WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel((new Model.Config()).WorkHoursDirectory);
-            whExcel.WorkHours.Where(wh=>wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log = Log;
+            WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel((new Model.Config()).WorkHoursCurrentFilePath);
+            whExcel.Read();
+            whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log = Log;
             whExcel.Write();
+
+            if (DefaultWindowFactory != null)
+            {
+                DefaultWindowFactory.CloseWindow();
+            }
         }
         #endregion
     }

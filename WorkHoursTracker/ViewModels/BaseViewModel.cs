@@ -15,5 +15,10 @@ namespace ProCode.WorkHoursTracker.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        
+        /// <summary>
+        /// This should contain reference to corresponding view. 
+        /// </summary>
+        public IWindowFactory DefaultWindowFactory { get; set; }
     }
 }

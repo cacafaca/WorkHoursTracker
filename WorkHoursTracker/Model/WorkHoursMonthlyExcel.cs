@@ -60,6 +60,13 @@ namespace ProCode.WorkHoursTracker
                     };
 
                     _startDate = GetDateOnly(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.StartDate.Row, WorkHoursExcelMap.StartDate.Column]).Value);
+                    // Correct values.
+                    bool startDateValid = true;
+                    if (StartDate != DateOnly.FromDateTime(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)))
+                    {
+                        StartDate = DateOnly.FromDateTime(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1));
+                        startDateValid = false;
+                    }
 
                     object numberOfWorkingDaysPerMonthTemp = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.NumberOfWorkingDays.Row, WorkHoursExcelMap.NumberOfWorkingDays.Column]).Value;
                     if (numberOfWorkingDaysPerMonthTemp.GetType().Name == typeof(double).Name)
@@ -71,11 +78,11 @@ namespace ProCode.WorkHoursTracker
                     {
                         WorkHours dailyWorkHours = new WorkHours
                         {
-                            Date = GetDateOnly(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.DateFirstRow.Row + day, WorkHoursExcelMap.DateFirstRow.Column]).Value),
+                            Date = startDateValid ? GetDateOnly(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.DateFirstRow.Row + day, WorkHoursExcelMap.DateFirstRow.Column]).Value) : StartDate.AddDays(day),
                             Time1In = GetTimeOnly(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Time1InFirstRow.Row + day, WorkHoursExcelMap.Time1InFirstRow.Column]).Value),
                             Time1Out = GetTimeOnly(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TimeOut1FirstRow.Row + day, WorkHoursExcelMap.TimeOut1FirstRow.Column]).Value),
-                            Task = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TaskFirstRow.Row + day, WorkHoursExcelMap.TaskFirstRow.Column]).Value,
-                            Log = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.LogFirstRow.Row + day, WorkHoursExcelMap.LogFirstRow.Column]).Value,
+                            Task = GetAsText(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TaskFirstRow.Row + day, WorkHoursExcelMap.TaskFirstRow.Column]).Value),
+                            Log = GetAsText(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.LogFirstRow.Row + day, WorkHoursExcelMap.LogFirstRow.Column]).Value),
                         };
                         _workHours.Add(dailyWorkHours);
                     }
@@ -156,6 +163,28 @@ namespace ProCode.WorkHoursTracker
             return date;
         }
 
+        private string? GetAsText(object textObj)
+        {
+            string? text = null;
+            if (textObj != null)
+            {
+                if (textObj.GetType().Name == typeof(string).Name)
+                    text = textObj.ToString();
+                else if (textObj.GetType().Name == typeof(double).Name)
+                {
+
+                    text = textObj.ToString();
+
+                }
+                else
+                {
+                    text = textObj.ToString();
+                    _exceptions.Add(new ArgumentException($"Date '{textObj}' is of unknown type ('{textObj.GetType().Name}')."));
+                }
+            }
+            return text;
+        }
+
         private TimeOnly? GetTimeOnly(object timeObj)
         {
             TimeOnly? time = null;
@@ -215,20 +244,20 @@ namespace ProCode.WorkHoursTracker
                     ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Title.Row, WorkHoursExcelMap.Title.Column]).Value = _employee.Title;
                     ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Department.Row, WorkHoursExcelMap.Department.Column]).Value = _employee.Department;
                 }
-                    
+
                 // Start date.
-                ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.StartDate.Row, WorkHoursExcelMap.StartDate.Column]).Value = _startDate.ToDateTime(new TimeOnly());
+                ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.StartDate.Row, WorkHoursExcelMap.StartDate.Column]).Value = _startDate.ToDateTime(TimeOnly.MinValue);
                 // Days in month.
                 ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.NumberOfWorkingDays.Row, WorkHoursExcelMap.NumberOfWorkingDays.Column]).Value = _numberOfWorkingDaysPerMonth;
 
                 if (_workHours != null)
                     for (int day = 0; day < _workHours.Count; day++)
                     {
-                        ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.DateFirstRow.Row + day, WorkHoursExcelMap.DateFirstRow.Column]).Value = _workHours[day].Date.ToDateTime(new TimeOnly());
-                        ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Time1InFirstRow.Row + day - 1, WorkHoursExcelMap.Time1InFirstRow.Column]).Value = _workHours[day].Time1In.ToString();
-                        ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TimeOut1FirstRow.Row + day - 1, WorkHoursExcelMap.TimeOut1FirstRow.Column]).Value = _workHours[day].Time1Out.ToString();
-                        ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TaskFirstRow.Row + day - 1, WorkHoursExcelMap.TaskFirstRow.Column]).Value = _workHours[day].Task;
-                        ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.LogFirstRow.Row + day - 1, WorkHoursExcelMap.LogFirstRow.Column]).Value = _workHours[day].Log;
+                        //((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.DateFirstRow.Row + day, WorkHoursExcelMap.DateFirstRow.Column]).Value = _workHours[day].Date.ToDateTime(new TimeOnly());
+                        ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Time1InFirstRow.Row + day, WorkHoursExcelMap.Time1InFirstRow.Column]).Value = _workHours[day].Time1In.ToString();
+                        ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TimeOut1FirstRow.Row + day, WorkHoursExcelMap.TimeOut1FirstRow.Column]).Value = _workHours[day].Time1Out.ToString();
+                        ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TaskFirstRow.Row + day, WorkHoursExcelMap.TaskFirstRow.Column]).Value = _workHours[day].Task;
+                        ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.LogFirstRow.Row + day, WorkHoursExcelMap.LogFirstRow.Column]).Value = _workHours[day].Log;
                     }
                 workbook.Save();
             }
