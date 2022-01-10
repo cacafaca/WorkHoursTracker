@@ -17,7 +17,12 @@
         <TextBox x:Name="logTextBox"
                  TextWrapping="Wrap"
                  Margin="10,10,10,35"
-                 Text="{Binding Log}" />
+                 Text="{Binding Log}">
+            <TextBox.InputBindings>
+                <KeyBinding Key="Enter"
+                            Command="{Binding SaveCommnad}" />
+            </TextBox.InputBindings>
+        </TextBox>
         <Button x:Name="configButton"
                 Content="⚙"
                 Margin="10,0,0,10"

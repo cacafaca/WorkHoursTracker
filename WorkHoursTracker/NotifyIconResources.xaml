@@ -10,14 +10,22 @@
     <ContextMenu x:Shared="false"
                  x:Key="SysTrayMenu">
         <MenuItem Header="Add log"
-                  Command="{Binding AddLogCommand}" />
+                  Command="{Binding AddLogCommand}">
+            <MenuItem.Icon>✎</MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="Show Work Hours"
+                  Command="{Binding ShowExcelCommand}">
+            <MenuItem.Icon>👁</MenuItem.Icon>
+        </MenuItem>
         <MenuItem Header="Config"
-                  Command="{Binding ConfigCommand}" />
-        <MenuItem Header="Open Work Hours"
-                  Command="{Binding OpenExcelCommand}" />
+                  Command="{Binding ConfigCommand}">
+            <MenuItem.Icon>⚙</MenuItem.Icon>
+        </MenuItem>
         <Separator />
         <MenuItem Header="Exit"
-                  Command="{Binding ExitApplicationCommand}" />
+                  Command="{Binding ExitApplicationCommand}">
+            <MenuItem.Icon>🗙</MenuItem.Icon>
+        </MenuItem>
     </ContextMenu>
     <!-- the application's NotifyIcon - started from App.xaml.cs. Declares its own view model. -->
     <tb:TaskbarIcon x:Key="NotifyIcon"

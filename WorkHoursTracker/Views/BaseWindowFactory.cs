@@ -5,8 +5,8 @@ namespace ProCode.WorkHoursTracker.Views
 {
     public class BaseWindowFactory : ViewModels.IWindowFactory
     {
-        Window _window;
-        Type _windowType;
+        protected Window _window;
+        protected Type _windowType;
 
         public BaseWindowFactory(Type windowType)
         {
@@ -31,17 +31,17 @@ namespace ProCode.WorkHoursTracker.Views
             _windowType = window.GetType();
         }
 
-        public void CreateWindow()
+        public virtual void CreateWindow()
         {
             _window = (Window)Activator.CreateInstance(_windowType);
         }
 
-        public void ShowWindow()
+        public virtual void ShowWindow()
         {
             _window?.Show();
         }
 
-        public void CloseWindow()
+        public virtual void CloseWindow()
         {
             _window?.Close();
             _window = null;

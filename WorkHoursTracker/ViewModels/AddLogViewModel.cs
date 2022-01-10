@@ -67,10 +67,14 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public ICommand SaveCommnad { get; set; }
         private void SaveExecute(object sender)
         {
-            WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel((new Model.Config()).WorkHoursCurrentFilePath);
-            whExcel.Read();
-            whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log = Log;
-            whExcel.Write();
+            // Fire (saving) and forget.
+            Task.Run(() =>
+            {
+                WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel((new Model.Config()).WorkHoursCurrentFilePath);
+                whExcel.Read();
+                whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log = Log;
+                whExcel.Write();
+            });
 
             if (DefaultWindowFactory != null)
             {

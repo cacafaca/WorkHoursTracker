@@ -123,7 +123,7 @@ namespace ProCode.WorkHoursTracker
             }
         }
 
-        public void Open()
+        public void Show()
         {
             ValidateExcelPath();
 
@@ -259,6 +259,7 @@ namespace ProCode.WorkHoursTracker
                         ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TaskFirstRow.Row + day, WorkHoursExcelMap.TaskFirstRow.Column]).Value = _workHours[day].Task;
                         ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.LogFirstRow.Row + day, WorkHoursExcelMap.LogFirstRow.Column]).Value = _workHours[day].Log;
                     }
+                excelApp.DisplayAlerts = false;
                 workbook.Save();
             }
             finally

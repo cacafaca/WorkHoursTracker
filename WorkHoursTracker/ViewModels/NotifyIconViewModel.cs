@@ -12,20 +12,20 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public ICommand AddLogCommand { get; set; }
         public ICommand ConfigCommand { get; set; }
         public ICommand ExitApplicationCommand { get; set; }
-        public ICommand OpenExcelCommand { get; set; }
+        public ICommand ShowExcelCommand { get; set; }
 
         public NotifyIconViewModel()
         {
             AddLogCommand = new RelayCommand(AddLogExecute, new Func<object, bool>((obj) => true));
             ConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
             ExitApplicationCommand = new RelayCommand(ExitApplicationExecute, new Func<object, bool>((obj) => true));
-            OpenExcelCommand = new RelayCommand(OpenExcelExecute, new Func<object, bool>((obj) => true));
+            ShowExcelCommand = new RelayCommand(ShowExcelExecute, new Func<object, bool>((obj) => true));
         }
 
-        private void OpenExcelExecute(object obj)
+        private void ShowExcelExecute(object obj)
         {
             WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(new Model.Config().WorkHoursCurrentFilePath);
-            whExcel.Open();
+            whExcel.Show();
         }
 
         private void ExitApplicationExecute(object obj)
