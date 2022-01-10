@@ -16,11 +16,16 @@ namespace Procode.WorkHoursTracker
 
             //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
-            if (_notifyIcon != null && _notifyIcon.DataContext != null && 
+            if (_notifyIcon != null && _notifyIcon.DataContext != null &&
                 _notifyIcon.DataContext is ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)
             {
+                // Set Log window type.
                 ((ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).WorkHoursLogPopupWindowFactory =
                     new ProCode.WorkHoursTracker.Views.BaseWindowFactory(typeof(ProCode.WorkHoursTracker.Views.WorkHoursLogPopupView));
+
+                // Set Config window type.
+                ((ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).ConfigWindowFactory =
+                    new ProCode.WorkHoursTracker.Views.BaseWindowFactory(typeof(ProCode.WorkHoursTracker.Views.ConfigView));
             }
         }
 

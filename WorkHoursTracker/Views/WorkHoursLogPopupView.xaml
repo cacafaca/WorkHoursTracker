@@ -32,6 +32,7 @@
                 HorizontalAlignment="Right"
                 Width="20"
                 Height="20"
-                VerticalAlignment="Bottom" />
+                VerticalAlignment="Bottom"
+                Command="{Binding AcceptCommnad}" />
     </Grid>
 </Window>
