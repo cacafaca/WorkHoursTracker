@@ -87,7 +87,7 @@ namespace ProCode.WorkHoursTracker
                     if (_employee.Title == WorkHoursMonthlyModel.DefaultTitle)
                     {
                         if (ad == null) ad = new Services.ActiveDirectory();
-                        _employee.Title = ad.Title;
+                        _employee.Title = ad.Department;
                     }
 
                     _startDate = GetDateOnly(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.StartDate.Row, WorkHoursExcelMap.StartDate.Column]).Value);

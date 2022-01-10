@@ -28,7 +28,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             _config = new Model.Config();
 
             SetWorkHoursDirCommand = new RelayCommand(SetWorkingDir, CanSetWorkingDir);
-            SaveCommand = new RelayCommand(Save, CanSave);
+            SaveConfigCommand = new RelayCommand(Save, CanSave);
             CancelCommand = new RelayCommand(Cancel, CanCancel);
         }
 
@@ -53,7 +53,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #endregion
 
         #region OK/Save command
-        public ICommand SaveCommand { get; set; }
+        public ICommand SaveConfigCommand { get; set; }
         private void Save(object sender)
         {
             _config.Save();

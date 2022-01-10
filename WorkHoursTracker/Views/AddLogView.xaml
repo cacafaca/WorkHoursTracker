@@ -20,9 +20,9 @@
                  Text="{Binding Log}">
             <TextBox.InputBindings>
                 <KeyBinding Key="Enter"
-                            Command="{Binding SaveCommand}" />
+                            Command="{Binding SaveLogCommand}" />
                 <KeyBinding Key="Escape"
-                            Command="{Binding CancelCommand}" />
+                            Command="{Binding CancelLogCommand}" />
             </TextBox.InputBindings>
         </TextBox>
         <Button x:Name="configButton"
@@ -35,25 +35,25 @@
                 Command="{Binding OpenConfigCommand}"
                 CommandParameter="{Binding ElementName=configButton}"
                 ToolTip="Open configuration window." />
-        <Button x:Name="cancelButton"
+        <Button x:Name="saveButton"
                 Content="✓"
                 Margin="0,0,10,10"
                 HorizontalAlignment="Right"
                 Width="20"
                 Height="20"
                 VerticalAlignment="Bottom"
-                Command="{Binding CancelCommand}"
-                CommandParameter="{Binding ElementName=cancelButton}"
+                Command="{Binding SaveLogCommand}"
+                CommandParameter="{Binding ElementName=saveButton}"
                 ToolTip="Cancel changes." />
-        <Button x:Name="saveButton"
+        <Button x:Name="cancelButton"
                 Content="🗙"
                 Margin="0,0,35,10"
                 HorizontalAlignment="Right"
                 Width="20"
                 Height="20"
                 VerticalAlignment="Bottom"
-                Command="{Binding SaveCommand}"
-                CommandParameter="{Binding ElementName=saveButton}"
+                Command="{Binding CancelLogCommand}"
+                CommandParameter="{Binding ElementName=cancelButton}"
                 ToolTip="Save changes." />
     </Grid>
 </Window>

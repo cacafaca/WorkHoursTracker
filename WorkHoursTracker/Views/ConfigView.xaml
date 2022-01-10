@@ -51,7 +51,7 @@
                 Width="40"
                 Height="20"
                 VerticalAlignment="Bottom"
-                Command="{Binding SaveCommand}"
+                Command="{Binding SaveConfigCommand}"
                 CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}" />
         <Label Content="Appearance interval"
                HorizontalAlignment="Left"

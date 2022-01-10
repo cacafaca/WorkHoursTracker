@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -55,8 +56,8 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public AddLogViewModel()
         {
             OpenConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
-            SaveCommand = new RelayCommand(SaveExecute, new Func<object, bool>((obj) => true));
-            CancelCommand = new RelayCommand(CancelExecute, new Func<object, bool>((obj) => true));
+            SaveLogCommand = new RelayCommand(SaveLogExecute, new Func<object, bool>((obj) => true));
+            CancelLogCommand = new RelayCommand(CancelLogExecute, new Func<object, bool>((obj) => true));
             _isLoaded = false;
         }
 
@@ -73,8 +74,8 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #endregion
 
         #region Save commnad
-        public ICommand SaveCommand { get; set; }
-        private void SaveExecute(object sender)
+        public ICommand SaveLogCommand { get; set; }
+        private void SaveLogExecute(object sender)
         {
             // Fire (saving) and forget.
             Task.Run(() =>
@@ -85,6 +86,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
                     Trace.WriteLine($"Read '{whExcel.WorkHoursExcelFilePath}'.");
                     whExcel.Read();
                     whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log = Log;
+                    Trace.WriteLine($"Log value: '{whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log}'.");
                     Trace.WriteLine($"Write '{whExcel.WorkHoursExcelFilePath}'.");
                     whExcel.Write();
                 }
@@ -102,8 +104,8 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #endregion
 
         #region Cancel command
-        public ICommand CancelCommand { get; set; }
-        private void CancelExecute(object sender)
+        public ICommand CancelLogCommand { get; set; }
+        private void CancelLogExecute(object sender)
         {
             if (DefaultWindowFactory != null)
             {
