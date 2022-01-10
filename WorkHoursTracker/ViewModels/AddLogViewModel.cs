@@ -33,10 +33,18 @@ namespace ProCode.WorkHoursTracker.ViewModels
             }
             else
             {
-                WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(new Model.Config().WorkHoursCurrentFilePath);
-                whExcel.Read();
-                _isLoaded = true;
-                return whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log;
+                try
+                {
+                    WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(new Model.Config().WorkHoursCurrentFilePath);
+                    whExcel.Read();
+                    _isLoaded = true;
+                    return whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log;
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.Message);
+                    return ex.Message;
+                }
             }
         }
 
@@ -46,13 +54,14 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         public AddLogViewModel()
         {
-            OpenConfigCommnad = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
-            SaveCommnad = new RelayCommand(SaveExecute, new Func<object, bool>((obj) => true));
+            OpenConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
+            SaveCommand = new RelayCommand(SaveExecute, new Func<object, bool>((obj) => true));
+            CancelCommand = new RelayCommand(CancelExecute, new Func<object, bool>((obj) => true));
             _isLoaded = false;
         }
 
         #region Config command
-        public ICommand OpenConfigCommnad { get; set; }
+        public ICommand OpenConfigCommand { get; set; }
         private void ConfigExecute(object sender)
         {
             if (ConfigWindowFactory != null)
@@ -64,18 +73,38 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #endregion
 
         #region Save commnad
-        public ICommand SaveCommnad { get; set; }
+        public ICommand SaveCommand { get; set; }
         private void SaveExecute(object sender)
         {
             // Fire (saving) and forget.
             Task.Run(() =>
             {
-                WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel((new Model.Config()).WorkHoursCurrentFilePath);
-                whExcel.Read();
-                whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log = Log;
-                whExcel.Write();
+                try
+                {
+                    WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel((new Model.Config()).WorkHoursCurrentFilePath);
+                    Trace.WriteLine($"Read '{whExcel.WorkHoursExcelFilePath}'.");
+                    whExcel.Read();
+                    whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log = Log;
+                    Trace.WriteLine($"Write '{whExcel.WorkHoursExcelFilePath}'.");
+                    whExcel.Write();
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.Message);
+                }
             });
 
+            if (DefaultWindowFactory != null)
+            {
+                DefaultWindowFactory.CloseWindow();
+            }
+        }
+        #endregion
+
+        #region Cancel command
+        public ICommand CancelCommand { get; set; }
+        private void CancelExecute(object sender)
+        {
             if (DefaultWindowFactory != null)
             {
                 DefaultWindowFactory.CloseWindow();

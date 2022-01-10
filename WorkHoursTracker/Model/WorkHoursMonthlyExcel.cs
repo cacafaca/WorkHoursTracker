@@ -30,6 +30,8 @@ namespace ProCode.WorkHoursTracker
         private List<Exception> _exceptions;
         public List<Exception> Exceptions { get { return _exceptions; } }
 
+        public string WorkHoursExcelFilePath { get { return _workHoursExcelFilePath; } }
+
         private void ValidateExcelPath()
         {
             if (string.IsNullOrWhiteSpace(_workHoursExcelFilePath))
@@ -45,6 +47,14 @@ namespace ProCode.WorkHoursTracker
             Microsoft.Office.Interop.Excel.Worksheet? worksheet = null;
             try
             {
+                if (!File.Exists(_workHoursExcelFilePath))
+                {
+                    //System.Diagnostics.Debug.WriteLine($"WorkHoursTracker> File '{_workHoursExcelFilePath}' do not existis.");
+                    Trace.WriteLine($"File '{_workHoursExcelFilePath}' do not existis.");
+                    File.Copy(GetTemplateFileName(), _workHoursExcelFilePath);
+                    Trace.WriteLine($"Template '{GetTemplateFileName()}' copied to '{_workHoursExcelFilePath}'.");
+                }
+
                 if (File.Exists(_workHoursExcelFilePath))
                 {
                     excelApp = new Microsoft.Office.Interop.Excel.Application();
@@ -58,6 +68,27 @@ namespace ProCode.WorkHoursTracker
                         Title = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Title.Row, WorkHoursExcelMap.Title.Column]).Value,
                         Department = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Department.Row, WorkHoursExcelMap.Department.Column]).Value,
                     };
+
+                    // Correct template values.
+                    if (_employee.EmployeeID == WorkHoursMonthlyModel.DefaultEmployeeId)
+                        _employee.EmployeeID = Environment.UserName;
+                    // Don't read AD unnecessary.
+                    Services.ActiveDirectory ad = null;
+                    if (_employee.FirstAndLastName == WorkHoursMonthlyModel.DefaultFirstAndLastName)
+                    {
+                        if (ad == null) ad = new Services.ActiveDirectory();
+                        _employee.FirstAndLastName = ad.FirstAndLastName;
+                    }
+                    if (_employee.Title == WorkHoursMonthlyModel.DefaultTitle)
+                    {
+                        if (ad == null) ad = new Services.ActiveDirectory();
+                        _employee.Title = ad.Title;
+                    }
+                    if (_employee.Title == WorkHoursMonthlyModel.DefaultTitle)
+                    {
+                        if (ad == null) ad = new Services.ActiveDirectory();
+                        _employee.Title = ad.Title;
+                    }
 
                     _startDate = GetDateOnly(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.StartDate.Row, WorkHoursExcelMap.StartDate.Column]).Value);
                     // Correct values.
@@ -91,6 +122,11 @@ namespace ProCode.WorkHoursTracker
                 {
                     throw new ArgumentException($"File '{_workHoursExcelFilePath}' don't exists.");
                 }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+                throw;
             }
             finally
             {

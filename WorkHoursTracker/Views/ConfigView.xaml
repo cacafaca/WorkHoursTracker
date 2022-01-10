@@ -10,7 +10,7 @@
         Height="52"
         Width="142"
         WindowStartupLocation="CenterScreen"
-        MinHeight="150"
+        MinHeight="180"
         MinWidth="250"
         xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels">
     <Window.DataContext>
@@ -22,12 +22,11 @@
                Margin="10,10,0,0"
                VerticalAlignment="Top" />
         <TextBox x:Name="workHoursDirectoryTextBox"
-                   Margin="10,41,45,0"
-                   TextWrapping="NoWrap"
-                   Text="{Binding WorkHoursDirectory}"
-                   VerticalAlignment="Top"
-                   Height="23" 
-                   />
+                 Margin="10,41,45,0"
+                 TextWrapping="NoWrap"
+                 Text="{Binding WorkHoursDirectory}"
+                 VerticalAlignment="Top"
+                 Height="23" />
         <Button x:Name="pickWorkHoursDirectoryButton"
                 Content="&gt;&gt;&gt;"
                 Margin="0,41,10,0"
@@ -54,5 +53,17 @@
                 VerticalAlignment="Bottom"
                 Command="{Binding SaveCommand}"
                 CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}" />
+        <Label Content="Appearance interval"
+               HorizontalAlignment="Left"
+               Margin="10,69,0,0"
+               VerticalAlignment="Top" />
+        <TextBox x:Name="apperianceIntervalTextBox"
+                 HorizontalAlignment="Left"
+                 Margin="130,73,0,0"
+                 TextWrapping="Wrap"
+                 Text="TextBox"
+                 VerticalAlignment="Top"
+                 Width="55"
+                 Height="23" />
     </Grid>
 </Window>

@@ -13,14 +13,16 @@
     <Window.DataContext>
         <vm:AddLogViewModel />
     </Window.DataContext>
-    <Grid>
+    <Grid FocusManager.FocusedElement="{Binding ElementName=logTextBox}">
         <TextBox x:Name="logTextBox"
                  TextWrapping="Wrap"
                  Margin="10,10,10,35"
                  Text="{Binding Log}">
             <TextBox.InputBindings>
                 <KeyBinding Key="Enter"
-                            Command="{Binding SaveCommnad}" />
+                            Command="{Binding SaveCommand}" />
+                <KeyBinding Key="Escape"
+                            Command="{Binding CancelCommand}" />
             </TextBox.InputBindings>
         </TextBox>
         <Button x:Name="configButton"
@@ -30,16 +32,27 @@
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Left"
                 Width="20"
-                Command="{Binding OpenConfigCommnad}"
+                Command="{Binding OpenConfigCommand}"
+                CommandParameter="{Binding ElementName=configButton}"
                 ToolTip="Open configuration window." />
-        <Button x:Name="saveButton"
+        <Button x:Name="cancelButton"
                 Content="✓"
                 Margin="0,0,10,10"
                 HorizontalAlignment="Right"
                 Width="20"
                 Height="20"
                 VerticalAlignment="Bottom"
-                Command="{Binding SaveCommnad}"
+                Command="{Binding CancelCommand}"
+                CommandParameter="{Binding ElementName=cancelButton}"
+                ToolTip="Cancel changes." />
+        <Button x:Name="saveButton"
+                Content="🗙"
+                Margin="0,0,35,10"
+                HorizontalAlignment="Right"
+                Width="20"
+                Height="20"
+                VerticalAlignment="Bottom"
+                Command="{Binding SaveCommand}"
                 CommandParameter="{Binding ElementName=saveButton}"
                 ToolTip="Save changes." />
     </Grid>

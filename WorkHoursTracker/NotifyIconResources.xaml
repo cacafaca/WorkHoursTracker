@@ -30,7 +30,7 @@
     <!-- the application's NotifyIcon - started from App.xaml.cs. Declares its own view model. -->
     <tb:TaskbarIcon x:Key="NotifyIcon"
                     IconSource="/Images/App.ico"
-                    ToolTipText="Double-click for window, right-click for menu"
+                    ToolTipText="Double-click to add log, right-click for menu."
                     DoubleClickCommand="{Binding AddLogCommand}"
                     ContextMenu="{StaticResource SysTrayMenu}">
         <!-- self-assign a data context (could also be done programmatically) -->

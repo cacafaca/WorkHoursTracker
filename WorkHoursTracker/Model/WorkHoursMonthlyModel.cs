@@ -5,10 +5,10 @@ namespace ProCode.WorkHoursTracker
 {
     public class WorkHoursMonthlyModel
     {
-        const string defaultEmployeeId = "<EmployeeID>";
-        const string defaultFirstAndLastName = "<FirstName_LastName>";
-        const string defaultTitle = "<Title>";
-        const string defaultDepartment = "<Department>";
+        public const string DefaultEmployeeId = "<EmployeeID>";
+        public const string DefaultFirstAndLastName = "<FirstName_LastName>";
+        public const string DefaultTitle = "<Title>";
+        public const string defaultDepartment = "<Department>";
 
         protected Employee? _employee;
         public Employee? Employee { get { return _employee; } }
@@ -71,10 +71,10 @@ namespace ProCode.WorkHoursTracker
             return new WorkHoursMonthlyModel(
                 employee: new Employee
                 {
-                    EmployeeID = defaultEmployeeId,
+                    EmployeeID = DefaultEmployeeId,
                     Department = defaultDepartment,
-                    Title = defaultTitle,
-                    FirstAndLastName = defaultFirstAndLastName
+                    Title = DefaultTitle,
+                    FirstAndLastName = DefaultFirstAndLastName
                 },
                 startDate: DateOnly.FromDateTime(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)),
                 numberOfWorkingDaysPerMonth: daysInMonth,
