@@ -9,6 +9,12 @@
     <StartupObject></StartupObject>
     <RootNamespace>ProCode.WorkHoursTracker</RootNamespace>
     <ApplicationIcon>Images\App.ico</ApplicationIcon>
+    <Company>ProCode</Company>
+    <Description>Track work hours during work, in excel file.</Description>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageIcon>clock_and_wrench_128x128.png</PackageIcon>
+    <RepositoryUrl>https://github.com/cacafaca/WorkHoursTracker</RepositoryUrl>
+    <PackageTags>track, work, hours, excel</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -47,6 +53,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Images\clock_and_wrench.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="Images\clock_and_wrench_128x128.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
