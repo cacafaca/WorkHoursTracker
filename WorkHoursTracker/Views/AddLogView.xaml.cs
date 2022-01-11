@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 
 namespace ProCode.WorkHoursTracker.Views
 {
@@ -20,8 +21,15 @@ namespace ProCode.WorkHoursTracker.Views
                 // Send a reference of type of config window. It can be open from a button.
                 ((ViewModels.AddLogViewModel)DataContext).ConfigWindowFactory = new BaseWindowFactory(typeof(ConfigView));
             }
+
+            //KeyDown += new KeyEventHandler(AddLogViewKeyDown);
         }
-        
+
+        private void AddLogViewKeyDown(object? sender, KeyEventArgs e)
+        {
+            
+        }
+
         bool _shown;
 
         protected override void OnContentRendered(EventArgs e)

@@ -46,5 +46,17 @@ namespace ProCode.WorkHoursTracker.Properties {
                 this["WorkHoursDirectory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("45")]
+        public uint TimerIntervalInMinutes {
+            get {
+                return ((uint)(this["TimerIntervalInMinutes"]));
+            }
+            set {
+                this["TimerIntervalInMinutes"] = value;
+            }
+        }
     }
 }

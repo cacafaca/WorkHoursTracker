@@ -10,17 +10,21 @@ namespace ProCode.WorkHoursTracker.Model
     public class Config
     {
         const string workHoursDirecorySettingsName = "WorkHoursDirectory";
+
         public string WorkHoursDirectory { get; set; }
+        public uint TimerIntervalInMinutes { get; set; }
         public Config()
         {
-            WorkHoursDirectory = Properties.Settings.Default[workHoursDirecorySettingsName].ToString();
+            WorkHoursDirectory = Properties.Settings.Default.WorkHoursDirectory;
+            TimerIntervalInMinutes = Properties.Settings.Default.TimerIntervalInMinutes;
         }
         public void Save()
         {
-            Properties.Settings.Default[workHoursDirecorySettingsName] = WorkHoursDirectory;
+            Properties.Settings.Default.WorkHoursDirectory = WorkHoursDirectory;
+            Properties.Settings.Default.TimerIntervalInMinutes = TimerIntervalInMinutes;
             Properties.Settings.Default.Save();
         }
-        
+
         /// <summary>
         /// Full path of the current file.
         /// </summary>

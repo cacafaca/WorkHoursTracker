@@ -7,8 +7,8 @@
         xmlns:local="clr-namespace:ProCode.WorkHoursTracker.Views"
         mc:Ignorable="d"
         Title="Config"
-        Height="52"
-        Width="142"
+        Height="107"
+        Width="188"
         WindowStartupLocation="CenterScreen"
         MinHeight="180"
         MinWidth="250"
@@ -17,16 +17,24 @@
         <vm:ConfigViewModel />
     </Window.DataContext>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
         <Label Content="Directory with work hours fiels:"
                HorizontalAlignment="Left"
-               Margin="10,10,0,0"
-               VerticalAlignment="Top" />
+               Margin="9,10,0,0"
+               VerticalAlignment="Top"
+               Grid.Column="1"
+               Height="26"
+               Width="173" />
         <TextBox x:Name="workHoursDirectoryTextBox"
-                 Margin="10,41,45,0"
+                 Margin="9,41,45,0"
                  TextWrapping="NoWrap"
                  Text="{Binding WorkHoursDirectory}"
                  VerticalAlignment="Top"
-                 Height="23" />
+                 Height="23"
+                 Grid.Column="1" />
         <Button x:Name="pickWorkHoursDirectoryButton"
                 Content="&gt;&gt;&gt;"
                 Margin="0,41,10,0"
@@ -34,7 +42,8 @@
                 Width="30"
                 Height="23"
                 VerticalAlignment="Top"
-                Command="{Binding SetWorkHoursDirCommand}" />
+                Command="{Binding SetWorkHoursDirCommand}"
+                Grid.Column="1" />
         <Button x:Name="cancelButton"
                 Content="Cancel"
                 Margin="0,0,10,10"
@@ -43,7 +52,8 @@
                 HorizontalAlignment="Right"
                 Width="40"
                 Command="{Binding CancelCommand}"
-                CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}" />
+                CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
+                Grid.Column="1" />
         <Button x:Name="saveButton"
                 Content="Save"
                 Margin="0,0,55,10"
@@ -52,18 +62,23 @@
                 Height="20"
                 VerticalAlignment="Bottom"
                 Command="{Binding SaveConfigCommand}"
-                CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}" />
+                CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
+                Grid.Column="1" />
         <Label Content="Appearance interval"
                HorizontalAlignment="Left"
-               Margin="10,69,0,0"
-               VerticalAlignment="Top" />
+               Margin="9,69,0,0"
+               VerticalAlignment="Top"
+               Grid.Column="1"
+               Height="26"
+               Width="115" />
         <TextBox x:Name="apperianceIntervalTextBox"
                  HorizontalAlignment="Left"
-                 Margin="130,73,0,0"
+                 Margin="129,72,0,0"
                  TextWrapping="Wrap"
-                 Text="TextBox"
                  VerticalAlignment="Top"
                  Width="55"
-                 Height="23" />
+                 Height="23"
+                 Text="{Binding TimerIntervalInMinutes}"
+                 Grid.Column="1" />
     </Grid>
 </Window>

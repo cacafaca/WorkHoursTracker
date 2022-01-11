@@ -8,5 +8,8 @@
     <Setting Name="WorkHoursDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">Please set work hours direcotry....</Value>
     </Setting>
+    <Setting Name="TimerIntervalInMinutes" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">45</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

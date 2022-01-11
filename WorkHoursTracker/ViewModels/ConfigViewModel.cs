@@ -8,7 +8,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
     {
         Model.Config _config;
 
-        string workHoursDirecoryOld;
+        string _workHoursDirecoryOld;
         public string WorkHoursDirectory
         {
             get
@@ -17,8 +17,21 @@ namespace ProCode.WorkHoursTracker.ViewModels
             }
             set
             {
-                workHoursDirecoryOld = _config.WorkHoursDirectory;
+                _workHoursDirecoryOld = _config.WorkHoursDirectory;
                 _config.WorkHoursDirectory = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private uint _timerIntervalOld;
+
+        public uint TimerIntervalInMinutes
+        {
+            get { return _config.TimerIntervalInMinutes; }
+            set
+            {
+                _timerIntervalOld = _config.TimerIntervalInMinutes;
+                _config.TimerIntervalInMinutes = value;
                 OnPropertyChanged();
             }
         }
@@ -64,7 +77,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
         private bool CanSave(object obj)
         {
-            return _config.WorkHoursDirectory != workHoursDirecoryOld;
+            return _config.WorkHoursDirectory != _workHoursDirecoryOld || _config.TimerIntervalInMinutes != _timerIntervalOld;
         }
         #endregion
 

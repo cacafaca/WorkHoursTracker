@@ -23,6 +23,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             {
                 _log = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(SaveLogCanExecuteFlag));
             }
         }
 
@@ -39,7 +40,8 @@ namespace ProCode.WorkHoursTracker.ViewModels
                     WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(new Model.Config().WorkHoursCurrentFilePath);
                     whExcel.Read();
                     _isLoaded = true;
-                    return whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log;
+                    _originalLog = whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log ?? string.Empty;
+                    return _originalLog;
                 }
                 catch (Exception ex)
                 {
@@ -50,13 +52,14 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
 
         private bool _isLoaded;
+        private string _originalLog = string.Empty;
 
         public IWindowFactory ConfigWindowFactory { get; set; }
 
         public AddLogViewModel()
         {
             OpenConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
-            SaveLogCommand = new RelayCommand(SaveLogExecute, new Func<object, bool>((obj) => true));
+            SaveLogCommand = new RelayCommand(SaveLogExecute, SaveLogCanExecute);
             CancelLogCommand = new RelayCommand(CancelLogExecute, new Func<object, bool>((obj) => true));
             _isLoaded = false;
         }
@@ -101,7 +104,13 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 DefaultWindowFactory.CloseWindow();
             }
         }
+        private bool SaveLogCanExecute(object obj)
+        {
+            return _originalLog != (Log ?? string.Empty);
+        }
         #endregion
+
+        public bool SaveLogCanExecuteFlag { get { return SaveLogCanExecute(null); } }
 
         #region Cancel command
         public ICommand CancelLogCommand { get; set; }
