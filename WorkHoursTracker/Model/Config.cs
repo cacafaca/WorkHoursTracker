@@ -9,19 +9,26 @@ namespace ProCode.WorkHoursTracker.Model
 {
     public class Config
     {
-        const string workHoursDirecorySettingsName = "WorkHoursDirectory";
-
         public string WorkHoursDirectory { get; set; }
         public uint TimerIntervalInMinutes { get; set; }
+        public uint VisibilityIntervalInSeconds { get; set; }
+
         public Config()
         {
+            // Keep the old settings.
+            Properties.Settings.Default.Upgrade();
+            Properties.Settings.Default.Reload();
+
             WorkHoursDirectory = Properties.Settings.Default.WorkHoursDirectory;
             TimerIntervalInMinutes = Properties.Settings.Default.TimerIntervalInMinutes;
+            VisibilityIntervalInSeconds = Properties.Settings.Default.VisibilityIntervalInSeconds;
         }
         public void Save()
         {
             Properties.Settings.Default.WorkHoursDirectory = WorkHoursDirectory;
             Properties.Settings.Default.TimerIntervalInMinutes = TimerIntervalInMinutes;
+            Properties.Settings.Default.VisibilityIntervalInSeconds = VisibilityIntervalInSeconds;
+
             Properties.Settings.Default.Save();
         }
 

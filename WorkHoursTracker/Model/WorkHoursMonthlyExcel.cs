@@ -47,9 +47,9 @@ namespace ProCode.WorkHoursTracker
             Microsoft.Office.Interop.Excel.Worksheet? worksheet = null;
             try
             {
+                // Copy if do not exists.
                 if (!File.Exists(_workHoursExcelFilePath))
                 {
-                    //System.Diagnostics.Debug.WriteLine($"WorkHoursTracker> File '{_workHoursExcelFilePath}' do not existis.");
                     Trace.WriteLine($"File '{_workHoursExcelFilePath}' do not existis.");
                     File.Copy(GetTemplateFileName(), _workHoursExcelFilePath);
                     Trace.WriteLine($"Template '{GetTemplateFileName()}' copied to '{_workHoursExcelFilePath}'.");
@@ -63,31 +63,31 @@ namespace ProCode.WorkHoursTracker
 
                     _employee = new Employee
                     {
-                        EmployeeID = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.EmployeeId.Row, WorkHoursExcelMap.EmployeeId.Column]).Value,
-                        FirstAndLastName = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.FirstAndLastName.Row, WorkHoursExcelMap.FirstAndLastName.Column]).Value,
-                        Title = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Title.Row, WorkHoursExcelMap.Title.Column]).Value,
-                        Department = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Department.Row, WorkHoursExcelMap.Department.Column]).Value,
+                        EmployeeID = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.EmployeeId.Row, WorkHoursExcelMap.EmployeeId.Column]).Value ?? DefaultEmployeeId,
+                        FirstAndLastName = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.FirstAndLastName.Row, WorkHoursExcelMap.FirstAndLastName.Column]).Value ?? DefaultFirstAndLastName,
+                        Title = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Title.Row, WorkHoursExcelMap.Title.Column]).Value ?? DefaultTitle,
+                        Department = ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Department.Row, WorkHoursExcelMap.Department.Column]).Value ?? DefaultDepartment,
                     };
 
                     // Correct template values.
-                    if (_employee.EmployeeID == WorkHoursMonthlyModel.DefaultEmployeeId)
+                    if (_employee.EmployeeID == DefaultEmployeeId)
                         _employee.EmployeeID = Environment.UserName;
                     // Don't read AD unnecessary.
                     Services.ActiveDirectory ad = null;
-                    if (_employee.FirstAndLastName == WorkHoursMonthlyModel.DefaultFirstAndLastName)
+                    if (_employee.FirstAndLastName == DefaultFirstAndLastName)
                     {
                         if (ad == null) ad = new Services.ActiveDirectory();
                         _employee.FirstAndLastName = ad.FirstAndLastName;
                     }
-                    if (_employee.Title == WorkHoursMonthlyModel.DefaultTitle)
+                    if (_employee.Title == DefaultTitle)
                     {
                         if (ad == null) ad = new Services.ActiveDirectory();
                         _employee.Title = ad.Title;
                     }
-                    if (_employee.Title == WorkHoursMonthlyModel.DefaultTitle)
+                    if (_employee.Department == DefaultDepartment)
                     {
                         if (ad == null) ad = new Services.ActiveDirectory();
-                        _employee.Title = ad.Department;
+                        _employee.Department = ad.Department;
                     }
 
                     _startDate = GetDateOnly(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.StartDate.Row, WorkHoursExcelMap.StartDate.Column]).Value);
@@ -130,32 +130,7 @@ namespace ProCode.WorkHoursTracker
             }
             finally
             {
-                if (worksheet != null)
-                {
-                    while (Marshal.ReleaseComObject(worksheet) != 0) { };
-                    worksheet = null;
-                }
-                if (workbook != null)
-                {
-                    workbook.Close(false);
-                    while (Marshal.ReleaseComObject(workbook) != 0) { };
-                    workbook = null;
-                }
-                if (excelApp != null)
-                {
-                    if (excelApp.Workbooks != null)
-                    {
-                        excelApp.Workbooks.Close();
-                        while (Marshal.ReleaseComObject(excelApp.Workbooks) != 0) { };
-                    }
-
-                    excelApp.Application.Quit();
-                    excelApp.Quit();
-                    while (Marshal.ReleaseComObject(excelApp) != 0) { };
-                    excelApp = null;
-                }
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                SafeCloseExcel(ref excelApp, ref workbook, ref worksheet);
             }
         }
 
@@ -289,7 +264,6 @@ namespace ProCode.WorkHoursTracker
                 if (_workHours != null)
                     for (int day = 0; day < _workHours.Count; day++)
                     {
-                        //((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.DateFirstRow.Row + day, WorkHoursExcelMap.DateFirstRow.Column]).Value = _workHours[day].Date.ToDateTime(new TimeOnly());
                         ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Time1InFirstRow.Row + day, WorkHoursExcelMap.Time1InFirstRow.Column]).Value = _workHours[day].Time1In.ToString();
                         ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TimeOut1FirstRow.Row + day, WorkHoursExcelMap.TimeOut1FirstRow.Column]).Value = _workHours[day].Time1Out.ToString();
                         ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TaskFirstRow.Row + day, WorkHoursExcelMap.TaskFirstRow.Column]).Value = _workHours[day].Task;
@@ -300,38 +274,44 @@ namespace ProCode.WorkHoursTracker
             }
             finally
             {
-                if (worksheet != null)
-                {
-                    while (Marshal.ReleaseComObject(worksheet) != 0) { };
-                    worksheet = null;
-                }
-                if (workbook != null)
-                {
-                    workbook.Close(false);
-                    while (Marshal.ReleaseComObject(workbook) != 0) { };
-                    workbook = null;
-                }
-                if (excelApp != null)
-                {
-                    if (excelApp.Workbooks != null)
-                    {
-                        excelApp.Workbooks.Close();
-                        while (Marshal.ReleaseComObject(excelApp.Workbooks) != 0) { };
-                    }
-
-                    excelApp.Application.Quit();
-                    excelApp.Quit();
-                    while (Marshal.ReleaseComObject(excelApp) != 0) { };
-                    excelApp = null;
-                }
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                SafeCloseExcel(ref excelApp, ref workbook, ref worksheet);
             }
         }
 
         public string GetTemplateFileName()
-        {
+        {   
             return Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), Properties.Settings.Default.WorkHoursTemplateFileName);
+        }
+
+        private void SafeCloseExcel(ref Microsoft.Office.Interop.Excel.Application? excelApp, ref Microsoft.Office.Interop.Excel.Workbook? workbook, 
+            ref Microsoft.Office.Interop.Excel.Worksheet? worksheet)
+        {
+            if (worksheet != null)
+            {
+                while (Marshal.ReleaseComObject(worksheet) != 0) { };
+                worksheet = null;
+            }
+            if (workbook != null)
+            {
+                workbook.Close(false);
+                while (Marshal.ReleaseComObject(workbook) != 0) { };
+                workbook = null;
+            }
+            if (excelApp != null)
+            {
+                if (excelApp.Workbooks != null)
+                {
+                    excelApp.Workbooks.Close();
+                    while (Marshal.ReleaseComObject(excelApp.Workbooks) != 0) { };
+                }
+
+                excelApp.Application.Quit();
+                excelApp.Quit();
+                while (Marshal.ReleaseComObject(excelApp) != 0) { };
+                excelApp = null;
+            }
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
     }
 }

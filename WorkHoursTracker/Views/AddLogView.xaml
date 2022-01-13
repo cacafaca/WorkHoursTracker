@@ -17,7 +17,8 @@
         <TextBox x:Name="logTextBox"
                  TextWrapping="Wrap"
                  Margin="10,10,10,35"
-                 Text="{Binding Log, UpdateSourceTrigger=PropertyChanged}">
+                 Text="{Binding Log, UpdateSourceTrigger=PropertyChanged}"
+                 TabIndex="0">
             <TextBox.InputBindings>
                 <KeyBinding Key="Enter"
                             Command="{Binding SaveLogCommand}" />
@@ -34,7 +35,8 @@
                 Width="20"
                 Command="{Binding OpenConfigCommand}"
                 CommandParameter="{Binding ElementName=configButton}"
-                ToolTip="Open configuration window." />
+                ToolTip="Open configuration window."
+                TabIndex="3" />
         <Button x:Name="saveButton"
                 Content="✓"              
                 FontWeight="Bold"
@@ -47,7 +49,8 @@
                 Command="{Binding SaveLogCommand}"
                 CommandParameter="{Binding ElementName=saveButton}"
                 ToolTip="Cancel changes." 
-                IsEnabled="{Binding SaveLogCanExecuteFlag}"/>
+                IsEnabled="{Binding SaveLogCanExecuteFlag}"
+                TabIndex="1" />
         <Button x:Name="cancelButton"
                 Content="🗙"
                 FontWeight="Bold"
@@ -59,6 +62,7 @@
                 VerticalAlignment="Bottom"
                 Command="{Binding CancelLogCommand}"
                 CommandParameter="{Binding ElementName=cancelButton}"
-                ToolTip="Save changes." />
+                ToolTip="Save changes."
+                TabIndex="2" />
     </Grid>
 </Window>

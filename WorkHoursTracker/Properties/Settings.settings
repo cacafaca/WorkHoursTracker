@@ -11,5 +11,8 @@
     <Setting Name="TimerIntervalInMinutes" Type="System.UInt32" Scope="User">
       <Value Profile="(Default)">45</Value>
     </Setting>
+    <Setting Name="VisibilityIntervalInSeconds" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

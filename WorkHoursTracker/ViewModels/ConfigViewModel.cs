@@ -36,6 +36,19 @@ namespace ProCode.WorkHoursTracker.ViewModels
             }
         }
 
+        private uint _visibilityIntervalOld;
+
+        public uint VisibilityIntervalInSeconds
+        {
+            get { return _config.VisibilityIntervalInSeconds; }
+            set
+            {
+                _visibilityIntervalOld = _config.VisibilityIntervalInSeconds;
+                _config.VisibilityIntervalInSeconds = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ConfigViewModel()
         {
             _config = new Model.Config();

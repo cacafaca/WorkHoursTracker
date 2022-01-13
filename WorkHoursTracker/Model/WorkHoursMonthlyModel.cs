@@ -8,7 +8,7 @@ namespace ProCode.WorkHoursTracker
         public const string DefaultEmployeeId = "<EmployeeID>";
         public const string DefaultFirstAndLastName = "<FirstName_LastName>";
         public const string DefaultTitle = "<Title>";
-        public const string defaultDepartment = "<Department>";
+        public const string DefaultDepartment = "<Department>";
 
         protected Employee? _employee;
         public Employee? Employee { get { return _employee; } }
@@ -72,7 +72,7 @@ namespace ProCode.WorkHoursTracker
                 employee: new Employee
                 {
                     EmployeeID = DefaultEmployeeId,
-                    Department = defaultDepartment,
+                    Department = DefaultDepartment,
                     Title = DefaultTitle,
                     FirstAndLastName = DefaultFirstAndLastName
                 },
