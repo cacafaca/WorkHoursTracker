@@ -106,5 +106,16 @@ namespace ProCode.WorkHoursTracker.ViewModels
             return true;
         }
         #endregion
+
+        public bool StartupWithWindows
+        {
+            get { return _config.StartWithWindowsFlag; }
+            set
+            {
+                _config.StartWithWindowsFlag = value;
+                OnPropertyChanged();
+            }
+        }
+
     }
 }

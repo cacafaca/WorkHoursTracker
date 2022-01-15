@@ -7,20 +7,21 @@
         xmlns:local="clr-namespace:ProCode.WorkHoursTracker.Views"
         mc:Ignorable="d"
         Title="Config"
-        Height="115"
-        Width="190"
+        Height="106"
+        Width="133"
         WindowStartupLocation="CenterScreen"
-        MinHeight="180"
+        MinHeight="200"
         MinWidth="250"
         xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels">
     <Window.DataContext>
         <vm:ConfigViewModel />
     </Window.DataContext>
-    <StackPanel Orientation="Vertical"
+    <DockPanel LastChildFill="True"
                 Margin="5">
         <Label Content="Directory with work hours files:"
-               HorizontalAlignment="Stretch" />
-        <DockPanel FlowDirection="LeftToRight"
+               HorizontalAlignment="Stretch"
+               DockPanel.Dock="Top" />
+        <DockPanel FlowDirection="LeftToRight" DockPanel.Dock="Top"
                    LastChildFill="True">
             <TextBox x:Name="workHoursDirectoryTextBox"
                      TextWrapping="NoWrap"
@@ -34,7 +35,8 @@
                     TabIndex="1"
                     Margin="10,0,0,0" />
         </DockPanel>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal"
+                    DockPanel.Dock="Top">
             <Label Content="Appearance interval"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center" />
@@ -48,7 +50,8 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal"
+                    DockPanel.Dock="Top">
             <Label Content="Visibility interval"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center" />
@@ -60,24 +63,32 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Right">
-            <Button x:Name="cancelButton"
-                    Content="Cancel"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Command="{Binding CancelCommand}"
-                    CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
-                    TabIndex="4"
-                    Width="50" />
-            <Button x:Name="saveButton"
-                    Content="Save"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Command="{Binding SaveConfigCommand}"
-                    CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
-                    Width="50"
-                    Margin="10,0,0,0" />
+        <StackPanel DockPanel.Dock="Top">
+            <CheckBox Content="Startup with Windows"
+                      IsChecked="{Binding StartupWithWindows}" />
         </StackPanel>
-    </StackPanel>
+        <!-- Buttons -->
+        <DockPanel HorizontalAlignment="Right"
+                   Margin="0,5,0,0"
+                   VerticalAlignment="Bottom" LastChildFill="True">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="cancelButton"
+                        Content="Cancel"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right"
+                        Command="{Binding CancelCommand}"
+                        CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
+                        TabIndex="4"
+                        Width="50" />
+                <Button x:Name="saveButton"
+                        Content="Save"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding SaveConfigCommand}"
+                        CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
+                        Width="50"
+                        Margin="10,0,0,0" />
+            </StackPanel>
+        </DockPanel>
+    </DockPanel>
 </Window>
