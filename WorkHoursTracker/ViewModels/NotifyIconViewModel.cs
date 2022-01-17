@@ -9,17 +9,37 @@ namespace ProCode.WorkHoursTracker.ViewModels
 {
     public class NotifyIconViewModel : BaseViewModel
     {
-        public ICommand AddLogCommand { get; set; }
-        public ICommand ConfigCommand { get; set; }
-        public ICommand ExitApplicationCommand { get; set; }
-        public ICommand ShowExcelCommand { get; set; }
-
+        #region Constructors
         public NotifyIconViewModel()
         {
             AddLogCommand = new RelayCommand(AddLogExecute, new Func<object, bool>((obj) => true));
             ConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
             ExitApplicationCommand = new RelayCommand(ExitApplicationExecute, new Func<object, bool>((obj) => true));
             ShowExcelCommand = new RelayCommand(ShowExcelExecute, new Func<object, bool>((obj) => true));
+        }
+        #endregion
+
+        #region Properties
+        public ICommand AddLogCommand { get; set; }
+        public ICommand ConfigCommand { get; set; }
+        public ICommand ExitApplicationCommand { get; set; }
+        public ICommand ShowExcelCommand { get; set; }
+
+        public IWindowFactory AddLogWindowFactory { get; set; }
+        public IWindowFactory ConfigWindowFactory { get; set; }
+
+        #endregion
+
+        #region Methods
+        private void AddLogExecute(object obj)
+        {
+            if (AddLogWindowFactory != null)
+            {
+                if (!AddLogWindowFactory.IsCreated())
+                    AddLogWindowFactory.CreateWindow();
+                if (!AddLogWindowFactory.IsVisible())
+                    AddLogWindowFactory.ShowWindow();
+            }
         }
 
         private void ShowExcelExecute(object obj)
@@ -37,21 +57,12 @@ namespace ProCode.WorkHoursTracker.ViewModels
         {
             if (ConfigWindowFactory != null)
             {
-                ConfigWindowFactory.CreateWindow();
-                ConfigWindowFactory.ShowWindow();
+                if (!ConfigWindowFactory.IsCreated())
+                    ConfigWindowFactory.CreateWindow();
+                if (ConfigWindowFactory.IsVisible())
+                    ConfigWindowFactory.ShowWindow();
             }
         }
-
-        private void AddLogExecute(object obj)
-        {
-            if (WorkHoursLogPopupWindowFactory != null)
-            {
-                WorkHoursLogPopupWindowFactory.CreateWindow();
-                WorkHoursLogPopupWindowFactory.ShowWindow();
-            }
-        }
-
-        public IWindowFactory WorkHoursLogPopupWindowFactory { get; set; }
-        public IWindowFactory ConfigWindowFactory { get; set; }
+        #endregion
     }
 }

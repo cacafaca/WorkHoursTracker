@@ -83,14 +83,16 @@ namespace ProCode.WorkHoursTracker.ViewModels
         private void Save(object sender)
         {
             _config.Save();
-            if (sender is Window)
-            {
-                ((Window)sender).Close();
-            }
+            DefaultWindowFactory.CloseWindow();
+            //if (sender is Window)
+            //{
+            //    ((Window)sender).Close();
+            //}
         }
         private bool CanSave(object obj)
         {
-            return _config.WorkHoursDirectory != _workHoursDirecoryOld || _config.TimerIntervalInMinutes != _timerIntervalOld;
+            //return _config.WorkHoursDirectory != _workHoursDirecoryOld || _config.TimerIntervalInMinutes != _timerIntervalOld;
+            return true;
         }
         #endregion
 
@@ -107,7 +109,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
         #endregion
 
-        public bool StartupWithWindows
+        public bool StartWithWindows
         {
             get { return _config.StartWithWindowsFlag; }
             set

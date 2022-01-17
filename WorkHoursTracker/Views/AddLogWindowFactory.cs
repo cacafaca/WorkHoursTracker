@@ -23,6 +23,9 @@ namespace ProCode.WorkHoursTracker.Views
             _window.Left = Screen.PrimaryScreen.WorkingArea.Width - _window.Width - 10;
             _window.Top = Screen.PrimaryScreen.WorkingArea.Height - _window.Height - 10;
 
+            _window.Left = 10;
+            _window.Top = 10;
+
             base.ShowWindow();
         }
     }

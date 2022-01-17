@@ -7,8 +7,8 @@
         xmlns:local="clr-namespace:ProCode.WorkHoursTracker.Views"
         mc:Ignorable="d"
         Title="Config"
-        Height="106"
-        Width="133"
+        Height="199"
+        Width="313"
         WindowStartupLocation="CenterScreen"
         MinHeight="200"
         MinWidth="250"
@@ -17,23 +17,24 @@
         <vm:ConfigViewModel />
     </Window.DataContext>
     <DockPanel LastChildFill="True"
-                Margin="5">
+               Margin="5">
         <Label Content="Directory with work hours files:"
                HorizontalAlignment="Stretch"
                DockPanel.Dock="Top" />
-        <DockPanel FlowDirection="LeftToRight" DockPanel.Dock="Top"
+        <DockPanel DockPanel.Dock="Top"
                    LastChildFill="True">
+            <Button x:Name="pickWorkHoursDirectoryButton"
+                    Content="&gt;&gt;&gt;"
+                    Command="{Binding SetWorkHoursDirCommand}"
+                    TabIndex="1"
+                    DockPanel.Dock="Right"
+                    Margin="5,0,0,0" />
             <TextBox x:Name="workHoursDirectoryTextBox"
                      TextWrapping="NoWrap"
                      Text="{Binding WorkHoursDirectory}"
-                     HorizontalAlignment="Stretch"
-                     TabIndex="0" />
-            <Button x:Name="pickWorkHoursDirectoryButton"
-                    Content="&gt;&gt;&gt;"
-                    HorizontalAlignment="Right"
-                    Command="{Binding SetWorkHoursDirCommand}"
-                    TabIndex="1"
-                    Margin="10,0,0,0" />
+                     TabIndex="0"
+                     MinWidth="190" HorizontalAlignment="Right"
+                     Width="200" />
         </DockPanel>
         <StackPanel Orientation="Horizontal"
                     DockPanel.Dock="Top">
@@ -64,13 +65,14 @@
                    VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel DockPanel.Dock="Top">
-            <CheckBox Content="Startup with Windows"
-                      IsChecked="{Binding StartupWithWindows}" />
+            <CheckBox Content="Start with Windows"
+                      IsChecked="{Binding StartWithWindows}" />
         </StackPanel>
         <!-- Buttons -->
         <DockPanel HorizontalAlignment="Right"
                    Margin="0,5,0,0"
-                   VerticalAlignment="Bottom" LastChildFill="True">
+                   VerticalAlignment="Bottom"
+                   LastChildFill="True">
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="cancelButton"
                         Content="Cancel"

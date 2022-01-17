@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace ProCode.WorkHoursTracker.Views
@@ -9,6 +10,11 @@ namespace ProCode.WorkHoursTracker.Views
     /// </summary>
     public partial class AddLogView : Window
     {
+        #region Fields
+        bool _shown;
+        #endregion
+
+        #region Constructors
         public AddLogView()
         {
             InitializeComponent();
@@ -16,21 +22,15 @@ namespace ProCode.WorkHoursTracker.Views
             if (DataContext is ViewModels.AddLogViewModel)
             {
                 // Send a reference of type of itself.
-                ((ViewModels.AddLogViewModel)DataContext).DefaultWindowFactory = new AddLogWindowFactory(this);          
-                
+                ((ViewModels.AddLogViewModel)DataContext).DefaultWindowFactory = new AddLogWindowFactory(this);
+
                 // Send a reference of type of config window. It can be open from a button.
                 ((ViewModels.AddLogViewModel)DataContext).ConfigWindowFactory = new BaseWindowFactory(typeof(ConfigView));
             }
 
             //KeyDown += new KeyEventHandler(AddLogViewKeyDown);
         }
-
-        private void AddLogViewKeyDown(object? sender, KeyEventArgs e)
-        {
-            
-        }
-
-        bool _shown;
+        #endregion
 
         protected override void OnContentRendered(EventArgs e)
         {
@@ -41,6 +41,8 @@ namespace ProCode.WorkHoursTracker.Views
 
             _shown = true;
 
+            Left = Screen.PrimaryScreen.WorkingArea.Width - Width - 10;
+            Top = Screen.PrimaryScreen.WorkingArea.Height - Height - 10;
             // Your code here.
         }
     }

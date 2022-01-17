@@ -15,7 +15,7 @@ namespace ProCode.WorkHoursTracker.Model
         #endregion
 
         #region Fields
-        bool? _startupWithWindows;
+        bool? _startWithWindows;
         #endregion
 
         #region Constructors
@@ -29,7 +29,7 @@ namespace ProCode.WorkHoursTracker.Model
             TimerIntervalInMinutes = Properties.Settings.Default.TimerIntervalInMinutes;
             VisibilityIntervalInSeconds = Properties.Settings.Default.VisibilityIntervalInSeconds;
 
-            _startupWithWindows = null;
+            _startWithWindows = null;
         }
         #endregion
 
@@ -40,7 +40,7 @@ namespace ProCode.WorkHoursTracker.Model
         public bool StartWithWindowsFlag
         {
             get { return GetStartupFlag(); }
-            set { _startupWithWindows = value; }
+            set { _startWithWindows = value; }
         }
         /// <summary>
         /// Full path of the current file.
@@ -62,10 +62,14 @@ namespace ProCode.WorkHoursTracker.Model
             Properties.Settings.Default.VisibilityIntervalInSeconds = VisibilityIntervalInSeconds;
 
             RegistryKey startUpRegKey = Registry.CurrentUser.OpenSubKey(_winRegRunKey, true);
-            if ((bool)_startupWithWindows)
+            if ((bool)_startWithWindows)
                 startUpRegKey.SetValue(GetAppName(), System.Environment.ProcessPath);
             else
-                startUpRegKey.DeleteValue(GetAppName());
+            {
+                if (startUpRegKey.GetValue(GetAppName()) != null)
+                    startUpRegKey.DeleteValue(GetAppName());
+            }
+
             startUpRegKey.Close();
 
             Properties.Settings.Default.Save();
@@ -84,20 +88,17 @@ namespace ProCode.WorkHoursTracker.Model
         }
         private bool GetStartupFlag()
         {
-            if (_startupWithWindows == null)
+            if (_startWithWindows == null)
             {
                 RegistryKey startUpRegKey = Registry.CurrentUser.OpenSubKey(_winRegRunKey, false);
                 if (startUpRegKey != null)
                 {
-                    object keyData = startUpRegKey.GetValue(GetAppName(), string.Empty);
-                    if (keyData != null)
-                        _startupWithWindows = !string.IsNullOrEmpty(keyData.ToString());
-                    else
-                        _startupWithWindows = false;    // Maybe this isn't possible.
+                    object keyData = startUpRegKey.GetValue(GetAppName());
+                    _startWithWindows = keyData != null ? File.Exists(keyData.ToString()) : false;
                 }
                 startUpRegKey.Close();
             }
-            return (bool)_startupWithWindows;
+            return (bool)_startWithWindows;
         }
         #endregion
     }

@@ -5,5 +5,7 @@
         void CreateWindow();
         void ShowWindow();
         void CloseWindow();
+        bool IsVisible();
+        bool IsCreated();
     }
 }

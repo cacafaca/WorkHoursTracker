@@ -5,9 +5,12 @@ namespace ProCode.WorkHoursTracker.Views
 {
     public class BaseWindowFactory : ViewModels.IWindowFactory
     {
+        #region Fields
         protected Window _window;
         protected Type _windowType;
+        #endregion
 
+        #region Constructors
         public BaseWindowFactory(Type windowType)
         {
             if (windowType == null)
@@ -25,11 +28,12 @@ namespace ProCode.WorkHoursTracker.Views
                 throw new ArgumentNullException(nameof(window));
 
             if (!window.GetType().IsSubclassOf(typeof(Window)))
-                throw new ArgumentException("Expect Wescendant of Window type.", nameof(window));
+                throw new ArgumentException("Expect Descendant of Window type.", nameof(window));
 
             _window = window;
             _windowType = window.GetType();
         }
+        #endregion
 
         public virtual void CreateWindow()
         {
@@ -45,6 +49,16 @@ namespace ProCode.WorkHoursTracker.Views
         {
             _window?.Close();
             _window = null;
+        }
+
+        public bool IsVisible()
+        {
+            return _window.IsVisible;
+        }
+
+        public bool IsCreated()
+        {
+            return _window != null;
         }
     }
 }

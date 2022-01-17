@@ -22,6 +22,8 @@ namespace ProCode.WorkHoursTracker.Views
         public ConfigView()
         {
             InitializeComponent();
+            if(DataContext is ViewModels.ConfigViewModel viewModel)
+                viewModel.DefaultWindowFactory = new BaseWindowFactory(this);
         }
     }
 }

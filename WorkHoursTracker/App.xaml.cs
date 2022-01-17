@@ -22,7 +22,7 @@ namespace Procode.WorkHoursTracker
                 _notifyIcon.DataContext is ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)
             {
                 // Set Log window type.
-                ((ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).WorkHoursLogPopupWindowFactory =
+                ((ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory =
                     new ProCode.WorkHoursTracker.Views.AddLogWindowFactory(typeof(ProCode.WorkHoursTracker.Views.AddLogView));
 
                 // Set Config window type.
