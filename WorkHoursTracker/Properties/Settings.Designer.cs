@@ -37,37 +37,73 @@ namespace ProCode.WorkHoursTracker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Please set work hours direcotry....")]
-        public string WorkHoursDirectory {
+        [global::System.Configuration.DefaultSettingValueAttribute("WorkHoursDirectory")]
+        public string WorkHoursDirectoryRegistryName {
             get {
-                return ((string)(this["WorkHoursDirectory"]));
+                return ((string)(this["WorkHoursDirectoryRegistryName"]));
             }
             set {
-                this["WorkHoursDirectory"] = value;
+                this["WorkHoursDirectoryRegistryName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("TimerIntervalInMinutes")]
+        public string TimerIntervalInMinutesRegistryName {
+            get {
+                return ((string)(this["TimerIntervalInMinutesRegistryName"]));
+            }
+            set {
+                this["TimerIntervalInMinutesRegistryName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("VisibilityIntervalInSeconds")]
+        public string VisibilityIntervalInSecondsRegistryName {
+            get {
+                return ((string)(this["VisibilityIntervalInSecondsRegistryName"]));
+            }
+            set {
+                this["VisibilityIntervalInSecondsRegistryName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Please enter Working Hours directory ...")]
+        public string WorkHoursDirectoryDefaultValue {
+            get {
+                return ((string)(this["WorkHoursDirectoryDefaultValue"]));
+            }
+            set {
+                this["WorkHoursDirectoryDefaultValue"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("45")]
-        public uint TimerIntervalInMinutes {
+        public uint TimerIntervalInMinutesDefaultValue {
             get {
-                return ((uint)(this["TimerIntervalInMinutes"]));
+                return ((uint)(this["TimerIntervalInMinutesDefaultValue"]));
             }
             set {
-                this["TimerIntervalInMinutes"] = value;
+                this["TimerIntervalInMinutesDefaultValue"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("5")]
-        public uint VisibilityIntervalInSeconds {
+        public uint VisibilityIntervalInSecondsDefaultValue {
             get {
-                return ((uint)(this["VisibilityIntervalInSeconds"]));
+                return ((uint)(this["VisibilityIntervalInSecondsDefaultValue"]));
             }
             set {
-                this["VisibilityIntervalInSeconds"] = value;
+                this["VisibilityIntervalInSecondsDefaultValue"] = value;
             }
         }
     }

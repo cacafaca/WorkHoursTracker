@@ -6,19 +6,17 @@ namespace ProCode.WorkHoursTracker.ViewModels
 {
     public class ConfigViewModel : BaseViewModel
     {
-        Model.Config _config;
-
         string _workHoursDirecoryOld;
         public string WorkHoursDirectory
         {
             get
             {
-                return _config.WorkHoursDirectory;
+                return Model.Config.WorkHoursDirectory;
             }
             set
             {
-                _workHoursDirecoryOld = _config.WorkHoursDirectory;
-                _config.WorkHoursDirectory = value;
+                _workHoursDirecoryOld = Model.Config.WorkHoursDirectory;
+                Model.Config.WorkHoursDirectory = value;
                 OnPropertyChanged();
             }
         }
@@ -27,11 +25,11 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         public uint TimerIntervalInMinutes
         {
-            get { return _config.TimerIntervalInMinutes; }
+            get { return Model.Config.TimerIntervalInMinutes; }
             set
             {
-                _timerIntervalOld = _config.TimerIntervalInMinutes;
-                _config.TimerIntervalInMinutes = value;
+                _timerIntervalOld = Model.Config.TimerIntervalInMinutes;
+                Model.Config.TimerIntervalInMinutes = value;
                 OnPropertyChanged();
             }
         }
@@ -40,19 +38,17 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         public uint VisibilityIntervalInSeconds
         {
-            get { return _config.VisibilityIntervalInSeconds; }
+            get { return Model.Config.VisibilityIntervalInSeconds; }
             set
             {
-                _visibilityIntervalOld = _config.VisibilityIntervalInSeconds;
-                _config.VisibilityIntervalInSeconds = value;
+                _visibilityIntervalOld = Model.Config.VisibilityIntervalInSeconds;
+                Model.Config.VisibilityIntervalInSeconds = value;
                 OnPropertyChanged();
             }
         }
 
         public ConfigViewModel()
         {
-            _config = new Model.Config();
-
             SetWorkHoursDirCommand = new RelayCommand(SetWorkingDir, CanSetWorkingDir);
             SaveConfigCommand = new RelayCommand(Save, CanSave);
             CancelCommand = new RelayCommand(Cancel, CanCancel);
@@ -82,16 +78,11 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public ICommand SaveConfigCommand { get; set; }
         private void Save(object sender)
         {
-            _config.Save();
+            Model.Config.Save();
             DefaultWindowFactory.CloseWindow();
-            //if (sender is Window)
-            //{
-            //    ((Window)sender).Close();
-            //}
         }
         private bool CanSave(object obj)
         {
-            //return _config.WorkHoursDirectory != _workHoursDirecoryOld || _config.TimerIntervalInMinutes != _timerIntervalOld;
             return true;
         }
         #endregion
@@ -111,10 +102,10 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         public bool StartWithWindows
         {
-            get { return _config.StartWithWindowsFlag; }
+            get { return Model.Config.StartWithWindowsFlag; }
             set
             {
-                _config.StartWithWindowsFlag = value;
+                Model.Config.StartWithWindowsFlag = value;
                 OnPropertyChanged();
             }
         }

@@ -44,7 +44,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         private void ShowExcelExecute(object obj)
         {
-            WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(new Model.Config().WorkHoursCurrentFilePath);
+            WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(Model.Config.WorkHoursCurrentFilePath);
             whExcel.Show();
         }
 

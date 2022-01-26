@@ -71,7 +71,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             {
                 try
                 {
-                    WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(new Model.Config().WorkHoursCurrentFilePath);
+                    WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(Model.Config.WorkHoursCurrentFilePath);
                     whExcel.Read();
                     _isLoaded = true;
                     _originalLog = whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log ?? string.Empty;
@@ -96,7 +96,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         {
             _closeTimer = new System.Windows.Threading.DispatcherTimer();
             _closeTimer.Tick += new EventHandler(OnTick);
-            _closeTimer.Interval = new TimeSpan(0, 0, (int)Properties.Settings.Default.VisibilityIntervalInSeconds);
+            _closeTimer.Interval = new TimeSpan(0, 0, (int)Model.Config.VisibilityIntervalInSeconds);
             _closeTimer.Start();
             Trace.WriteLine("Close timer started.");
         }
@@ -127,7 +127,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             {
                 try
                 {
-                    WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel((new Model.Config()).WorkHoursCurrentFilePath);
+                    WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(Model.Config.WorkHoursCurrentFilePath);
                     Trace.WriteLine($"Read '{whExcel.WorkHoursExcelFilePath}'.");
                     whExcel.Read();
                     whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log = Log;

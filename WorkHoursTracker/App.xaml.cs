@@ -44,7 +44,7 @@ namespace ProCode.WorkHoursTracker
         private void InitTimer()
         {
             _dispatcherTimer.Tick += new EventHandler(OnTick);
-            _dispatcherTimer.Interval = new TimeSpan(0, (int)ProCode.WorkHoursTracker.Properties.Settings.Default.TimerIntervalInMinutes, 0);
+            _dispatcherTimer.Interval = new TimeSpan(0, (int)Model.Config.TimerIntervalInMinutes, 0);
             _dispatcherTimer.Start();
         }
 

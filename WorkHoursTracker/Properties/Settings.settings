@@ -5,13 +5,22 @@
     <Setting Name="WorkHoursTemplateFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">WorkHoursTrackTemplate.xlsx</Value>
     </Setting>
-    <Setting Name="WorkHoursDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Please set work hours direcotry....</Value>
+    <Setting Name="WorkHoursDirectoryRegistryName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">WorkHoursDirectory</Value>
     </Setting>
-    <Setting Name="TimerIntervalInMinutes" Type="System.UInt32" Scope="User">
+    <Setting Name="TimerIntervalInMinutesRegistryName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">TimerIntervalInMinutes</Value>
+    </Setting>
+    <Setting Name="VisibilityIntervalInSecondsRegistryName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">VisibilityIntervalInSeconds</Value>
+    </Setting>
+    <Setting Name="WorkHoursDirectoryDefaultValue" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Please enter Working Hours directory ...</Value>
+    </Setting>
+    <Setting Name="TimerIntervalInMinutesDefaultValue" Type="System.UInt32" Scope="User">
       <Value Profile="(Default)">45</Value>
     </Setting>
-    <Setting Name="VisibilityIntervalInSeconds" Type="System.UInt32" Scope="User">
+    <Setting Name="VisibilityIntervalInSecondsDefaultValue" Type="System.UInt32" Scope="User">
       <Value Profile="(Default)">5</Value>
     </Setting>
   </Settings>

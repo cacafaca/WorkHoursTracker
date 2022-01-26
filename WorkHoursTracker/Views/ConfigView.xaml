@@ -67,14 +67,16 @@
             <TextBox HorizontalAlignment="Left"
                      TextWrapping="NoWrap"
                      Text="{Binding VisibilityIntervalInSeconds}"
-                     VerticalAlignment="Center" />
+                     VerticalAlignment="Center"
+                     TabIndex="3" />
             <Label Content="sec"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel DockPanel.Dock="Top">
             <CheckBox Content="Start with Windows"
-                      IsChecked="{Binding StartWithWindows}" />
+                      IsChecked="{Binding StartWithWindows}"
+                      TabIndex="4" />
         </StackPanel>
         <!-- Buttons -->
         <DockPanel HorizontalAlignment="Right"
@@ -88,7 +90,7 @@
                         HorizontalAlignment="Right"
                         Command="{Binding CancelCommand}"
                         CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
-                        TabIndex="4"
+                        TabIndex="6"
                         Width="50" />
                 <Button x:Name="saveButton"
                         Content="Save"
@@ -97,7 +99,8 @@
                         Command="{Binding SaveConfigCommand}"
                         CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
                         Width="50"
-                        Margin="10,0,0,0" />
+                        Margin="10,0,0,0"
+                        TabIndex="5" />
             </StackPanel>
         </DockPanel>
     </DockPanel>

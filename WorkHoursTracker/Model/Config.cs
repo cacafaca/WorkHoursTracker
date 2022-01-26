@@ -8,36 +8,29 @@ using System.Threading.Tasks;
 
 namespace ProCode.WorkHoursTracker.Model
 {
-    public class Config
+    public static class Config
     {
         #region Constants
         const string _winRegRunKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
         #endregion
 
         #region Fields
-        bool? _startWithWindows;
+        static bool? _startWithWindows;
         #endregion
 
         #region Constructors
-        public Config()
+        static Config()
         {
-            // Keep the old settings.
-            Properties.Settings.Default.Upgrade();
-            Properties.Settings.Default.Reload();
-
-            WorkHoursDirectory = Properties.Settings.Default.WorkHoursDirectory;
-            TimerIntervalInMinutes = Properties.Settings.Default.TimerIntervalInMinutes;
-            VisibilityIntervalInSeconds = Properties.Settings.Default.VisibilityIntervalInSeconds;
-
+            ReadSettingsFromRegistry();
             _startWithWindows = null;
         }
         #endregion
 
         #region Properties
-        public string WorkHoursDirectory { get; set; }
-        public uint TimerIntervalInMinutes { get; set; }
-        public uint VisibilityIntervalInSeconds { get; set; }
-        public bool StartWithWindowsFlag
+        public static string WorkHoursDirectory { get; set; }
+        public static uint TimerIntervalInMinutes { get; set; }
+        public static uint VisibilityIntervalInSeconds { get; set; }
+        public static bool StartWithWindowsFlag
         {
             get { return GetStartupFlag(); }
             set { _startWithWindows = value; }
@@ -45,7 +38,7 @@ namespace ProCode.WorkHoursTracker.Model
         /// <summary>
         /// Full path of the current file.
         /// </summary>
-        public string WorkHoursCurrentFilePath
+        public static string WorkHoursCurrentFilePath
         {
             get
             {
@@ -55,38 +48,50 @@ namespace ProCode.WorkHoursTracker.Model
         #endregion
 
         #region Methods
-        public void Save()
+        public static void Save()
         {
-            Properties.Settings.Default.WorkHoursDirectory = WorkHoursDirectory;
-            Properties.Settings.Default.TimerIntervalInMinutes = TimerIntervalInMinutes;
-            Properties.Settings.Default.VisibilityIntervalInSeconds = VisibilityIntervalInSeconds;
-
+            // Start with Windows.
             RegistryKey startUpRegKey = Registry.CurrentUser.OpenSubKey(_winRegRunKey, true);
-            if ((bool)_startWithWindows)
-                startUpRegKey.SetValue(GetAppName(), System.Environment.ProcessPath);
-            else
+            if (startUpRegKey != null)
             {
-                if (startUpRegKey.GetValue(GetAppName()) != null)
-                    startUpRegKey.DeleteValue(GetAppName());
+                if (_startWithWindows != null && (bool)_startWithWindows)
+                    startUpRegKey.SetValue(GetAppName(), Environment.ProcessPath);
+                else
+                {
+                    if (startUpRegKey.GetValue(GetAppName()) != null)
+                        startUpRegKey.DeleteValue(GetAppName());
+                }
+                startUpRegKey.Close();
             }
 
-            startUpRegKey.Close();
-
-            Properties.Settings.Default.Save();
+            // Application data.
+            RegistryKey appRegistrySettings = Registry.CurrentUser.OpenSubKey(GetAppRegistryPath(), true);
+            if (appRegistrySettings != null)
+            {
+                appRegistrySettings.SetValue(Properties.Settings.Default.WorkHoursDirectoryRegistryName, WorkHoursDirectory);
+                appRegistrySettings.SetValue(Properties.Settings.Default.TimerIntervalInMinutesRegistryName, TimerIntervalInMinutes, RegistryValueKind.DWord);
+                appRegistrySettings.SetValue(Properties.Settings.Default.VisibilityIntervalInSecondsRegistryName, VisibilityIntervalInSeconds, RegistryValueKind.DWord);
+                appRegistrySettings.Close();
+            }
         }
-        public string GetFileName(DateTime date)
+        /// <summary>
+        /// Returns file name with a certain pattern.
+        /// </summary>
+        /// <param name="date">Determines year and month.</param>
+        /// <returns></returns>
+        public static string GetFileName(DateTime date)
         {
             return $"Report {Environment.UserDomainName}_{Environment.UserName} {date.Year + date.Month.ToString("00")}.xlsx";
         }
-        public string GetWorkHoursFilePath(DateTime date)
+        public static string GetWorkHoursFilePath(DateTime date)
         {
             return Path.Combine(WorkHoursDirectory, GetFileName(date));
         }
-        public string GetAppName()
+        public static string GetAppName()
         {
             return System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
         }
-        private bool GetStartupFlag()
+        private static bool GetStartupFlag()
         {
             if (_startWithWindows == null)
             {
@@ -99,6 +104,33 @@ namespace ProCode.WorkHoursTracker.Model
                 startUpRegKey.Close();
             }
             return (bool)_startWithWindows;
+        }
+        private static string GetAppRegistryPath()
+        {
+            return $"SOFTWARE\\ProCode\\{GetAppName()}";
+        }
+        private static void ReadSettingsFromRegistry()
+        {
+            RegistryKey appRegistrySettings = Registry.CurrentUser.OpenSubKey(GetAppRegistryPath(), false);
+            if (appRegistrySettings != null)
+            {
+                WorkHoursDirectory = appRegistrySettings.GetValue(Properties.Settings.Default.WorkHoursDirectoryRegistryName, Properties.Settings.Default.WorkHoursDirectoryDefaultValue).ToString();
+                TimerIntervalInMinutes = Convert.ToUInt32(appRegistrySettings.GetValue(Properties.Settings.Default.TimerIntervalInMinutesRegistryName, Properties.Settings.Default.TimerIntervalInMinutesDefaultValue));
+                VisibilityIntervalInSeconds = Convert.ToUInt32(appRegistrySettings.GetValue(Properties.Settings.Default.VisibilityIntervalInSecondsRegistryName, Properties.Settings.Default.VisibilityIntervalInSecondsDefaultValue));
+                appRegistrySettings.Close();
+            }
+            else
+            {
+                appRegistrySettings = Registry.CurrentUser.CreateSubKey(GetAppRegistryPath(), true);
+                appRegistrySettings.SetValue(Properties.Settings.Default.WorkHoursDirectoryRegistryName, Properties.Settings.Default.WorkHoursDirectoryDefaultValue);
+                appRegistrySettings.SetValue(Properties.Settings.Default.TimerIntervalInMinutesRegistryName, Properties.Settings.Default.TimerIntervalInMinutesDefaultValue, RegistryValueKind.DWord);
+                appRegistrySettings.SetValue(Properties.Settings.Default.VisibilityIntervalInSecondsRegistryName, Properties.Settings.Default.VisibilityIntervalInSecondsDefaultValue, RegistryValueKind.DWord);
+                appRegistrySettings.Close();
+
+                WorkHoursDirectory = Properties.Settings.Default.WorkHoursDirectoryDefaultValue;
+                TimerIntervalInMinutes = Properties.Settings.Default.TimerIntervalInMinutesDefaultValue;
+                VisibilityIntervalInSeconds = Properties.Settings.Default.VisibilityIntervalInSecondsDefaultValue;
+            }
         }
         #endregion
     }
