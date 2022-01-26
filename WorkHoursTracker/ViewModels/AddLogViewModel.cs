@@ -11,8 +11,25 @@ namespace ProCode.WorkHoursTracker.ViewModels
 {
     public class AddLogViewModel : BaseViewModel
     {
+        #region Fields
         private string _log;
+        private System.Windows.Threading.DispatcherTimer _closeTimer;
+        private bool _isLoaded;
+        private string _originalLog = string.Empty;
+        #endregion
 
+        #region Constructors
+        public AddLogViewModel()
+        {
+            OpenConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
+            SaveLogCommand = new RelayCommand(SaveLogExecute, SaveLogCanExecute);
+            CancelLogCommand = new RelayCommand(CancelLogExecute, new Func<object, bool>((obj) => true));
+            StartCloseTimerCommand = new RelayCommand(StartCloseTimerExecute, new Func<object, bool>((obj) => true));
+            _isLoaded = false;
+        }
+        #endregion
+
+        #region Properties
         public string Log
         {
             get
@@ -21,12 +38,29 @@ namespace ProCode.WorkHoursTracker.ViewModels
             }
             set
             {
+                var oldLog = _log;
                 _log = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(SaveLogCanExecuteFlag));
+                if (_log != oldLog)
+                {
+                    OnPropertyChanged(nameof(SaveLogCanExecuteFlag));
+                    StopCloseTimer();
+                }
             }
         }
+        public IWindowFactory ConfigWindowFactory { get; set; }
+        public bool SaveLogCanExecuteFlag { get { return SaveLogCanExecute(null); } }
+        public ICommand OpenConfigCommand { get; set; }
+        public ICommand SaveLogCommand { get; set; }
+        public ICommand CancelLogCommand { get; set; }
+        public ICommand StartCloseTimerCommand { get; set; }
+        #endregion
 
+        #region Methods
+        private void StartCloseTimerExecute(object obj)
+        {
+            InitCloseTimer();
+        }
         private string ReadLog()
         {
             if (_isLoaded)
@@ -50,22 +84,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 }
             }
         }
-
-        private bool _isLoaded;
-        private string _originalLog = string.Empty;
-
-        public IWindowFactory ConfigWindowFactory { get; set; }
-
-        public AddLogViewModel()
-        {
-            OpenConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
-            SaveLogCommand = new RelayCommand(SaveLogExecute, SaveLogCanExecute);
-            CancelLogCommand = new RelayCommand(CancelLogExecute, new Func<object, bool>((obj) => true));
-            _isLoaded = false;
-        }
-
-        #region Config command
-        public ICommand OpenConfigCommand { get; set; }
         private void ConfigExecute(object sender)
         {
             if (ConfigWindowFactory != null)
@@ -74,10 +92,34 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 ConfigWindowFactory.ShowWindow();
             }
         }
+        private void InitCloseTimer()
+        {
+            _closeTimer = new System.Windows.Threading.DispatcherTimer();
+            _closeTimer.Tick += new EventHandler(OnTick);
+            _closeTimer.Interval = new TimeSpan(0, 0, (int)Properties.Settings.Default.VisibilityIntervalInSeconds);
+            _closeTimer.Start();
+            Trace.WriteLine("Close timer started.");
+        }
+        private void StopCloseTimer()
+        {
+            if (_closeTimer != null)
+            {
+                _closeTimer.Stop();
+                _closeTimer = null;
+            }
+        }
+        private void OnTick(object? sender, EventArgs e)
+        {
+            Trace.WriteLine("Close timer elapsed.");
+            StopCloseTimer();
+            if (DefaultWindowFactory != null)
+            {
+                DefaultWindowFactory.CloseWindow();
+            }
+        }
         #endregion
 
         #region Save commnad
-        public ICommand SaveLogCommand { get; set; }
         private void SaveLogExecute(object sender)
         {
             // Fire (saving) and forget.
@@ -108,12 +150,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
         {
             return _originalLog != (Log ?? string.Empty);
         }
-        #endregion
-
-        public bool SaveLogCanExecuteFlag { get { return SaveLogCanExecute(null); } }
-
-        #region Cancel command
-        public ICommand CancelLogCommand { get; set; }
         private void CancelLogExecute(object sender)
         {
             if (DefaultWindowFactory != null)

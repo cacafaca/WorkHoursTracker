@@ -20,13 +20,17 @@ namespace ProCode.WorkHoursTracker.Views
 
         public override void ShowWindow()
         {
-            _window.Left = Screen.PrimaryScreen.WorkingArea.Width - _window.Width - 10;
-            _window.Top = Screen.PrimaryScreen.WorkingArea.Height - _window.Height - 10;
-
-            _window.Left = 10;
-            _window.Top = 10;
-
+            // I wanted something special to do here, but turns out that I don't need it. So I leave it as is.
             base.ShowWindow();
+        }
+
+        public override void CreateWindow(object? creator = null)
+        {
+            base.CreateWindow(creator);
+            if (creator is App && _window.DataContext is ViewModels.AddLogViewModel)
+            {
+                ((ViewModels.AddLogViewModel)_window.DataContext).StartCloseTimerCommand.Execute(this);
+            }
         }
     }
 }

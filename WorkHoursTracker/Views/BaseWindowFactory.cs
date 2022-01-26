@@ -35,9 +35,12 @@ namespace ProCode.WorkHoursTracker.Views
         }
         #endregion
 
-        public virtual void CreateWindow()
+        public virtual void CreateWindow(object? creator = null)
         {
-            _window = (Window)Activator.CreateInstance(_windowType);
+            if (_windowType != null)
+            {
+                _window = (Window)Activator.CreateInstance(_windowType);
+            }
         }
 
         public virtual void ShowWindow()
@@ -53,12 +56,12 @@ namespace ProCode.WorkHoursTracker.Views
 
         public bool IsVisible()
         {
-            return _window.IsVisible;
+            return _window != null ? _window.IsVisible : false;
         }
 
         public bool IsCreated()
         {
-            return _window != null;
+            return _window != null && _window.IsLoaded;
         }
     }
 }

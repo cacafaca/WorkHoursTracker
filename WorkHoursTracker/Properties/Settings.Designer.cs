@@ -61,7 +61,7 @@ namespace ProCode.WorkHoursTracker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
         public uint VisibilityIntervalInSeconds {
             get {
                 return ((uint)(this["VisibilityIntervalInSeconds"]));

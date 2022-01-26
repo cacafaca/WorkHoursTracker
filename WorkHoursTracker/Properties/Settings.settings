@@ -12,7 +12,7 @@
       <Value Profile="(Default)">45</Value>
     </Setting>
     <Setting Name="VisibilityIntervalInSeconds" Type="System.UInt32" Scope="User">
-      <Value Profile="(Default)">10</Value>
+      <Value Profile="(Default)">5</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -36,7 +36,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             if (AddLogWindowFactory != null)
             {
                 if (!AddLogWindowFactory.IsCreated())
-                    AddLogWindowFactory.CreateWindow();
+                    AddLogWindowFactory.CreateWindow(obj);
                 if (!AddLogWindowFactory.IsVisible())
                     AddLogWindowFactory.ShowWindow();
             }
@@ -59,7 +59,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             {
                 if (!ConfigWindowFactory.IsCreated())
                     ConfigWindowFactory.CreateWindow();
-                if (ConfigWindowFactory.IsVisible())
+                if (!ConfigWindowFactory.IsVisible())
                     ConfigWindowFactory.ShowWindow();
             }
         }

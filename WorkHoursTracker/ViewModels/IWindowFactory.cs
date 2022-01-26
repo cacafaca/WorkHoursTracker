@@ -2,7 +2,7 @@
 {
     public interface IWindowFactory
     {
-        void CreateWindow();
+        void CreateWindow(object? creator = null);
         void ShowWindow();
         void CloseWindow();
         bool IsVisible();

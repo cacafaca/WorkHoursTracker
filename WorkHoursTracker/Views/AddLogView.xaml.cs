@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;
 
 namespace ProCode.WorkHoursTracker.Views
 {
@@ -27,8 +26,6 @@ namespace ProCode.WorkHoursTracker.Views
                 // Send a reference of type of config window. It can be open from a button.
                 ((ViewModels.AddLogViewModel)DataContext).ConfigWindowFactory = new BaseWindowFactory(typeof(ConfigView));
             }
-
-            //KeyDown += new KeyEventHandler(AddLogViewKeyDown);
         }
         #endregion
 
@@ -41,9 +38,9 @@ namespace ProCode.WorkHoursTracker.Views
 
             _shown = true;
 
+            // Your code here.
             Left = Screen.PrimaryScreen.WorkingArea.Width - Width - 10;
             Top = Screen.PrimaryScreen.WorkingArea.Height - Height - 10;
-            // Your code here.
         }
     }
 }

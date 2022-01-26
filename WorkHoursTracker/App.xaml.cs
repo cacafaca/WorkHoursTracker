@@ -2,7 +2,7 @@
 using System;
 using System.Windows;
 
-namespace Procode.WorkHoursTracker
+namespace ProCode.WorkHoursTracker
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -16,14 +16,14 @@ namespace Procode.WorkHoursTracker
         {
             base.OnStartup(e);
 
-            //create the notifyicon (it's a resource declared in NotifyIconResources.xaml
+            // Create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
             if (_notifyIcon != null && _notifyIcon.DataContext != null &&
                 _notifyIcon.DataContext is ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)
             {
                 // Set Log window type.
-                ((ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory =
-                    new ProCode.WorkHoursTracker.Views.AddLogWindowFactory(typeof(ProCode.WorkHoursTracker.Views.AddLogView));
+                ((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory =
+                    new Views.AddLogWindowFactory(typeof(Views.AddLogView));
 
                 // Set Config window type.
                 ((ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).ConfigWindowFactory =
@@ -51,9 +51,9 @@ namespace Procode.WorkHoursTracker
         private void OnTick(object? sender, EventArgs e)
         {
             if (_notifyIcon != null && _notifyIcon.DataContext != null &&
-                _notifyIcon.DataContext is ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)
+                _notifyIcon.DataContext is ViewModels.NotifyIconViewModel)
             {
-                (_notifyIcon.DataContext as ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel).AddLogCommand.Execute(this);
+                (_notifyIcon.DataContext as ViewModels.NotifyIconViewModel).AddLogCommand.Execute(this);
             }
         }
     }
