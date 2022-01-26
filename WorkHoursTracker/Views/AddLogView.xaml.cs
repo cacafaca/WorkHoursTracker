@@ -41,6 +41,8 @@ namespace ProCode.WorkHoursTracker.Views
             // Your code here.
             Left = Screen.PrimaryScreen.WorkingArea.Width - Width - 10;
             Top = Screen.PrimaryScreen.WorkingArea.Height - Height - 10;
-        }
+
+            logTextBox.Select(logTextBox.Text.Length, 0);
+        }        
     }
 }

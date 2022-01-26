@@ -27,6 +27,8 @@ namespace ProCode.WorkHoursTracker.Views
         public override void CreateWindow(object? creator = null)
         {
             base.CreateWindow(creator);
+            _window.ShowActivated = false;  // Prevent stealing focus from other apps.
+
             if (creator is App && _window.DataContext is ViewModels.AddLogViewModel)
             {
                 ((ViewModels.AddLogViewModel)_window.DataContext).StartCloseTimerCommand.Execute(this);
