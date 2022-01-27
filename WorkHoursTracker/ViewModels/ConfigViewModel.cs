@@ -6,7 +6,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
 {
     public class ConfigViewModel : BaseViewModel
     {
-        string _workHoursDirecoryOld;
         public string WorkHoursDirectory
         {
             get
@@ -15,33 +14,26 @@ namespace ProCode.WorkHoursTracker.ViewModels
             }
             set
             {
-                _workHoursDirecoryOld = Model.Config.WorkHoursDirectory;
                 Model.Config.WorkHoursDirectory = value;
                 OnPropertyChanged();
             }
         }
-
-        private uint _timerIntervalOld;
 
         public uint TimerIntervalInMinutes
         {
             get { return Model.Config.TimerIntervalInMinutes; }
             set
             {
-                _timerIntervalOld = Model.Config.TimerIntervalInMinutes;
                 Model.Config.TimerIntervalInMinutes = value;
                 OnPropertyChanged();
             }
         }
-
-        private uint _visibilityIntervalOld;
 
         public uint VisibilityIntervalInSeconds
         {
             get { return Model.Config.VisibilityIntervalInSeconds; }
             set
             {
-                _visibilityIntervalOld = Model.Config.VisibilityIntervalInSeconds;
                 Model.Config.VisibilityIntervalInSeconds = value;
                 OnPropertyChanged();
             }

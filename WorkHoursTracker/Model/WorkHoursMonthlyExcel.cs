@@ -58,6 +58,7 @@ namespace ProCode.WorkHoursTracker
                 if (File.Exists(_workHoursExcelFilePath))
                 {
                     excelApp = new Microsoft.Office.Interop.Excel.Application();
+                    Trace.WriteLine($"Opening Excel with file '{_workHoursExcelFilePath}' ...");
                     workbook = excelApp.Workbooks.Open(_workHoursExcelFilePath);
                     worksheet = workbook.Worksheets[1];    // Expecting data on first sheet, always. First sheet starts from 1, not 0!
 
@@ -89,6 +90,9 @@ namespace ProCode.WorkHoursTracker
                         if (ad == null) ad = new Services.ActiveDirectory();
                         _employee.Department = ad.Department;
                     }
+                    // Change worksheet name to be as user's first and last name.
+                    if (worksheet.Name == DefaultFirstAndLastName)
+                        worksheet.Name = _employee.FirstAndLastName;
 
                     _startDate = GetDateOnly(((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.StartDate.Row, WorkHoursExcelMap.StartDate.Column]).Value);
                     // Correct values.
@@ -266,7 +270,7 @@ namespace ProCode.WorkHoursTracker
                     {
                         ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.Time1InFirstRow.Row + day, WorkHoursExcelMap.Time1InFirstRow.Column]).Value = _workHours[day].Time1In.ToString();
                         ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TimeOut1FirstRow.Row + day, WorkHoursExcelMap.TimeOut1FirstRow.Column]).Value = _workHours[day].Time1Out.ToString();
-                        ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TaskFirstRow.Row + day, WorkHoursExcelMap.TaskFirstRow.Column]).Value = _workHours[day].Task;
+                        // ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.TaskFirstRow.Row + day, WorkHoursExcelMap.TaskFirstRow.Column]).Value = _workHours[day].Task;   // Task is locked.
                         ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.LogFirstRow.Row + day, WorkHoursExcelMap.LogFirstRow.Column]).Value = _workHours[day].Log;
                     }
                 excelApp.DisplayAlerts = false;
@@ -279,11 +283,11 @@ namespace ProCode.WorkHoursTracker
         }
 
         public string GetTemplateFileName()
-        {   
+        {
             return Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), Properties.Settings.Default.WorkHoursTemplateFileName);
         }
 
-        private void SafeCloseExcel(ref Microsoft.Office.Interop.Excel.Application? excelApp, ref Microsoft.Office.Interop.Excel.Workbook? workbook, 
+        private void SafeCloseExcel(ref Microsoft.Office.Interop.Excel.Application? excelApp, ref Microsoft.Office.Interop.Excel.Workbook? workbook,
             ref Microsoft.Office.Interop.Excel.Worksheet? worksheet)
         {
             if (worksheet != null)

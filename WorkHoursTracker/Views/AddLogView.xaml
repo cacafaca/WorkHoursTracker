@@ -48,7 +48,7 @@
                 VerticalAlignment="Bottom"
                 Command="{Binding SaveLogCommand}"
                 CommandParameter="{Binding ElementName=saveButton}"
-                ToolTip="Cancel changes." 
+                ToolTip="Save changes." 
                 IsEnabled="{Binding SaveLogCanExecuteFlag}"
                 TabIndex="1" />
         <Button x:Name="cancelButton"
@@ -62,7 +62,7 @@
                 VerticalAlignment="Bottom"
                 Command="{Binding CancelLogCommand}"
                 CommandParameter="{Binding ElementName=cancelButton}"
-                ToolTip="Save changes."
+                ToolTip="Cancel changes."
                 TabIndex="2" />
     </Grid>
 </Window>

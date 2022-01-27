@@ -9,8 +9,11 @@ namespace ProCode.WorkHoursTracker
     /// </summary>
     public partial class App : Application
     {
+        #region Fields
         private TaskbarIcon _notifyIcon;
         private System.Windows.Threading.DispatcherTimer _dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+        private EventHandler _onTickEventHandler;
+        #endregion
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -19,31 +22,42 @@ namespace ProCode.WorkHoursTracker
             // Create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
             if (_notifyIcon != null && _notifyIcon.DataContext != null &&
-                _notifyIcon.DataContext is ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)
+                _notifyIcon.DataContext is ViewModels.NotifyIconViewModel)
             {
                 // Set Log window type.
                 ((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory =
                     new Views.AddLogWindowFactory(typeof(Views.AddLogView));
 
                 // Set Config window type.
-                ((ProCode.WorkHoursTracker.ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).ConfigWindowFactory =
-                    new ProCode.WorkHoursTracker.Views.BaseWindowFactory(typeof(ProCode.WorkHoursTracker.Views.ConfigView));
+                ((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).ConfigWindowFactory =
+                    new Views.BaseWindowFactory(typeof(Views.ConfigView));
                 
                 InitTimer();
+                Model.Config.ConfigSaved += OnConfigSavedHndler;
             }
+        }
+
+        private void OnConfigSavedHndler(EventArgs e)
+        {
+            InitTimer();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            _notifyIcon.Dispose(); //the icon would clean up automatically, but this is cleaner
-            _dispatcherTimer.Stop();
+            _notifyIcon.Dispose();      // The icon would clean up automatically, but this is cleaner.
+            _dispatcherTimer.Stop();    // Stop the timer, in any case.
 
             base.OnExit(e);
         }
 
         private void InitTimer()
         {
-            _dispatcherTimer.Tick += new EventHandler(OnTick);
+            // Remove old handler in case timer needs to be initiated again.
+            if (_onTickEventHandler!= null)
+                _dispatcherTimer.Tick -= _onTickEventHandler;
+
+            _onTickEventHandler = new EventHandler(OnTick);
+            _dispatcherTimer.Tick += _onTickEventHandler;
             _dispatcherTimer.Interval = new TimeSpan(0, (int)Model.Config.TimerIntervalInMinutes, 0);
             _dispatcherTimer.Start();
         }

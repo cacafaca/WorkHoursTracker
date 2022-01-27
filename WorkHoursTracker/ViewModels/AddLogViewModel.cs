@@ -137,7 +137,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine(ex.Message);
+                    Trace.WriteLine(ex.StackTrace);
                 }
             });
 

@@ -26,6 +26,14 @@ namespace ProCode.WorkHoursTracker.Model
         }
         #endregion
 
+        #region Delegates
+        public delegate void ConfigSavedHandler(EventArgs e);
+        #endregion
+
+        #region Events
+        public static event ConfigSavedHandler ConfigSaved;
+        #endregion
+
         #region Properties
         public static string WorkHoursDirectory { get; set; }
         public static uint TimerIntervalInMinutes { get; set; }
@@ -73,7 +81,9 @@ namespace ProCode.WorkHoursTracker.Model
                 appRegistrySettings.SetValue(Properties.Settings.Default.VisibilityIntervalInSecondsRegistryName, VisibilityIntervalInSeconds, RegistryValueKind.DWord);
                 appRegistrySettings.Close();
             }
+            ConfigSaved?.Invoke(new EventArgs());
         }
+
         /// <summary>
         /// Returns file name with a certain pattern.
         /// </summary>
