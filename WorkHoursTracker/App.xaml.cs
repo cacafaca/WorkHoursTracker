@@ -31,7 +31,7 @@ namespace ProCode.WorkHoursTracker
                 // Set Config window type.
                 ((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).ConfigWindowFactory =
                     new Views.BaseWindowFactory(typeof(Views.ConfigView));
-                
+
                 InitTimer();
                 Model.Config.ConfigSaved += OnConfigSavedHndler;
             }
@@ -53,7 +53,7 @@ namespace ProCode.WorkHoursTracker
         private void InitTimer()
         {
             // Remove old handler in case timer needs to be initiated again.
-            if (_onTickEventHandler!= null)
+            if (_onTickEventHandler != null)
                 _dispatcherTimer.Tick -= _onTickEventHandler;
 
             _onTickEventHandler = new EventHandler(OnTick);
@@ -64,8 +64,8 @@ namespace ProCode.WorkHoursTracker
 
         private void OnTick(object? sender, EventArgs e)
         {
-            if (_notifyIcon != null && _notifyIcon.DataContext != null &&
-                _notifyIcon.DataContext is ViewModels.NotifyIconViewModel)
+            if (_notifyIcon != null && _notifyIcon.DataContext != null
+                && _notifyIcon.DataContext is ViewModels.NotifyIconViewModel)
             {
                 (_notifyIcon.DataContext as ViewModels.NotifyIconViewModel).AddLogCommand.Execute(this);
             }

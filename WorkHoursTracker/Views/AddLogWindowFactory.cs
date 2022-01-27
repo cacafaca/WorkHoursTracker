@@ -20,14 +20,17 @@ namespace ProCode.WorkHoursTracker.Views
 
         public override void ShowWindow()
         {
-            // I wanted something special to do here, but turns out that I don't need it. So I leave it as is.
+            _window.ShowActivated = false;  // Prevent stealing focus from other apps.
+            _window.Left = Screen.PrimaryScreen.WorkingArea.Width - _window.Width - 10;
+            _window.Top = Screen.PrimaryScreen.WorkingArea.Height - _window.Height - 10;
             base.ShowWindow();
+            _window.Topmost = true;
+            _window.Topmost = false;
         }
 
         public override void CreateWindow(object? creator = null)
         {
             base.CreateWindow(creator);
-            _window.ShowActivated = false;  // Prevent stealing focus from other apps.
 
             if (creator is App && _window.DataContext is ViewModels.AddLogViewModel)
             {

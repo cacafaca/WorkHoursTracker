@@ -128,16 +128,17 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 try
                 {
                     WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(Model.Config.WorkHoursCurrentFilePath);
-                    Trace.WriteLine($"Read '{whExcel.WorkHoursExcelFilePath}'.");
+                    Trace.WriteLine($"Read from '{whExcel.WorkHoursExcelFilePath}'.");
                     whExcel.Read();
                     whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log = Log;
                     Trace.WriteLine($"Log value: '{whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log}'.");
-                    Trace.WriteLine($"Write '{whExcel.WorkHoursExcelFilePath}'.");
+                    Trace.WriteLine($"Write to '{whExcel.WorkHoursExcelFilePath}' ...");
                     whExcel.Write();
                 }
                 catch (Exception ex)
                 {
                     Trace.WriteLine(ex.StackTrace);
+                    System.Windows.MessageBox.Show(ex.Message);
                 }
             });
 

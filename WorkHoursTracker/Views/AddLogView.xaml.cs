@@ -38,9 +38,7 @@ namespace ProCode.WorkHoursTracker.Views
 
             _shown = true;
 
-            // Your code here.
-            Left = Screen.PrimaryScreen.WorkingArea.Width - Width - 10;
-            Top = Screen.PrimaryScreen.WorkingArea.Height - Height - 10;
+            // TODO: Fade in effect.
 
             logTextBox.Select(logTextBox.Text.Length, 0);
         }        
