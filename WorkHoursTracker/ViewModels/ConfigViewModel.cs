@@ -5,6 +5,16 @@ namespace ProCode.WorkHoursTracker.ViewModels
 {
     public class ConfigViewModel : BaseViewModel
     {
+        #region Constructors
+        public ConfigViewModel()
+        {
+            SetWorkHoursDirCommand = new RelayCommand(SetWorkingDir, CanSetWorkingDir);
+            SaveConfigCommand = new RelayCommand(Save, CanSave);
+            CancelCommand = new RelayCommand(Cancel, CanCancel);
+        }
+        #endregion
+
+        #region Properties
         public string WorkHoursDirectory
         {
             get
@@ -17,7 +27,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public uint TimerIntervalInMinutes
         {
             get { return Model.Config.TimerIntervalInMinutes; }
@@ -27,23 +36,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public uint VisibilityIntervalInSeconds
-        {
-            get { return Model.Config.VisibilityIntervalInSeconds; }
-            set
-            {
-                Model.Config.VisibilityIntervalInSeconds = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ConfigViewModel()
-        {
-            SetWorkHoursDirCommand = new RelayCommand(SetWorkingDir, CanSetWorkingDir);
-            SaveConfigCommand = new RelayCommand(Save, CanSave);
-            CancelCommand = new RelayCommand(Cancel, CanCancel);
-        }
+        #endregion
 
         #region Direcotry dialog command
         public ICommand SetWorkHoursDirCommand { get; set; }

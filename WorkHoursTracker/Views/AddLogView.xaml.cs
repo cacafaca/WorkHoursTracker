@@ -18,7 +18,9 @@ namespace ProCode.WorkHoursTracker.Views
             InitializeComponent();
 
             Left = Screen.PrimaryScreen.WorkingArea.Width - Width - 10;
+            if (Left < 0) Left = 0;
             Top = Screen.PrimaryScreen.WorkingArea.Height - Height - 10;
+            if (Top < 0) Top = 0;
 
             if (DataContext is ViewModels.AddLogViewModel)
             {

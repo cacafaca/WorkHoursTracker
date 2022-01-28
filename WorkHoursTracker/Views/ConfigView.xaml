@@ -7,8 +7,8 @@
         xmlns:local="clr-namespace:ProCode.WorkHoursTracker.Views"
         mc:Ignorable="d"
         Title="Config"
-        Height="199"
-        Width="313"
+        Height="200"
+        Width="350"
         WindowStartupLocation="CenterScreen"
         MinHeight="200"
         MinWidth="250"
@@ -59,48 +59,46 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal"
-                    DockPanel.Dock="Top">
-            <Label Content="Visibility interval"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center" />
-            <TextBox HorizontalAlignment="Left"
-                     TextWrapping="NoWrap"
-                     Text="{Binding VisibilityIntervalInSeconds}"
-                     VerticalAlignment="Center"
-                     TabIndex="3" />
-            <Label Content="sec"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center" />
-        </StackPanel>
         <StackPanel DockPanel.Dock="Top">
             <CheckBox Content="Start with Windows"
                       IsChecked="{Binding StartWithWindows}"
                       TabIndex="4" />
         </StackPanel>
-        <!-- Buttons -->
+        <!-- Bottom Buttons -->
         <DockPanel HorizontalAlignment="Right"
                    Margin="0,5,0,0"
                    VerticalAlignment="Bottom"
                    LastChildFill="True">
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="cancelButton"
-                        Content="Cancel"
                         VerticalAlignment="Bottom"
                         HorizontalAlignment="Right"
                         Command="{Binding CancelCommand}"
                         CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
                         TabIndex="6"
-                        Width="50" />
+                        Width="60">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🗙"
+                                   Foreground="Red" />
+                        <TextBlock Text="Cancel"
+                                   Margin="5 0 5 0" />
+                    </StackPanel>
+                </Button>
                 <Button x:Name="saveButton"
-                        Content="Save"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Command="{Binding SaveConfigCommand}"
                         CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
-                        Width="50"
+                        Width="60"
                         Margin="10,0,0,0"
-                        TabIndex="5" />
+                        TabIndex="5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🗙"
+                                   Foreground="Green" />
+                        <TextBlock Text="Save"
+                                   Margin="5 0 5 0" />
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </DockPanel>
     </DockPanel>

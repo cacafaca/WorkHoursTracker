@@ -40,7 +40,6 @@ namespace ProCode.WorkHoursTracker.Model
         #region Properties
         public static string WorkHoursDirectory { get; set; }
         public static uint TimerIntervalInMinutes { get; set; }
-        public static uint VisibilityIntervalInSeconds { get; set; }
         public static bool StartWithWindowsFlag
         {
             get { return GetStartupFlag(); }
@@ -81,7 +80,6 @@ namespace ProCode.WorkHoursTracker.Model
             {
                 appRegistrySettings.SetValue(Properties.Settings.Default.WorkHoursDirectoryRegistryName, WorkHoursDirectory);
                 appRegistrySettings.SetValue(Properties.Settings.Default.TimerIntervalInMinutesRegistryName, TimerIntervalInMinutes, RegistryValueKind.DWord);
-                appRegistrySettings.SetValue(Properties.Settings.Default.VisibilityIntervalInSecondsRegistryName, VisibilityIntervalInSeconds, RegistryValueKind.DWord);
                 appRegistrySettings.Close();
             }
             ConfigSaved?.Invoke(new EventArgs());
@@ -129,7 +127,6 @@ namespace ProCode.WorkHoursTracker.Model
             {
                 WorkHoursDirectory = appRegistrySettings.GetValue(Properties.Settings.Default.WorkHoursDirectoryRegistryName, Properties.Settings.Default.WorkHoursDirectoryDefaultValue).ToString();
                 TimerIntervalInMinutes = Convert.ToUInt32(appRegistrySettings.GetValue(Properties.Settings.Default.TimerIntervalInMinutesRegistryName, Properties.Settings.Default.TimerIntervalInMinutesDefaultValue));
-                VisibilityIntervalInSeconds = Convert.ToUInt32(appRegistrySettings.GetValue(Properties.Settings.Default.VisibilityIntervalInSecondsRegistryName, Properties.Settings.Default.VisibilityIntervalInSecondsDefaultValue));
                 appRegistrySettings.Close();
             }
             else
@@ -142,7 +139,6 @@ namespace ProCode.WorkHoursTracker.Model
 
                 WorkHoursDirectory = Properties.Settings.Default.WorkHoursDirectoryDefaultValue;
                 TimerIntervalInMinutes = Properties.Settings.Default.TimerIntervalInMinutesDefaultValue;
-                VisibilityIntervalInSeconds = Properties.Settings.Default.VisibilityIntervalInSecondsDefaultValue;
             }
         }
         #endregion
