@@ -11,7 +11,6 @@
         WindowStyle="None"
         xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels"
         MouseLeftButtonDown="Grid_MouseLeftButtonDown"
-        
         ShowActivated="True">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
@@ -158,10 +157,9 @@
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Left"
                 Width="20"
-                Command="{Binding OpenConfigCommand}"
-                CommandParameter="{Binding ElementName=configButton}"
                 ToolTip="Open configuration window."
-                TabIndex="3" />
+                TabIndex="3"
+                Click="configButton_Click" />
         <Button x:Name="saveButton"
                 Content="✓"
                 FontWeight="Bold"

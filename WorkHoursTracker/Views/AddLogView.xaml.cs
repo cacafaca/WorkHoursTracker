@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Forms;
 
 namespace ProCode.WorkHoursTracker.Views
@@ -23,9 +22,6 @@ namespace ProCode.WorkHoursTracker.Views
 
             if (DataContext is ViewModels.AddLogViewModel)
             {
-                // Send a reference of type of config window. It can be open from a button.
-                ((ViewModels.AddLogViewModel)DataContext).ConfigWindowFactory = new BaseWindowFactory(typeof(ConfigView));
-
                 ((ViewModels.AddLogViewModel)DataContext).Closing += AddLogView_Closing;
             }
         }
@@ -50,5 +46,11 @@ namespace ProCode.WorkHoursTracker.Views
             }
         }
         #endregion
+
+        private void configButton_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigView cfgView = new ConfigView();
+            cfgView.ShowDialog();
+        }
     }
 }

@@ -16,7 +16,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #region Constructors
         public AddLogViewModel()
         {
-            OpenConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
             SaveLogCommand = new RelayCommand(SaveLogExecute, SaveLogCanExecute);
             CancelLogCommand = new RelayCommand(CancelLogExecute, new Func<object, bool>((obj) => true));
             _isLoaded = false;
@@ -49,9 +48,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
         public bool IsLoaded { get { return _isLoaded; } }
         public bool IsLoading { get { return !_isLoaded; } }
-        public IWindowFactory ConfigWindowFactory { get; set; }
         public bool SaveLogCanExecuteFlag { get { return SaveLogCanExecute(null); } }
-        public ICommand OpenConfigCommand { get; set; }
         public ICommand SaveLogCommand { get; set; }
         public ICommand CancelLogCommand { get; set; }
         #endregion
@@ -75,16 +72,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 {
                     Trace.WriteLine(ex.Message);
                 }
-        }
-        private void ConfigExecute(object sender)
-        {
-            if (ConfigWindowFactory != null)
-            {
-                if (!ConfigWindowFactory.IsCreated())
-                    ConfigWindowFactory.CreateWindow();
-                if (!ConfigWindowFactory.IsVisible())
-                    ConfigWindowFactory.ShowWindow();
-            }
         }
         private void SaveLogExecute(object sender)
         {
