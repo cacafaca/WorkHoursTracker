@@ -48,12 +48,6 @@ namespace ProCode.WorkHoursTracker.Views
             _window?.Show();
         }
 
-        public virtual void CloseWindow()
-        {
-            _window?.Close();
-            _window = null;
-        }
-
         public bool IsVisible()
         {
             return _window != null ? _window.IsVisible : false;

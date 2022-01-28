@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using System.Windows.Forms;
-using System.Windows;
 
 namespace ProCode.WorkHoursTracker.ViewModels
 {
@@ -71,7 +70,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         private void Save(object sender)
         {
             Model.Config.Save();
-            DefaultWindowFactory.CloseWindow();
+            InvokeClosingEvent();
         }
         private bool CanSave(object obj)
         {
@@ -83,8 +82,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public ICommand CancelCommand { get; set; }
         private void Cancel(object sender)
         {
-            if (sender is Window)
-                ((Window)sender).Close();
+            InvokeClosingEvent();
         }
         private bool CanCancel(object obj)
         {

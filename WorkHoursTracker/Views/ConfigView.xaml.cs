@@ -19,11 +19,22 @@ namespace ProCode.WorkHoursTracker.Views
     /// </summary>
     public partial class ConfigView : Window
     {
+        #region Constructors
         public ConfigView()
         {
             InitializeComponent();
-            if(DataContext is ViewModels.ConfigViewModel viewModel)
-                viewModel.DefaultWindowFactory = new BaseWindowFactory(this);
+            if (DataContext is ViewModels.ConfigViewModel viewModel)
+            {
+                viewModel.Closing += ViewModel_Closing;
+            }
         }
+        #endregion
+
+        #region Methods
+        private void ViewModel_Closing()
+        {
+            Close();
+        }
+        #endregion
     }
 }

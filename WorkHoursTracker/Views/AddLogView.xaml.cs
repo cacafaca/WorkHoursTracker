@@ -23,16 +23,20 @@ namespace ProCode.WorkHoursTracker.Views
 
             if (DataContext is ViewModels.AddLogViewModel)
             {
-                // Send a reference of type of itself.
-                ((ViewModels.AddLogViewModel)DataContext).DefaultWindowFactory = new BaseWindowFactory(this);
-
                 // Send a reference of type of config window. It can be open from a button.
                 ((ViewModels.AddLogViewModel)DataContext).ConfigWindowFactory = new BaseWindowFactory(typeof(ConfigView));
+
+                ((ViewModels.AddLogViewModel)DataContext).Closing += AddLogView_Closing;
             }
         }
+
         #endregion
 
         #region Methods
+        private void AddLogView_Closing()
+        {
+            Close();
+        }
         private void Grid_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             DragMove();     // Move window around the screen.
@@ -46,6 +50,5 @@ namespace ProCode.WorkHoursTracker.Views
             }
         }
         #endregion
-
     }
 }

@@ -10,7 +10,9 @@
         Width="223"
         WindowStyle="None"
         xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels"
-        MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+        MouseLeftButtonDown="Grid_MouseLeftButtonDown"
+        
+        ShowActivated="True">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
     </Window.Resources>
@@ -133,7 +135,7 @@
                          Height="8"
                          Margin="2,0,0,0" />
             </StackPanel>
-            <TextBox x:Name="logTextBox" 
+            <TextBox x:Name="logTextBox"
                      TextWrapping="Wrap"
                      Text="{Binding Log, UpdateSourceTrigger=PropertyChanged}"
                      TabIndex="0"

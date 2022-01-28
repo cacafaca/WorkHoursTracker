@@ -5,15 +5,24 @@ namespace ProCode.WorkHoursTracker.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        #region Delagates
+        public delegate void ClosingHandler();
+        #endregion
+
+        #region Events
         public event PropertyChangedEventHandler PropertyChanged;
+        public event ClosingHandler Closing;
+        #endregion
+
+        #region Methods
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        
-        /// <summary>
-        /// This should contain reference to corresponding view. 
-        /// </summary>
-        public IWindowFactory DefaultWindowFactory { get; set; }
+        protected void InvokeClosingEvent()
+        {
+            Closing?.Invoke();
+        }
+        #endregion
     }
 }

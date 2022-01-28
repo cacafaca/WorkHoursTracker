@@ -20,7 +20,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             SaveLogCommand = new RelayCommand(SaveLogExecute, SaveLogCanExecute);
             CancelLogCommand = new RelayCommand(CancelLogExecute, new Func<object, bool>((obj) => true));
             _isLoaded = false;
-            
+
             // This needs to be the last command.
             Task.Run(() =>
             {
@@ -80,8 +80,10 @@ namespace ProCode.WorkHoursTracker.ViewModels
         {
             if (ConfigWindowFactory != null)
             {
-                ConfigWindowFactory.CreateWindow();
-                ConfigWindowFactory.ShowWindow();
+                if (!ConfigWindowFactory.IsCreated())
+                    ConfigWindowFactory.CreateWindow();
+                if (!ConfigWindowFactory.IsVisible())
+                    ConfigWindowFactory.ShowWindow();
             }
         }
         private void SaveLogExecute(object sender)
@@ -106,10 +108,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 }
             });
 
-            if (DefaultWindowFactory != null)
-            {
-                DefaultWindowFactory.CloseWindow();
-            }
+            InvokeClosingEvent();
         }
         private bool SaveLogCanExecute(object obj)
         {
@@ -117,10 +116,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
         private void CancelLogExecute(object sender)
         {
-            if (DefaultWindowFactory != null)
-            {
-                DefaultWindowFactory.CloseWindow();
-            }
+            InvokeClosingEvent();
         }
         #endregion
     }
