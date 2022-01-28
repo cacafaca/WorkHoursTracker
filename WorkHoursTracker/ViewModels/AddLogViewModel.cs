@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -13,7 +9,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
     {
         #region Fields
         private string _log;
-        private System.Windows.Threading.DispatcherTimer _closeTimer;
         private bool _isLoaded;
         private string _originalLog = string.Empty;
         #endregion
@@ -24,8 +19,13 @@ namespace ProCode.WorkHoursTracker.ViewModels
             OpenConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
             SaveLogCommand = new RelayCommand(SaveLogExecute, SaveLogCanExecute);
             CancelLogCommand = new RelayCommand(CancelLogExecute, new Func<object, bool>((obj) => true));
-            StartCloseTimerCommand = new RelayCommand(StartCloseTimerExecute, new Func<object, bool>((obj) => true));
             _isLoaded = false;
+            
+            // This needs to be the last command.
+            Task.Run(() =>
+            {
+                ReadLog();
+            });
         }
         #endregion
 
@@ -34,55 +34,47 @@ namespace ProCode.WorkHoursTracker.ViewModels
         {
             get
             {
-                return ReadLog();
+                return _log;
             }
             set
             {
                 var oldLog = _log;
                 _log = value;
                 OnPropertyChanged();
-                if (_log != oldLog)
+                if (_log != oldLog)     // Allow Save button if Log value is changed.
                 {
                     OnPropertyChanged(nameof(SaveLogCanExecuteFlag));
-                    StopCloseTimer();
                 }
             }
         }
+        public bool IsLoaded { get { return _isLoaded; } }
+        public bool IsLoading { get { return !_isLoaded; } }
         public IWindowFactory ConfigWindowFactory { get; set; }
         public bool SaveLogCanExecuteFlag { get { return SaveLogCanExecute(null); } }
         public ICommand OpenConfigCommand { get; set; }
         public ICommand SaveLogCommand { get; set; }
         public ICommand CancelLogCommand { get; set; }
-        public ICommand StartCloseTimerCommand { get; set; }
         #endregion
 
         #region Methods
-        private void StartCloseTimerExecute(object obj)
+        private void ReadLog()
         {
-            InitCloseTimer();
-        }
-        private string ReadLog()
-        {
-            if (_isLoaded)
-            {
-                return _log;
-            }
-            else
-            {
+            if (!_isLoaded)
                 try
                 {
                     WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(Model.Config.WorkHoursCurrentFilePath);
                     whExcel.Read();
                     _isLoaded = true;
                     _originalLog = whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log ?? string.Empty;
-                    return _originalLog;
+                    _log = _originalLog;
+                    OnPropertyChanged(nameof(Log));
+                    OnPropertyChanged(nameof(IsLoaded));
+                    OnPropertyChanged(nameof(IsLoading));
                 }
                 catch (Exception ex)
                 {
                     Trace.WriteLine(ex.Message);
-                    return ex.Message;
                 }
-            }
         }
         private void ConfigExecute(object sender)
         {
@@ -92,34 +84,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 ConfigWindowFactory.ShowWindow();
             }
         }
-        private void InitCloseTimer()
-        {
-            _closeTimer = new System.Windows.Threading.DispatcherTimer();
-            _closeTimer.Tick += new EventHandler(OnTick);
-            _closeTimer.Interval = new TimeSpan(0, 0, (int)Model.Config.VisibilityIntervalInSeconds);
-            _closeTimer.Start();
-            Trace.WriteLine("Close timer started.");
-        }
-        private void StopCloseTimer()
-        {
-            if (_closeTimer != null)
-            {
-                _closeTimer.Stop();
-                _closeTimer = null;
-            }
-        }
-        private void OnTick(object? sender, EventArgs e)
-        {
-            Trace.WriteLine("Close timer elapsed.");
-            StopCloseTimer();
-            if (DefaultWindowFactory != null)
-            {
-                DefaultWindowFactory.CloseWindow();
-            }
-        }
-        #endregion
-
-        #region Save commnad
         private void SaveLogExecute(object sender)
         {
             // Fire (saving) and forget.

@@ -203,7 +203,7 @@ namespace ProCode.WorkHoursTracker
             }
             else
             {
-                throw new Exception($"File '{_workHoursExcelFilePath}' can't be open. Maybe is open in another app.");
+                throw new Exception($"File '{_workHoursExcelFilePath}' can't be open. Maybe it is open in another app.");
             }
         }
         public string GetTemplateFileName()

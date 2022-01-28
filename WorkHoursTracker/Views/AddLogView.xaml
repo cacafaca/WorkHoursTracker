@@ -9,23 +9,146 @@
         Height="111"
         Width="223"
         WindowStyle="None"
-        xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels">
+        xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels"
+        MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="boolToVis" />
+    </Window.Resources>
     <Window.DataContext>
         <vm:AddLogViewModel />
     </Window.DataContext>
-    <Grid FocusManager.FocusedElement="{Binding ElementName=logTextBox}">
-        <TextBox x:Name="logTextBox"
-                 TextWrapping="Wrap"
-                 Margin="10,10,10,35"
-                 Text="{Binding Log, UpdateSourceTrigger=PropertyChanged}"
-                 TabIndex="0">
-            <TextBox.InputBindings>
-                <KeyBinding Key="Enter"
-                            Command="{Binding SaveLogCommand}" />
-                <KeyBinding Key="Escape"
-                            Command="{Binding CancelLogCommand}" />
-            </TextBox.InputBindings>
-        </TextBox>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard Name="FormFadeIn">
+                    <DoubleAnimation Name="FormFadeInAnimation"
+                                     Storyboard.TargetProperty="(Window.Opacity)"
+                                     From="0.0"
+                                     To="1.0"
+                                     Duration="0:0:0.5"
+                                     AutoReverse="False"
+                                     RepeatBehavior="1x" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+    <Window.InputBindings>
+        <KeyBinding Key="Escape"
+                    Command="{Binding CancelLogCommand}" />
+    </Window.InputBindings>
+    <Grid>
+        <DockPanel Margin="10,10,10,35"
+                   LastChildFill="True"
+                   FocusManager.FocusedElement="{Binding ElementName=logTextBox}">
+            <StackPanel Orientation="Horizontal"
+                        Visibility="{Binding IsLoading, Converter={StaticResource boolToVis}}"
+                        DockPanel.Dock="Top"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="0 30 0 0">
+                <StackPanel.Triggers>
+                    <EventTrigger RoutedEvent="Rectangle.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard Name="waitingAnimation"
+                                        RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetName="Dot1"
+                                                 BeginTime="0:0:0.1"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="Dot2"
+                                                 BeginTime="0:0:0.2"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="Dot3"
+                                                 BeginTime="0:0:0.3"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="Dot4"
+                                                 BeginTime="0:0:0.4"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="Dot5"
+                                                 BeginTime="0:0:0.5"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="Dot6"
+                                                 BeginTime="0:0:0.6"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </StackPanel.Triggers>
+                <Ellipse Name="Dot1"
+                         Fill="Red"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8" />
+                <Ellipse Name="Dot2"
+                         Fill="Orange"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8"
+                         Margin="2,0,0,0" />
+                <Ellipse Name="Dot3"
+                         Fill="Yellow"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8"
+                         Margin="2,0,0,0" />
+                <Ellipse Name="Dot4"
+                         Fill="Green"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8"
+                         Margin="2,0,0,0" />
+                <Ellipse Name="Dot5"
+                         Fill="Blue"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8"
+                         Margin="2,0,0,0" />
+                <Ellipse Name="Dot6"
+                         Fill="Purple"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8"
+                         Margin="2,0,0,0" />
+            </StackPanel>
+            <TextBox x:Name="logTextBox" 
+                     TextWrapping="Wrap"
+                     Text="{Binding Log, UpdateSourceTrigger=PropertyChanged}"
+                     TabIndex="0"
+                     IsReadOnly="{Binding IsLoading}"
+                     Visibility="{Binding IsLoaded, Converter={StaticResource boolToVis}}"
+                     DockPanel.Dock="Top"
+                     TextChanged="logTextBox_TextChanged">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter"
+                                Command="{Binding SaveLogCommand}" />
+                    <KeyBinding Key="Escape"
+                                Command="{Binding CancelLogCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </DockPanel>
         <Button x:Name="configButton"
                 Content="⚙"
                 Margin="10,0,0,10"
@@ -38,7 +161,7 @@
                 ToolTip="Open configuration window."
                 TabIndex="3" />
         <Button x:Name="saveButton"
-                Content="✓"              
+                Content="✓"
                 FontWeight="Bold"
                 Foreground="ForestGreen"
                 Margin="0,0,10,10"
@@ -48,7 +171,7 @@
                 VerticalAlignment="Bottom"
                 Command="{Binding SaveLogCommand}"
                 CommandParameter="{Binding ElementName=saveButton}"
-                ToolTip="Save changes." 
+                ToolTip="Save changes."
                 IsEnabled="{Binding SaveLogCanExecuteFlag}"
                 TabIndex="1" />
         <Button x:Name="cancelButton"

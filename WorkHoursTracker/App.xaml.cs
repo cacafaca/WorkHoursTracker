@@ -15,31 +15,27 @@ namespace ProCode.WorkHoursTracker
         private EventHandler _onTickEventHandler;
         #endregion
 
+        #region Methods
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
             // Create the notifyicon (it's a resource declared in NotifyIconResources.xaml
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
-            if (_notifyIcon != null && _notifyIcon.DataContext != null &&
-                _notifyIcon.DataContext is ViewModels.NotifyIconViewModel)
+            if (_notifyIcon != null && _notifyIcon.DataContext != null && _notifyIcon.DataContext is ViewModels.NotifyIconViewModel)
             {
                 // Set Log window type.
                 ((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory =
-                    new Views.AddLogWindowFactory(typeof(Views.AddLogView));
+                    new Views.BaseWindowFactory(typeof(Views.AddLogView));
 
                 // Set Config window type.
                 ((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).ConfigWindowFactory =
                     new Views.BaseWindowFactory(typeof(Views.ConfigView));
 
-                InitTimer();
                 Model.Config.ConfigSaved += OnConfigSavedHndler;
+                _notifyIcon.TrayBalloonTipClicked += NotifyIcon_TrayBalloonTipClicked;
+                InitTimer();
             }
-        }
-
-        private void OnConfigSavedHndler(EventArgs e)
-        {
-            InitTimer();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -50,6 +46,16 @@ namespace ProCode.WorkHoursTracker
             base.OnExit(e);
         }
 
+        private void NotifyIcon_TrayBalloonTipClicked(object sender, RoutedEventArgs e)
+        {
+            (_notifyIcon.DataContext as ViewModels.NotifyIconViewModel).AddLogCommand.Execute(this);
+        }
+
+        private void OnConfigSavedHndler(EventArgs e)
+        {
+            InitTimer();
+        }
+
         private void InitTimer()
         {
             // Remove old handler in case timer needs to be initiated again.
@@ -58,7 +64,11 @@ namespace ProCode.WorkHoursTracker
 
             _onTickEventHandler = new EventHandler(OnTick);
             _dispatcherTimer.Tick += _onTickEventHandler;
+#if !DEBUG
             _dispatcherTimer.Interval = new TimeSpan(0, (int)Model.Config.TimerIntervalInMinutes, 0);
+#else
+            _dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
+#endif
             _dispatcherTimer.Start();
         }
 
@@ -67,8 +77,10 @@ namespace ProCode.WorkHoursTracker
             if (_notifyIcon != null && _notifyIcon.DataContext != null
                 && _notifyIcon.DataContext is ViewModels.NotifyIconViewModel)
             {
-                (_notifyIcon.DataContext as ViewModels.NotifyIconViewModel).AddLogCommand.Execute(this);
+                if (!((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory.IsCreated())
+                    _notifyIcon.ShowBalloonTip("Add work hours log.", $"What did you do last {Model.Config.TimerIntervalInMinutes} minute{new string('s', Convert.ToInt32(Math.Ceiling((double)(Model.Config.TimerIntervalInMinutes - 1) / (double)uint.MaxValue)))}?\nClick to add log.", BalloonIcon.Info);
             }
         }
+        #endregion
     }
 }

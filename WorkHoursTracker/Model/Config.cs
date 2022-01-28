@@ -31,6 +31,9 @@ namespace ProCode.WorkHoursTracker.Model
         #endregion
 
         #region Events
+        /// <summary>
+        /// Triggered when configuration is saved.
+        /// </summary>
         public static event ConfigSavedHandler ConfigSaved;
         #endregion
 
