@@ -74,11 +74,14 @@ namespace ProCode.WorkHoursTracker
 
         private void OnTick(object? sender, EventArgs e)
         {
-            if (_notifyIcon != null && _notifyIcon.DataContext != null
-                && _notifyIcon.DataContext is ViewModels.NotifyIconViewModel)
+            if (
+                !(DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday)   // Don't popup on weekends. Who works on weekends?!
+                && _notifyIcon != null && _notifyIcon.DataContext != null
+                && _notifyIcon.DataContext is ViewModels.NotifyIconViewModel
+                && !((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory.IsCreated()       // Don't popup if Add Lof windows is already open. It will annoy.
+                )
             {
-                if (!((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory.IsCreated())
-                    _notifyIcon.ShowBalloonTip("Add work hours log.", $"What did you do last {Model.Config.TimerIntervalInMinutes} minute{new string('s', Convert.ToInt32(Math.Ceiling((double)(Model.Config.TimerIntervalInMinutes - 1) / (double)uint.MaxValue)))}?\nClick to add log.", BalloonIcon.Info);
+                _notifyIcon.ShowBalloonTip("Add work hours log.", $"What did you do last {Model.Config.TimerIntervalInMinutes} minute{new string('s', Convert.ToInt32(Math.Ceiling((double)(Model.Config.TimerIntervalInMinutes - 1) / (double)uint.MaxValue)))}?\nClick to add log.", BalloonIcon.Info);
             }
         }
         #endregion
