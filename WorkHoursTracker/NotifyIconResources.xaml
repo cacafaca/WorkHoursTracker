@@ -13,8 +13,12 @@
                   Command="{Binding AddLogCommand}">
             <MenuItem.Icon>✎</MenuItem.Icon>
         </MenuItem>
-        <MenuItem Header="Show Work Hours"
-                  Command="{Binding ShowExcelCommand}">
+        <MenuItem Header="{Binding ShowCurrentWorkHoursDisplayName}"
+                  Command="{Binding ShowCurrentWorkHoursCommand}">
+            <MenuItem.Icon>👁</MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{Binding ShowPreviousWorkHoursDisplayName}"
+                  Command="{Binding ShowPreviousWorkHoursCommand}">
             <MenuItem.Icon>👁</MenuItem.Icon>
         </MenuItem>
         <MenuItem Header="Config"

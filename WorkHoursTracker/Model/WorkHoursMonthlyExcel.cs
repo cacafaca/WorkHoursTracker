@@ -74,7 +74,7 @@ namespace ProCode.WorkHoursTracker
                     if (_employee.EmployeeID == DefaultEmployeeId)
                         _employee.EmployeeID = Environment.UserName;
                     // Don't read AD unnecessary.
-                    Services.ActiveDirectory ad = null;
+                    Services.ActiveDirectory? ad = null;
                     if (_employee.FirstAndLastName == DefaultFirstAndLastName)
                     {
                         if (ad == null) ad = new Services.ActiveDirectory();

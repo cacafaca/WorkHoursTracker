@@ -5,13 +5,21 @@ namespace ProCode.WorkHoursTracker.ViewModels
 {
     public class NotifyIconViewModel : BaseViewModel
     {
+        #region Fields
+        string _showCurrentWorkHoursDisplayName;
+        string _showPreviousWorkHoursDisplayName;
+        #endregion
+
         #region Constructors
         public NotifyIconViewModel()
         {
             AddLogCommand = new RelayCommand(AddLogExecute, new Func<object, bool>((obj) => true));
             ConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
             ExitApplicationCommand = new RelayCommand(ExitApplicationExecute, new Func<object, bool>((obj) => true));
-            ShowExcelCommand = new RelayCommand(ShowExcelExecute, new Func<object, bool>((obj) => true));
+            ShowCurrentWorkHoursCommand = new RelayCommand(ShowCurrentWorkHoursExecute, new Func<object, bool>((obj) => true));
+            ShowPreviousWorkHoursCommand = new RelayCommand(ShowPreviousWorkHoursExecute, new Func<object, bool>((obj) => true));
+            ShowCurrentWorkHoursDisplayName = $"Show Work Hours ({DateTime.Today:MMM})";
+            ShowPreviousWorkHoursDisplayName = $"Show Work Hours ({DateTime.Today.AddMonths(-1):MMM})";
         }
         #endregion
 
@@ -19,11 +27,36 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public ICommand AddLogCommand { get; set; }
         public ICommand ConfigCommand { get; set; }
         public ICommand ExitApplicationCommand { get; set; }
-        public ICommand ShowExcelCommand { get; set; }
+        public ICommand ShowCurrentWorkHoursCommand { get; set; }
+        public ICommand ShowPreviousWorkHoursCommand { get; set; }
 
         public IWindowFactory AddLogWindowFactory { get; set; }
         public IWindowFactory ConfigWindowFactory { get; set; }
 
+        public string ShowCurrentWorkHoursDisplayName
+        {
+            get
+            {
+                return _showCurrentWorkHoursDisplayName;
+            }
+            set
+            {
+                _showCurrentWorkHoursDisplayName = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ShowPreviousWorkHoursDisplayName
+        {
+            get
+            {
+                return _showPreviousWorkHoursDisplayName;
+            }
+            set
+            {
+                _showPreviousWorkHoursDisplayName = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Methods
@@ -37,18 +70,20 @@ namespace ProCode.WorkHoursTracker.ViewModels
                     AddLogWindowFactory.ShowWindow();
             }
         }
-
-        private void ShowExcelExecute(object obj)
+        private void ShowCurrentWorkHoursExecute(object obj)
         {
-            WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(Model.Config.WorkHoursCurrentFilePath);
+            WorkHoursMonthlyExcel whExcel = new(Model.Config.WorkHoursCurrentFilePath);
             whExcel.Show();
         }
-
+        private void ShowPreviousWorkHoursExecute(object obj)
+        {
+            WorkHoursMonthlyExcel whExcel = new(Model.Config.WorkHoursPreviousFilePath);
+            whExcel.Show();
+        }
         private void ExitApplicationExecute(object obj)
         {
             System.Windows.Application.Current.Shutdown();
         }
-
         private void ConfigExecute(object obj)
         {
             if (ConfigWindowFactory != null)

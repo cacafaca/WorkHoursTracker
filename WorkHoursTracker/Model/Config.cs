@@ -46,13 +46,23 @@ namespace ProCode.WorkHoursTracker.Model
             set { _startWithWindows = value; }
         }
         /// <summary>
-        /// Full path of the current file.
+        /// Full path of the file for the current month.
         /// </summary>
         public static string WorkHoursCurrentFilePath
         {
             get
             {
                 return GetWorkHoursFilePath(DateTime.Now);
+            }
+        }
+        /// <summary>
+        /// Full path of the file for the previous month.
+        /// </summary>
+        public static string WorkHoursPreviousFilePath
+        {
+            get
+            {
+                return GetWorkHoursFilePath(DateTime.Today.AddMonths(-1));
             }
         }
         #endregion
@@ -106,13 +116,17 @@ namespace ProCode.WorkHoursTracker.Model
         {
             if (_startWithWindows == null)
             {
-                RegistryKey startUpRegKey = Registry.CurrentUser.OpenSubKey(_winRegRunKey, false);
+                RegistryKey? startUpRegKey = Registry.CurrentUser.OpenSubKey(_winRegRunKey, false);
                 if (startUpRegKey != null)
                 {
-                    object keyData = startUpRegKey.GetValue(GetAppName());
-                    _startWithWindows = keyData != null ? File.Exists(keyData.ToString()) : false;
+                    object? executablePath = startUpRegKey.GetValue(GetAppName());
+                    _startWithWindows = executablePath != null ? File.Exists(executablePath.ToString()) : false;
+                    startUpRegKey.Close();
                 }
-                startUpRegKey.Close();
+                else
+                {
+                    _startWithWindows = false;
+                }
             }
             return (bool)_startWithWindows;
         }
