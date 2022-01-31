@@ -187,7 +187,7 @@ namespace ProCode.WorkHoursTracker.Model
         }
         private static void ReadSettingsFromRegistry()
         {
-            RegistryKey appRegistrySettings = Registry.CurrentUser.OpenSubKey(GetAppRegistryPath(), true);
+            RegistryKey appRegistrySettings = Registry.CurrentUser.CreateSubKey(GetAppRegistryPath(), true);
             if (appRegistrySettings != null)
             {
                 foreach (var regProp in GetRegistryProperties())
