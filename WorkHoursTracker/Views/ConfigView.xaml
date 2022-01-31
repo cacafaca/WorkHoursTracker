@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:ProCode.WorkHoursTracker.Views"
         mc:Ignorable="d"
         Title="Config"
-        Height="200"
+        Height="293"
         Width="350"
         WindowStartupLocation="CenterScreen"
         MinHeight="200"
@@ -64,6 +64,18 @@
                       IsChecked="{Binding StartWithWindows}"
                       TabIndex="4" />
         </StackPanel>
+        <DataGrid DockPanel.Dock="Top"
+                  ItemsSource="{Binding Parameters, Mode=TwoWay}"
+                  AutoGenerateColumns="False"
+                  CanUserDeleteRows="False"
+                  CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Parameter"
+                                    Binding="{Binding Description, Mode=OneWay}" />
+                <DataGridTextColumn Header="Values"
+                                    Binding="{Binding Value, Mode=TwoWay}" />
+            </DataGrid.Columns>
+        </DataGrid>
         <!-- Bottom Buttons -->
         <DockPanel HorizontalAlignment="Right"
                    Margin="0,5,0,0"
