@@ -42,6 +42,15 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 OnPropertyChanged();
             }
         }
+        public int RemindBeforeWorkHoursEndInMinutes
+        {
+            get { return Model.Config.RemindBeforeWorkHoursEndInMinutes; }
+            set
+            {
+                Model.Config.RemindBeforeWorkHoursEndInMinutes = value;
+                OnPropertyChanged();
+            }
+        }
         public bool StartWithWindows
         {
             get { return Model.Config.StartWithWindowsFlag; }

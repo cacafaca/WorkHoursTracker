@@ -11,8 +11,10 @@ namespace ProCode.WorkHoursTracker
     {
         #region Fields
         private TaskbarIcon _notifyIcon;
-        private System.Windows.Threading.DispatcherTimer _dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+        private System.Windows.Threading.DispatcherTimer _repeatingTimer = new System.Windows.Threading.DispatcherTimer();
+        private System.Windows.Threading.DispatcherTimer _beforeEndTimer = new System.Windows.Threading.DispatcherTimer();
         private EventHandler _onTickEventHandler;
+        private EventHandler _onBeforeEndHandler;
         #endregion
 
         #region Methods
@@ -34,14 +36,15 @@ namespace ProCode.WorkHoursTracker
 
                 Model.Config.ConfigSaved += OnConfigSavedHndler;
                 _notifyIcon.TrayBalloonTipClicked += NotifyIcon_TrayBalloonTipClicked;
-                InitTimer();
+                InitTimers();
             }
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
             _notifyIcon.Dispose();      // The icon would clean up automatically, but this is cleaner.
-            _dispatcherTimer.Stop();    // Stop the timer, in any case.
+            _repeatingTimer.Stop();    // Stop the timer, in any case.
+            _beforeEndTimer.Stop();
 
             base.OnExit(e);
         }
@@ -53,35 +56,53 @@ namespace ProCode.WorkHoursTracker
 
         private void OnConfigSavedHndler(EventArgs e)
         {
-            InitTimer();
+            InitTimers();
         }
 
-        private void InitTimer()
+        private void InitTimers()
         {
-            // Remove old handler in case timer needs to be initiated again.
+            // Regular timer.
             if (_onTickEventHandler != null)
-                _dispatcherTimer.Tick -= _onTickEventHandler;
+                _repeatingTimer.Tick -= _onTickEventHandler;       // Remove old handler, to keep clean.
+            _onTickEventHandler = new EventHandler(OnTickNotify);
+            _repeatingTimer.Tick += _onTickEventHandler;
 
-            _onTickEventHandler = new EventHandler(OnTick);
-            _dispatcherTimer.Tick += _onTickEventHandler;
 #if !DEBUG
-            _dispatcherTimer.Interval = new TimeSpan(0, (int)Model.Config.TimerIntervalInMinutes, 0);
+            _repeatingTimer.Interval = new TimeSpan(0, (int)Model.Config.TimerIntervalInMinutes, 0);
 #else
-            _dispatcherTimer.Interval = new TimeSpan(0, 0, 15);
+            _repeatingTimer.Interval = new TimeSpan(0, 0, 15);
 #endif
-            _dispatcherTimer.Start();
+            InitBeforeEndTimer();
+            _repeatingTimer.Start();
+            _beforeEndTimer.Start();
         }
 
-        private void OnTick(object? sender, EventArgs e)
+        private void InitBeforeEndTimer()
         {
-            if (
-                !(DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday)   // Don't popup on weekends. Who works on weekends?!
+            // Before end timer.
+            if (_onBeforeEndHandler != null)
+                _beforeEndTimer.Tick -= _onBeforeEndHandler;        // Remove old handler, to keep clean.
+            _onBeforeEndHandler = new EventHandler(OnTickNotify);
+            _beforeEndTimer.Tick += _onBeforeEndHandler;
+
+            _beforeEndTimer.Interval = Model.Config.WorkHourEndAsDateTime.AddMinutes(-Model.Config.RemindBeforeWorkHoursEndInMinutes)
+                .AddDays(Convert.ToInt32(Model.Config.WorkHourEndAsDateTime.AddMinutes(-Model.Config.RemindBeforeWorkHoursEndInMinutes) < DateTime.Now)) - DateTime.Now;
+        }
+
+        private bool CanTriggerExecution()
+        {
+            return !(DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday)   // Don't popup on weekends. Who works on weekends?!
                 && DateTime.ParseExact(Model.Config.WorkHourStart, "HH:mm", System.Globalization.CultureInfo.InvariantCulture) <= DateTime.Now
                 && DateTime.Now <= DateTime.ParseExact(Model.Config.WorkHourEnd, "HH:mm", System.Globalization.CultureInfo.InvariantCulture)
                 && _notifyIcon != null && _notifyIcon.DataContext != null
                 && _notifyIcon.DataContext is ViewModels.NotifyIconViewModel
-                && !((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory.IsCreated()       // Don't popup if Add Lof windows is already open. It will annoy.
-                )
+                && !((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory.IsCreated();          // Don't popup if Add Lof windows is already open. It will annoy.
+
+        }
+        private void OnTickNotify(object? sender, EventArgs e)
+        {
+            InitBeforeEndTimer();
+            if (CanTriggerExecution())
             {
                 _notifyIcon.ShowBalloonTip("Add work hours log.", $"What did you do last {Model.Config.TimerIntervalInMinutes} minute{new string('s', Convert.ToInt32(Math.Ceiling((double)(Model.Config.TimerIntervalInMinutes - 1) / (double)uint.MaxValue)))}?\nClick to add log.", BalloonIcon.Info);
             }

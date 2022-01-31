@@ -52,10 +52,21 @@ namespace ProCode.WorkHoursTracker.Model
         [RegistryValue("17:00")]
         [Description("Don't remind after")]
         public static string WorkHourEnd { get; set; }
+        [RegistryValue(15)]
+        [Description("Remind before end (min)")]
+        public static int RemindBeforeWorkHoursEndInMinutes { get; set; }
         public static bool StartWithWindowsFlag
         {
             get { return GetStartupFlag(); }
             set { _startWithWindows = value; }
+        }
+        public static DateTime WorkHourStartAsDateTime
+        {
+            get { return DateTime.ParseExact(WorkHourStart, "HH:mm", System.Globalization.CultureInfo.InvariantCulture); }
+        }
+        public static DateTime WorkHourEndAsDateTime
+        {
+            get { return DateTime.ParseExact(WorkHourEnd, "HH:mm", System.Globalization.CultureInfo.InvariantCulture); }
         }
         /// <summary>
         /// Full path of the file for the current month.
@@ -149,7 +160,7 @@ namespace ProCode.WorkHoursTracker.Model
             var prop = typeof(Config).GetProperty(registryProperty.Name);
             if (prop != null)
             {
-                switch(Type.GetTypeCode(prop.PropertyType))
+                switch (Type.GetTypeCode(prop.PropertyType))
                 {
                     case TypeCode.String:
                         prop.SetValue(prop, registryProperty.Value);
@@ -158,9 +169,9 @@ namespace ProCode.WorkHoursTracker.Model
                         prop.SetValue(prop, Convert.ToInt32(registryProperty.Value));
                         break;
                 }
-                
+
             }
-                
+
         }
 
         private static bool GetStartupFlag()

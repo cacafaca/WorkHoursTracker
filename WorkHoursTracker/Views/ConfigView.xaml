@@ -10,7 +10,7 @@
         Height="84"
         Width="350"
         WindowStartupLocation="CenterScreen"
-        MinHeight="220"
+        MinHeight="240"
         MinWidth="250"
         xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels">
     <Window.DataContext>
