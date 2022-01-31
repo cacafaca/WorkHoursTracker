@@ -13,10 +13,13 @@ namespace ProCode.WorkHoursTracker.ViewModels
         Func<object, bool> _canExecute;
 
 
-        public RelayCommand(Action<object> execute, Func<object, bool> canExecute)
+        public RelayCommand(Action<object> execute, Func<object, bool>? canExecute = null)
         {
             _execute = execute;
-            _canExecute = canExecute;
+            if (canExecute != null)
+                _canExecute = canExecute;
+            else
+                _canExecute = new Func<object, bool>((obj) => true);
         }
 
         public bool CanExecute(object parameter)

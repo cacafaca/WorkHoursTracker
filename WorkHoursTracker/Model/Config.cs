@@ -141,9 +141,7 @@ namespace ProCode.WorkHoursTracker.Model
         {
             foreach (var regValue in registryProperties)
             {
-                var prop = typeof(Config).GetProperty(regValue.Name);
-                if (prop != null)
-                    prop.SetValue(prop, regValue.Value);
+                SetRegistryProperty(regValue);
             }
         }
         internal static void SetRegistryProperty(RegistryProperty registryProperty)

@@ -17,7 +17,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public AddLogViewModel()
         {
             SaveLogCommand = new RelayCommand(SaveLogExecute, SaveLogCanExecute);
-            CancelLogCommand = new RelayCommand(CancelLogExecute, new Func<object, bool>((obj) => true));
+            CancelLogCommand = new RelayCommand(CancelLogExecute);
             _isLoaded = false;
 
             // This needs to be the last command.

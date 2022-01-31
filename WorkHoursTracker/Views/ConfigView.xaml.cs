@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProCode.WorkHoursTracker.Views
 {
@@ -23,11 +12,16 @@ namespace ProCode.WorkHoursTracker.Views
         public ConfigView()
         {
             InitializeComponent();
-            if (DataContext is ViewModels.ConfigViewModel viewModel)
+            if (DataContext is ViewModels.ConfigViewModel configViewModel)
             {
-                viewModel.Closing += ViewModel_Closing;
+                configViewModel.Closing += ViewModel_Closing;
+                foreach (var param in configViewModel.Parameters)
+                {
+                    param.PickTimeEvent += Param_PickTimeEvent; ;
+                }
             }
         }
+
         #endregion
 
         #region Methods
@@ -35,6 +29,11 @@ namespace ProCode.WorkHoursTracker.Views
         {
             Close();
         }
+        private void Param_PickTimeEvent(ref TimeOnly time)
+        {
+            MessageBox.Show("Only in paid version.");
+        }
+
         #endregion
     }
 }

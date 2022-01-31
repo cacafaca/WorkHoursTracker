@@ -1,6 +1,4 @@
 ﻿using System.Windows.Input;
-using System.Windows.Forms;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -8,12 +6,17 @@ namespace ProCode.WorkHoursTracker.ViewModels
 {
     public class ConfigViewModel : BaseViewModel
     {
+        #region Fields
+        ObservableCollection<RegistryPropertyViewModel> _parameters;
+        #endregion
+
         #region Constructors
         public ConfigViewModel()
         {
-            SetWorkHoursDirCommand = new RelayCommand(SetWorkingDir, CanSetWorkingDir);
             SaveConfigCommand = new RelayCommand(Save, CanSave);
-            CancelCommand = new RelayCommand(Cancel, CanCancel);
+            CancelCommand = new RelayCommand(Cancel);
+            _parameters = new ObservableCollection<RegistryPropertyViewModel>();
+            PopulateParameters();
         }
         #endregion
 
@@ -48,58 +51,28 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 OnPropertyChanged();
             }
         }
-        public ICommand SetWorkHoursDirCommand { get; set; }
         public ICommand SaveConfigCommand { get; set; }
         public ICommand CancelCommand { get; set; }
         public ObservableCollection<RegistryPropertyViewModel> Parameters
         {
-            get
-            {
-                ObservableCollection<RegistryPropertyViewModel> parameters = new();
-                foreach (var regProp in Model.Config.GetRegistryProperties())
-                {
-                    RegistryPropertyViewModel regPropViewModel = new()
-                    {
-                        Name = regProp.Name,
-                        Value = regProp.Value,
-                        Description = regProp.Description
-                    };
-                    regPropViewModel.PropertyChanged += RegPropViewModel_PropertyChanged;
-                    parameters.Add(regPropViewModel);
-                }
-                return parameters;
-            }
+            get { return _parameters; }
             set
             {
-                Model.Config.SetRegistryProperties(value
-                    .Select(x => new Model.RegistryProperty
-                    {
-                        Name = x.Name,
-                        Description = x.Description,
-                        Value = x.Value
-                    }).ToList());
+                _parameters = value;
                 OnPropertyChanged();
             }
         }
         #endregion
 
         #region Methods
-        private void SetWorkingDir(object obj)
-        {
-            using (var dialog = new FolderBrowserDialog())
-            {
-                dialog.InitialDirectory = WorkHoursDirectory;
-                DialogResult result = dialog.ShowDialog();
-                if (result == DialogResult.OK)
-                    WorkHoursDirectory = dialog.SelectedPath;
-            }
-        }
-        private bool CanSetWorkingDir(object obj)
-        {
-            return true;
-        }
         private void Save(object sender)
         {
+            Model.Config.SetRegistryProperties(_parameters.Select(x => new Model.RegistryProperty
+            {
+                Name = x.Name,
+                Description = x.Description,
+                Value = x.Value
+            }).ToList());
             Model.Config.Save();
             InvokeClosingEvent();
         }
@@ -111,22 +84,32 @@ namespace ProCode.WorkHoursTracker.ViewModels
         {
             InvokeClosingEvent();
         }
-        private bool CanCancel(object obj)
+        private void PopulateParameters()
         {
-            return true;
-        }
-        private void RegPropViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (sender is RegistryPropertyViewModel propertyViewModel)
-                Model.Config.SetRegistryProperty(new Model.RegistryProperty
+            _parameters.Clear();
+            foreach (var regProp in Model.Config.GetRegistryProperties())
+            {
+                RegistryPropertyViewModel regPropViewModel = new()
                 {
-                    Name = propertyViewModel.Name,
-                    Description = propertyViewModel.Description,
-                    Value = propertyViewModel.Value
-                });
+                    Name = regProp.Name,
+                    Value = regProp.Value,
+                    Description = regProp.Description,
+                };
+
+                // Special case.
+                switch (regPropViewModel.Name)
+                {
+                    case nameof(Model.Config.WorkHoursDirectory):
+                        regPropViewModel.ButtonText = "📁";
+                        break;
+                    case nameof(Model.Config.WorkHourStart):
+                    case nameof(Model.Config.WorkHourEnd):
+                        regPropViewModel.ButtonText = "⏰";
+                        break;
+                }
+                _parameters.Add(regPropViewModel);
+            }
         }
         #endregion
-
-
     }
 }
