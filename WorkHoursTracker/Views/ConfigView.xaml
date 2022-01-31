@@ -7,58 +7,57 @@
         xmlns:local="clr-namespace:ProCode.WorkHoursTracker.Views"
         mc:Ignorable="d"
         Title="Config"
-        Height="200"
+        Height="84"
         Width="350"
         WindowStartupLocation="CenterScreen"
-        MinHeight="200"
+        MinHeight="220"
         MinWidth="250"
         xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels">
     <Window.DataContext>
         <vm:ConfigViewModel />
     </Window.DataContext>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="boolToVis" />
+    </Window.Resources>
     <DockPanel LastChildFill="True"
                Margin="5">
-        <Label Content="Directory with work hours files:"
-               HorizontalAlignment="Stretch"
-               DockPanel.Dock="Top" />
-        <Grid DockPanel.Dock="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <TextBox x:Name="workHoursDirectoryTextBox"
-                     TextWrapping="NoWrap"
-                     Text="{Binding WorkHoursDirectory}"
-                     TabIndex="0"
-                     MinWidth="190"
-                     Grid.Column="0"
-                     Margin="0,0,35,0"
-                     Height="20"
-                     VerticalAlignment="Top" />
-            <Button x:Name="pickWorkHoursDirectoryButton"
-                    Content="&gt;&gt;&gt;"
-                    Command="{Binding SetWorkHoursDirCommand}"
-                    TabIndex="1"
-                    DockPanel.Dock="Right"
-                    Height="20"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Width="30" />
-        </Grid>
-        <StackPanel Orientation="Horizontal"
-                    DockPanel.Dock="Top">
-            <Label Content="Appearance interval"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center" />
-            <TextBox x:Name="apperianceIntervalTextBox"
-                     HorizontalAlignment="Left"
-                     TextWrapping="NoWrap"
-                     VerticalAlignment="Center"
-                     Text="{Binding TimerIntervalInMinutes}"
-                     TabIndex="2" />
-            <Label Content="min"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center" />
-        </StackPanel>
+        <!-- Parameters -->
+        <DataGrid DockPanel.Dock="Top"
+                  ItemsSource="{Binding Parameters, Mode=TwoWay}"
+                  AutoGenerateColumns="False"
+                  CanUserDeleteRows="False"
+                  CanUserAddRows="False">
+            <DataGrid.Resources>
+                <DataTemplate x:Key="valuesTemplate">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0"
+                                 Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 HorizontalContentAlignment="Stretch"
+                                 BorderThickness="0" />
+                        <Button Grid.Column="1"
+                                Content="{Binding ButtonText}"
+                                Visibility="{Binding ButtonVisible, Converter={StaticResource boolToVis}}"
+                                HorizontalAlignment="Right" 
+                                Command="{Binding SelectValueCommand}"/>
+                    </Grid>
+                </DataTemplate>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Parameter"
+                                    Binding="{Binding Description, Mode=OneWay}" />
+                <!--
+                <DataGridTextColumn Header="Values"
+                                    Binding="{Binding Value, Mode=TwoWay}" />
+                -->
+                <DataGridTemplateColumn Header="test"
+                                        CellTemplate="{StaticResource valuesTemplate}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <!-- Start with windows -->
         <StackPanel DockPanel.Dock="Top">
             <CheckBox Content="Start with Windows"
                       IsChecked="{Binding StartWithWindows}"
@@ -69,7 +68,8 @@
                    Margin="0,5,0,0"
                    VerticalAlignment="Bottom"
                    LastChildFill="True">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal"
+                        MinHeight="20">
                 <Button x:Name="cancelButton"
                         VerticalAlignment="Bottom"
                         HorizontalAlignment="Right"
@@ -93,7 +93,7 @@
                         Margin="10,0,0,0"
                         TabIndex="5">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="🗙"
+                        <TextBlock Text="✓"
                                    Foreground="Green" />
                         <TextBlock Text="Save"
                                    Margin="5 0 5 0" />

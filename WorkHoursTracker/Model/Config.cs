@@ -1,6 +1,8 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,8 +40,18 @@ namespace ProCode.WorkHoursTracker.Model
         #endregion
 
         #region Properties
+        [RegistryValue("Please enter work hours directory...")]
+        [Description("Work hours directory")]
         public static string WorkHoursDirectory { get; set; }
-        public static uint TimerIntervalInMinutes { get; set; }
+        [RegistryValue(45)]
+        [Description("Remind interval (minutes)")]
+        public static int TimerIntervalInMinutes { get; set; }
+        [RegistryValue("09:00")]
+        [Description("Don't remind before")]
+        public static string WorkHourStart { get; set; }
+        [RegistryValue("17:00")]
+        [Description("Don't remind after")]
+        public static string WorkHourEnd { get; set; }
         public static bool StartWithWindowsFlag
         {
             get { return GetStartupFlag(); }
@@ -55,6 +67,7 @@ namespace ProCode.WorkHoursTracker.Model
                 return GetWorkHoursFilePath(DateTime.Now);
             }
         }
+
         /// <summary>
         /// Full path of the file for the previous month.
         /// </summary>
@@ -88,13 +101,25 @@ namespace ProCode.WorkHoursTracker.Model
             RegistryKey appRegistrySettings = Registry.CurrentUser.OpenSubKey(GetAppRegistryPath(), true);
             if (appRegistrySettings != null)
             {
-                appRegistrySettings.SetValue(Properties.Settings.Default.WorkHoursDirectoryRegistryName, WorkHoursDirectory);
-                appRegistrySettings.SetValue(Properties.Settings.Default.TimerIntervalInMinutesRegistryName, TimerIntervalInMinutes, RegistryValueKind.DWord);
+                foreach (var regProp in GetRegistryProperties())
+                {
+                    appRegistrySettings.SetValue(regProp.Name, regProp.Value);
+                }
                 appRegistrySettings.Close();
             }
             ConfigSaved?.Invoke(new EventArgs());
         }
-
+        public static List<RegistryProperty> GetRegistryProperties()
+        {
+            return typeof(Config).GetProperties()
+                .Where(p => p.CustomAttributes.Any(ca => ca.AttributeType.FullName == typeof(RegistryValueAttribute).FullName))
+                .Select(propInfo => new RegistryProperty
+                {
+                    Name = propInfo.Name,
+                    Description = ((DescriptionAttribute)Attribute.GetCustomAttribute(propInfo, typeof(DescriptionAttribute))).Description,
+                    Value = propInfo.GetValue(propInfo.Name)
+                }).ToList();
+        }
         /// <summary>
         /// Returns file name with a certain pattern.
         /// </summary>
@@ -112,6 +137,32 @@ namespace ProCode.WorkHoursTracker.Model
         {
             return System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
         }
+        internal static void SetRegistryProperties(List<RegistryProperty> registryProperties)
+        {
+            foreach (var regValue in registryProperties)
+            {
+                SetRegistryProperty(regValue);
+            }
+        }
+        internal static void SetRegistryProperty(RegistryProperty registryProperty)
+        {
+            var prop = typeof(Config).GetProperty(registryProperty.Name);
+            if (prop != null)
+            {
+                switch(Type.GetTypeCode(prop.PropertyType))
+                {
+                    case TypeCode.String:
+                        prop.SetValue(prop, registryProperty.Value);
+                        break;
+                    case TypeCode.Int32:
+                        prop.SetValue(prop, Convert.ToInt32(registryProperty.Value));
+                        break;
+                }
+                
+            }
+                
+        }
+
         private static bool GetStartupFlag()
         {
             if (_startWithWindows == null)
@@ -136,25 +187,45 @@ namespace ProCode.WorkHoursTracker.Model
         }
         private static void ReadSettingsFromRegistry()
         {
-            RegistryKey appRegistrySettings = Registry.CurrentUser.OpenSubKey(GetAppRegistryPath(), false);
+            RegistryKey appRegistrySettings = Registry.CurrentUser.OpenSubKey(GetAppRegistryPath(), true);
             if (appRegistrySettings != null)
             {
-                WorkHoursDirectory = appRegistrySettings.GetValue(Properties.Settings.Default.WorkHoursDirectoryRegistryName, Properties.Settings.Default.WorkHoursDirectoryDefaultValue).ToString();
-                TimerIntervalInMinutes = Convert.ToUInt32(appRegistrySettings.GetValue(Properties.Settings.Default.TimerIntervalInMinutesRegistryName, Properties.Settings.Default.TimerIntervalInMinutesDefaultValue));
+                foreach (var regProp in GetRegistryProperties())
+                {
+                    var prop = typeof(Config).GetProperties().FirstOrDefault(p => p.Name == regProp.Name);
+                    if (prop != null)
+                    {
+                        prop.SetValue(prop, appRegistrySettings.GetValue(prop.Name, ((RegistryValueAttribute)Attribute.GetCustomAttribute(prop, typeof(RegistryValueAttribute))).DefailtValue));
+                    }
+                }
                 appRegistrySettings.Close();
-            }
-            else
-            {
-                appRegistrySettings = Registry.CurrentUser.CreateSubKey(GetAppRegistryPath(), true);
-                appRegistrySettings.SetValue(Properties.Settings.Default.WorkHoursDirectoryRegistryName, Properties.Settings.Default.WorkHoursDirectoryDefaultValue);
-                appRegistrySettings.SetValue(Properties.Settings.Default.TimerIntervalInMinutesRegistryName, Properties.Settings.Default.TimerIntervalInMinutesDefaultValue, RegistryValueKind.DWord);
-                appRegistrySettings.SetValue(Properties.Settings.Default.VisibilityIntervalInSecondsRegistryName, Properties.Settings.Default.VisibilityIntervalInSecondsDefaultValue, RegistryValueKind.DWord);
-                appRegistrySettings.Close();
-
-                WorkHoursDirectory = Properties.Settings.Default.WorkHoursDirectoryDefaultValue;
-                TimerIntervalInMinutes = Properties.Settings.Default.TimerIntervalInMinutesDefaultValue;
             }
         }
         #endregion
+    }
+
+    /// <summary>
+    /// Decorates property as regisrty value.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    public class RegistryValueAttribute : Attribute
+    {
+        #region Constructor
+        public RegistryValueAttribute(object defaultValue)
+        {
+            DefailtValue = defaultValue;
+        }
+        #endregion
+
+        #region Properties
+        public object DefailtValue { get; private set; }
+        #endregion
+    }
+
+    public class RegistryProperty
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public object Value { get; set; }
     }
 }
