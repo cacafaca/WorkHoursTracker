@@ -17,6 +17,8 @@ namespace ProCode.WorkHoursTracker.Views
         {
             InitializeComponent();
 
+            Trace.WriteLine($"PrimaryScreen.WorkingArea (Width, Height) = ({Screen.PrimaryScreen.WorkingArea.Width}), {Screen.PrimaryScreen.WorkingArea.Height}).");
+            Trace.WriteLine($"AddLog (Width, Height) = ({Width}), {Height}).");
             Left = Screen.PrimaryScreen.WorkingArea.Width - Width - 10;
             if (Left < 0) Left = 0;
             Top = Screen.PrimaryScreen.WorkingArea.Height - Height - 10;
