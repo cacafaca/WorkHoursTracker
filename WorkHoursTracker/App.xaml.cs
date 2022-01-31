@@ -73,9 +73,11 @@ namespace ProCode.WorkHoursTracker
         }
 
         private void OnTick(object? sender, EventArgs e)
-        {
+        {            
             if (
                 !(DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday)   // Don't popup on weekends. Who works on weekends?!
+                && DateTime.ParseExact(Model.Config.WorkHourStart, "HH:mm", System.Globalization.CultureInfo.InvariantCulture) <= DateTime.Now
+                && DateTime.Now <= DateTime.ParseExact(Model.Config.WorkHourEnd, "HH:mm", System.Globalization.CultureInfo.InvariantCulture)
                 && _notifyIcon != null && _notifyIcon.DataContext != null
                 && _notifyIcon.DataContext is ViewModels.NotifyIconViewModel
                 && !((ViewModels.NotifyIconViewModel)_notifyIcon.DataContext).AddLogWindowFactory.IsCreated()       // Don't popup if Add Lof windows is already open. It will annoy.
