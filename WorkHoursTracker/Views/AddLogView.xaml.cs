@@ -17,11 +17,12 @@ namespace ProCode.WorkHoursTracker.Views
         {
             InitializeComponent();
 
+            var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
             Trace.WriteLine($"PrimaryScreen.WorkingArea (Width, Height) = ({Screen.PrimaryScreen.WorkingArea.Width}, {Screen.PrimaryScreen.WorkingArea.Height}).");
             Trace.WriteLine($"AddLog (Width, Height) = ({Width}, {Height}).");
-            Left = Screen.PrimaryScreen.WorkingArea.Width - Width - 10;
+            Left = Screen.PrimaryScreen.WorkingArea.Width / dpi.DpiScaleX - Width - 10;     // DPI Awareness is not working!
             if (Left < 0) Left = 0;
-            Top = Screen.PrimaryScreen.WorkingArea.Height - Height - 10;
+            Top = Screen.PrimaryScreen.WorkingArea.Height / dpi.DpiScaleY - Height - 10;
             if (Top < 0) Top = 0;
             Trace.WriteLine($"AddLog (Left, Top) = ({Left}, {Top}).");
 

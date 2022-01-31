@@ -73,7 +73,7 @@ namespace ProCode.WorkHoursTracker
         }
 
         private void OnTick(object? sender, EventArgs e)
-        {            
+        {
             if (
                 !(DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday)   // Don't popup on weekends. Who works on weekends?!
                 && DateTime.ParseExact(Model.Config.WorkHourStart, "HH:mm", System.Globalization.CultureInfo.InvariantCulture) <= DateTime.Now
