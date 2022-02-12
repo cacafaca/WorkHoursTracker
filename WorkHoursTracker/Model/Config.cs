@@ -13,11 +13,15 @@ namespace ProCode.WorkHoursTracker.Model
     public static class Config
     {
         #region Constants
+        public const string TimeFormat = "HH:mm";
         const string _winRegRunKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+        static Dictionary<string, object> _defaultPropertyValues;
         #endregion
 
         #region Fields
         static bool? _startWithWindows;
+        public static string _workHourStart;
+        public static string _workHourEnd;
         #endregion
 
         #region Constructors
@@ -25,6 +29,8 @@ namespace ProCode.WorkHoursTracker.Model
         {
             ReadSettingsFromRegistry();
             _startWithWindows = null;
+            _defaultPropertyValues = typeof(Config).GetProperties().Where(p => p.CustomAttributes.Any(ca => ca.AttributeType.Name == nameof(RegistryValueAttribute)))
+                .ToDictionary(pi => pi.Name, pi => ((RegistryValueAttribute)Attribute.GetCustomAttribute(pi, typeof(RegistryValueAttribute))).DefailtValue);
         }
         #endregion
 
@@ -48,10 +54,36 @@ namespace ProCode.WorkHoursTracker.Model
         public static int TimerIntervalInMinutes { get; set; }
         [RegistryValue("09:00")]
         [Description("Don't remind before")]
-        public static string WorkHourStart { get; set; }
+        public static string WorkHourStart
+        {
+            get
+            {
+                return _workHourStart;
+            }
+            set
+            {
+                if (DateTime.TryParseExact(value, TimeFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime result))
+                    _workHourStart = value;
+                else
+                    throw new ArgumentException("Unformatted value: " + value + "\nPlease use format " + TimeFormat);
+            }
+        }
         [RegistryValue("17:00")]
         [Description("Don't remind after")]
-        public static string WorkHourEnd { get; set; }
+        public static string WorkHourEnd
+        {
+            get
+            {
+                return _workHourEnd;
+            }
+            set
+            {
+                if (DateTime.TryParseExact(value, TimeFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime result))
+                    _workHourEnd = value;
+                else
+                    throw new ArgumentException("Unformatted value: " + value + "\nPlease use format " + TimeFormat);
+            }
+        }
         [RegistryValue(15)]
         [Description("Remind before end (min)")]
         public static int RemindBeforeWorkHoursEndInMinutes { get; set; }
@@ -62,11 +94,11 @@ namespace ProCode.WorkHoursTracker.Model
         }
         public static DateTime WorkHourStartAsDateTime
         {
-            get { return DateTime.ParseExact(WorkHourStart, "HH:mm", System.Globalization.CultureInfo.InvariantCulture); }
+            get { return DateTime.ParseExact(WorkHourStart, TimeFormat, System.Globalization.CultureInfo.InvariantCulture); }
         }
         public static DateTime WorkHourEndAsDateTime
         {
-            get { return DateTime.ParseExact(WorkHourEnd, "HH:mm", System.Globalization.CultureInfo.InvariantCulture); }
+            get { return DateTime.ParseExact(WorkHourEnd, TimeFormat, System.Globalization.CultureInfo.InvariantCulture); }
         }
         /// <summary>
         /// Full path of the file for the current month.

@@ -118,6 +118,18 @@ namespace ProCode.WorkHoursTracker
                     );
             }
         }
+
+        /// <summary>
+        /// Just display error if we don't know how to handle.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("An unhandled exception occurred:\n" + e.Exception.Message + "\n" + e.Exception.InnerException?.Message);
+            e.Handled = true;
+        }
         #endregion
+
     }
 }

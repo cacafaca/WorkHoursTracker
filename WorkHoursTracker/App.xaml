@@ -1,7 +1,8 @@
 ﻿<Application x:Class="ProCode.WorkHoursTracker.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             ShutdownMode="OnExplicitShutdown">
+             ShutdownMode="OnExplicitShutdown"
+             DispatcherUnhandledException="Application_DispatcherUnhandledException">
     <!-- 
             No startup window. That is why below line is removed from attribute list:
                 StartupUri="/Views/WorkHoursLogPopupView.xaml"

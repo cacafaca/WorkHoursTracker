@@ -86,9 +86,9 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
         private void PickTime()
         {
-            TimeOnly time = TimeOnly.FromDateTime(Convert.ToDateTime(Value.ToString()));
             if (PickTimeEvent != null)
             {
+                TimeOnly time = TimeOnly.FromDateTime(Convert.ToDateTime(Value.ToString()));
                 PickTimeEvent.Invoke(ref time);
                 Value = time.ToString("hh:mm");
             }
