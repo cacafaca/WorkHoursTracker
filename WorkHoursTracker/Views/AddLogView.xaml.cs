@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Forms;
 
 namespace ProCode.WorkHoursTracker.Views
@@ -39,24 +40,39 @@ namespace ProCode.WorkHoursTracker.Views
         {
             Close();
         }
+
         private void Grid_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             DragMove();     // Move window around the screen.
         }
+
         private void logTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (_moveCursorToEnd)
+            if (_moveCursorToEnd)                                   // Position cursor at the end only one time, because user wants to start typing immediately. 
             {
                 _moveCursorToEnd = false;
                 logTextBox.Select(logTextBox.Text.Length, 0);       // Position cursor at the end.                
             }
         }
-        #endregion
 
         private void configButton_Click(object sender, RoutedEventArgs e)
         {
             ConfigView cfgView = new ConfigView();
             cfgView.ShowDialog();
         }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            Topmost = true;
+        }
+
+        private void logTextBox_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (logTextBox.Visibility == Visibility.Visible)
+                logTextBox.Focus();
+        }
+        #endregion
+
     }
 }

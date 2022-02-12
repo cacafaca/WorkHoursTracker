@@ -10,8 +10,7 @@
         Width="223"
         WindowStyle="None"
         xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels"
-        MouseLeftButtonDown="Grid_MouseLeftButtonDown"
-        ShowActivated="True">
+        MouseLeftButtonDown="Grid_MouseLeftButtonDown">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
     </Window.Resources>
@@ -39,8 +38,7 @@
     </Window.InputBindings>
     <Grid>
         <DockPanel Margin="10,10,10,35"
-                   LastChildFill="True"
-                   FocusManager.FocusedElement="{Binding ElementName=logTextBox}">
+                   LastChildFill="True">
             <StackPanel Orientation="Horizontal"
                         Visibility="{Binding IsLoading, Converter={StaticResource boolToVis}}"
                         DockPanel.Dock="Top"
@@ -141,7 +139,8 @@
                      IsReadOnly="{Binding IsLoading}"
                      Visibility="{Binding IsLoaded, Converter={StaticResource boolToVis}}"
                      DockPanel.Dock="Top"
-                     TextChanged="logTextBox_TextChanged">
+                     TextChanged="logTextBox_TextChanged"
+                     IsVisibleChanged="logTextBox_IsVisibleChanged">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter"
                                 Command="{Binding SaveLogCommand}" />

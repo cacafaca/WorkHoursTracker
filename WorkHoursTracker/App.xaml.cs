@@ -1,5 +1,7 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using System;
+using System.Drawing;
+using System.Reflection;
 using System.Windows;
 
 namespace ProCode.WorkHoursTracker
@@ -15,6 +17,7 @@ namespace ProCode.WorkHoursTracker
         private System.Windows.Threading.DispatcherTimer _beforeEndTimer = new System.Windows.Threading.DispatcherTimer();
         private EventHandler _onTickEventHandler;
         private EventHandler _onBeforeEndHandler;
+        private Icon _baloonIcon;
         #endregion
 
         #region Methods
@@ -36,6 +39,9 @@ namespace ProCode.WorkHoursTracker
 
                 Model.Config.ConfigSaved += OnConfigSavedHndler;
                 _notifyIcon.TrayBalloonTipClicked += NotifyIcon_TrayBalloonTipClicked;
+
+                _baloonIcon = WorkHoursTracker.Properties.Resources.App;
+
                 InitTimers();
             }
         }
@@ -66,7 +72,6 @@ namespace ProCode.WorkHoursTracker
                 _repeatingTimer.Tick -= _onTickEventHandler;       // Remove old handler, to keep clean.
             _onTickEventHandler = new EventHandler(OnTickNotify);
             _repeatingTimer.Tick += _onTickEventHandler;
-
 #if !DEBUG
             _repeatingTimer.Interval = new TimeSpan(0, (int)Model.Config.TimerIntervalInMinutes, 0);
 #else
@@ -104,7 +109,13 @@ namespace ProCode.WorkHoursTracker
             InitBeforeEndTimer();
             if (CanTriggerExecution())
             {
-                _notifyIcon.ShowBalloonTip("Add work hours log.", $"What did you do last {Model.Config.TimerIntervalInMinutes} minute{new string('s', Convert.ToInt32(Math.Ceiling((double)(Model.Config.TimerIntervalInMinutes - 1) / (double)uint.MaxValue)))}?\nClick to add log.", BalloonIcon.Info);
+                _notifyIcon.ShowBalloonTip(
+                    title: "Add work hours log.",
+                    message: $"What did you do last {Model.Config.TimerIntervalInMinutes} minute{new string('s', Convert.ToInt32(Math.Ceiling((double)(Model.Config.TimerIntervalInMinutes - 1) / (double)uint.MaxValue)))}?\nClick to add log.",
+                    customIcon: _baloonIcon,
+                    largeIcon: true
+                    //BalloonIcon.Info
+                    );
             }
         }
         #endregion

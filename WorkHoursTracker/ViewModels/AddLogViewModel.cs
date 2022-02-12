@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ProCode.WorkHoursTracker.ViewModels
@@ -61,8 +63,8 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 {
                     WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(Model.Config.WorkHoursCurrentFilePath);
                     whExcel.Read();
-                    _isLoaded = true;
                     _originalLog = whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log ?? string.Empty;
+                    _isLoaded = true;
                     _log = _originalLog;
                     OnPropertyChanged(nameof(Log));
                     OnPropertyChanged(nameof(IsLoaded));
