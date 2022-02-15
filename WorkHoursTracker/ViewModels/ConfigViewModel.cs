@@ -21,36 +21,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #endregion
 
         #region Properties
-        public string WorkHoursDirectory
-        {
-            get
-            {
-                return Model.Config.WorkHoursDirectory;
-            }
-            set
-            {
-                Model.Config.WorkHoursDirectory = value;
-                OnPropertyChanged();
-            }
-        }
-        public int TimerIntervalInMinutes
-        {
-            get { return Model.Config.TimerIntervalInMinutes; }
-            set
-            {
-                Model.Config.TimerIntervalInMinutes = value;
-                OnPropertyChanged();
-            }
-        }
-        public int RemindBeforeWorkHoursEndInMinutes
-        {
-            get { return Model.Config.RemindBeforeWorkHoursEndInMinutes; }
-            set
-            {
-                Model.Config.RemindBeforeWorkHoursEndInMinutes = value;
-                OnPropertyChanged();
-            }
-        }
         public bool StartWithWindows
         {
             get { return Model.Config.StartWithWindowsFlag; }

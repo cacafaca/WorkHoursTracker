@@ -1,8 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace ProCode.WorkHoursTracker.ViewModels
@@ -20,6 +18,9 @@ namespace ProCode.WorkHoursTracker.ViewModels
         {
             SaveLogCommand = new RelayCommand(SaveLogExecute, SaveLogCanExecute);
             CancelLogCommand = new RelayCommand(CancelLogExecute);
+            PasteCommand = new RelayCommand(PasteExecute, PasteCanExecute);
+            PasteFormatedCommand = new RelayCommand(PasteFormatedExecute, PasteCanExecute);
+
             _isLoaded = false;
 
             // This needs to be the last command.
@@ -28,6 +29,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 ReadLog();
             });
         }
+
         #endregion
 
         #region Properties
@@ -48,11 +50,20 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 }
             }
         }
+
         public bool IsLoaded { get { return _isLoaded; } }
+
         public bool IsLoading { get { return !_isLoaded; } }
+
         public bool SaveLogCanExecuteFlag { get { return SaveLogCanExecute(null); } }
+
         public ICommand SaveLogCommand { get; set; }
+
         public ICommand CancelLogCommand { get; set; }
+
+        public ICommand PasteCommand { get; set; }
+
+        public ICommand PasteFormatedCommand { get; set; }
         #endregion
 
         #region Methods
@@ -75,6 +86,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
                     Trace.WriteLine(ex.Message);
                 }
         }
+
         private void SaveLogExecute(object sender)
         {
             // Fire (saving) and forget.
@@ -99,13 +111,49 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
             InvokeClosingEvent();
         }
+
         private bool SaveLogCanExecute(object obj)
         {
             return _originalLog != (Log ?? string.Empty);
         }
+
         private void CancelLogExecute(object sender)
         {
             InvokeClosingEvent();
+        }
+
+        private bool PasteCanExecute(object arg)
+        {
+            return !string.IsNullOrWhiteSpace(System.Windows.Clipboard.GetText());
+        }
+
+        private void PasteExecute(object obj)
+        {
+            Log = Log + System.Windows.Clipboard.GetText().Trim();
+        }
+
+        private void PasteFormatedExecute(object obj)
+        {
+            Log = Log.TrimEnd() + AddFromClipboard() + GetSeparator();
+        }
+
+        private string AddFromClipboard()
+        {
+            string logTrimmed = Log.TrimEnd();
+            string addition = string.Empty;
+            if (logTrimmed.Length > 0)
+            {
+                if (!logTrimmed.EndsWith(GetSeparator()))
+                    addition = GetSeparator();
+                addition += " ";
+            }
+
+            return addition + System.Windows.Clipboard.GetText().Trim();
+        }
+
+        private string GetSeparator()
+        {
+            return Model.Config.Separator;
         }
         #endregion
     }

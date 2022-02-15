@@ -7,8 +7,8 @@
         xmlns:local="clr-namespace:ProCode.WorkHoursTracker.Views"
         mc:Ignorable="d"
         Title="Config"
-        Height="84"
-        Width="350"
+        Height="200"
+        Width="550"
         WindowStartupLocation="CenterScreen"
         MinHeight="240"
         MinWidth="250"
@@ -19,11 +19,52 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
     </Window.Resources>
-    <DockPanel LastChildFill="True"
-               Margin="5">
+    <DockPanel Margin="5"
+               LastChildFill="True">       
+        <!-- Bottom Buttons -->
+        <StackPanel Orientation="Horizontal"
+                    MinHeight="20"
+                    HorizontalAlignment="Right"
+                    DockPanel.Dock="Bottom">
+            <Button x:Name="cancelButton"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Right"
+                    Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
+                    TabIndex="6"
+                    Width="60">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="🗙"
+                               Foreground="Red" />
+                    <TextBlock Text="Cancel"
+                               Margin="5 0 5 0" />
+                </StackPanel>
+            </Button>
+            <Button x:Name="saveButton"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Command="{Binding SaveConfigCommand}"
+                    CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
+                    Width="60"
+                    Margin="10,0,0,0"
+                    TabIndex="5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="✓"
+                               Foreground="Green" />
+                    <TextBlock Text="Save"
+                               Margin="5 0 5 0" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        <!-- Start with windows -->
+        <StackPanel DockPanel.Dock="Bottom"
+                    Margin="0 5 0 0">
+            <CheckBox Content="Start with Windows"
+                      IsChecked="{Binding StartWithWindows}"
+                      TabIndex="4" />
+        </StackPanel>
         <!-- Parameters -->
-        <DataGrid DockPanel.Dock="Top"
-                  ItemsSource="{Binding Parameters, Mode=TwoWay}"
+        <DataGrid ItemsSource="{Binding Parameters, Mode=TwoWay}"
                   AutoGenerateColumns="False"
                   CanUserDeleteRows="False"
                   CanUserAddRows="False">
@@ -41,65 +82,17 @@
                         <Button Grid.Column="1"
                                 Content="{Binding ButtonText}"
                                 Visibility="{Binding ButtonVisible, Converter={StaticResource boolToVis}}"
-                                HorizontalAlignment="Right" 
-                                Command="{Binding SelectValueCommand}"/>
+                                HorizontalAlignment="Right"
+                                Command="{Binding SelectValueCommand}" />
                     </Grid>
                 </DataTemplate>
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Parameter"
-                                    Binding="{Binding Description, Mode=OneWay}" />
-                <!--
-                <DataGridTextColumn Header="Values"
-                                    Binding="{Binding Value, Mode=TwoWay}" />
-                -->
-                <DataGridTemplateColumn Header="test"
-                                        CellTemplate="{StaticResource valuesTemplate}" />
+                                    Binding="{Binding Description, Mode=OneWay}"  />                
+                <DataGridTemplateColumn Header="Value"
+                                        CellTemplate="{StaticResource valuesTemplate}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <!-- Start with windows -->
-        <StackPanel DockPanel.Dock="Top">
-            <CheckBox Content="Start with Windows"
-                      IsChecked="{Binding StartWithWindows}"
-                      TabIndex="4" />
-        </StackPanel>
-        <!-- Bottom Buttons -->
-        <DockPanel HorizontalAlignment="Right"
-                   Margin="0,5,0,0"
-                   VerticalAlignment="Bottom"
-                   LastChildFill="True">
-            <StackPanel Orientation="Horizontal"
-                        MinHeight="20">
-                <Button x:Name="cancelButton"
-                        VerticalAlignment="Bottom"
-                        HorizontalAlignment="Right"
-                        Command="{Binding CancelCommand}"
-                        CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
-                        TabIndex="6"
-                        Width="60">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="🗙"
-                                   Foreground="Red" />
-                        <TextBlock Text="Cancel"
-                                   Margin="5 0 5 0" />
-                    </StackPanel>
-                </Button>
-                <Button x:Name="saveButton"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Command="{Binding SaveConfigCommand}"
-                        CommandParameter="{Binding ElementName=configWindow, Mode=OneWay}"
-                        Width="60"
-                        Margin="10,0,0,0"
-                        TabIndex="5">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="✓"
-                                   Foreground="Green" />
-                        <TextBlock Text="Save"
-                                   Margin="5 0 5 0" />
-                    </StackPanel>
-                </Button>
-            </StackPanel>
-        </DockPanel>
     </DockPanel>
 </Window>

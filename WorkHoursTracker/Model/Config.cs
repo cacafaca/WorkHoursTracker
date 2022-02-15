@@ -87,6 +87,9 @@ namespace ProCode.WorkHoursTracker.Model
         [RegistryValue(15)]
         [Description("Remind before end (min)")]
         public static int RemindBeforeWorkHoursEndInMinutes { get; set; }
+        [RegistryValue(";")]
+        [Description("Separator (paste from clipboard)")]
+        public static string Separator { get; set; }
         public static bool StartWithWindowsFlag
         {
             get { return GetStartupFlag(); }
@@ -199,6 +202,9 @@ namespace ProCode.WorkHoursTracker.Model
                         break;
                     case TypeCode.Int32:
                         prop.SetValue(prop, Convert.ToInt32(registryProperty.Value));
+                        break;
+                    case TypeCode.Char:
+                        prop.SetValue(prop, Convert.ToChar(registryProperty.Value));
                         break;
                 }
 

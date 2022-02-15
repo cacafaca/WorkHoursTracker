@@ -157,7 +157,7 @@
                 HorizontalAlignment="Left"
                 Width="20"
                 ToolTip="Open configuration window."
-                TabIndex="3"
+                TabIndex="10"
                 Click="configButton_Click" />
         <Button x:Name="saveButton"
                 Content="✓"
@@ -186,5 +186,31 @@
                 CommandParameter="{Binding ElementName=cancelButton}"
                 ToolTip="Cancel changes."
                 TabIndex="2" />
+        <Button x:Name="pasteButton"
+                Content="📋"
+                Margin="35,0,0,10"
+                Height="20"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Width="20"
+                ToolTip="Paste from clipboard."
+                TabIndex="5"
+                Command="{Binding PasteCommand}"
+                CommandParameter="{Binding ElementName=pasteButton}" />
+        <Button x:Name="pasteFormatedButton"
+                Content="📋;"
+                Margin="60,0,0,10"
+                Height="20"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Width="20"
+                ToolTip="Paste from clipboard with separator."
+                TabIndex="3"
+                Command="{Binding PasteFormatedCommand}"
+                CommandParameter="{Binding ElementName=pasteFormatedButton}" />
     </Grid>
 </Window>
