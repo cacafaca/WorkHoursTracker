@@ -30,9 +30,9 @@ namespace ProCode.WorkHoursTracker.Views
             if (DataContext is ViewModels.AddLogViewModel)
             {
                 ((ViewModels.AddLogViewModel)DataContext).Closing += AddLogView_Closing;
+                ((ViewModels.AddLogViewModel)DataContext).AfterPaste += AddLogView_AfterPaste;
             }
         }
-
         #endregion
 
         #region Methods
@@ -71,6 +71,12 @@ namespace ProCode.WorkHoursTracker.Views
         {
             if (logTextBox.Visibility == Visibility.Visible)
                 logTextBox.Focus();
+        }
+
+        private void AddLogView_AfterPaste(object? sender, EventArgs e)
+        {
+            logTextBox.Focus();
+            logTextBox.Select(logTextBox.Text.Length, 0);
         }
         #endregion
 

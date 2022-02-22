@@ -140,7 +140,8 @@
                      Visibility="{Binding IsLoaded, Converter={StaticResource boolToVis}}"
                      DockPanel.Dock="Top"
                      TextChanged="logTextBox_TextChanged"
-                     IsVisibleChanged="logTextBox_IsVisibleChanged">
+                     IsVisibleChanged="logTextBox_IsVisibleChanged"
+                     VerticalScrollBarVisibility="Auto">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter"
                                 Command="{Binding SaveLogCommand}" />

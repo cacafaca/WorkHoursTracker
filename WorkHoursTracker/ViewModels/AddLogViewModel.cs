@@ -29,7 +29,10 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 ReadLog();
             });
         }
+        #endregion
 
+        #region Events
+        public event EventHandler AfterPaste;
         #endregion
 
         #region Properties
@@ -129,12 +132,14 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         private void PasteExecute(object obj)
         {
-            Log = Log + System.Windows.Clipboard.GetText().Trim();
+            Log += System.Windows.Clipboard.GetText().Trim();
+            AfterPaste?.Invoke(this, new EventArgs());
         }
 
         private void PasteFormatedExecute(object obj)
         {
             Log = Log.TrimEnd() + AddFromClipboard() + GetSeparator();
+            AfterPaste?.Invoke(this, new EventArgs());
         }
 
         private string AddFromClipboard()
@@ -148,7 +153,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 addition += " ";
             }
 
-            return addition + System.Windows.Clipboard.GetText().Trim();
+            return addition + System.Windows.Clipboard.GetText().Trim().TrimEnd(GetSeparator().ToArray());
         }
 
         private string GetSeparator()
