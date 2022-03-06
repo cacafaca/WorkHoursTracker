@@ -66,7 +66,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         private void PopulateParameters()
         {
             _parameters.Clear();
-            foreach (var regProp in Model.Config.GetRegistryProperties())
+            foreach (var regProp in Model.Config.GetVisibleRegistryProperties())
             {
                 RegistryPropertyViewModel regPropViewModel = new()
                 {
