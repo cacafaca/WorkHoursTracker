@@ -13,9 +13,9 @@ namespace ProCode.WorkHoursTracker
     {
         #region Fields
         private TaskbarIcon _notifyAddLogIcon;
-        private System.Windows.Threading.DispatcherTimer _addLogTimer = new System.Windows.Threading.DispatcherTimer();
-        private System.Windows.Threading.DispatcherTimer _beforeEndTimer = new System.Windows.Threading.DispatcherTimer();
-        private System.Windows.Threading.DispatcherTimer _confirmSentReportTimer = new System.Windows.Threading.DispatcherTimer();
+        private System.Windows.Threading.DispatcherTimer _addLogTimer = new System.Windows.Threading.DispatcherTimer();                 // This is a basic timer. Serves as a reminder during the day, to add your work tasks to daily log.    
+        private System.Windows.Threading.DispatcherTimer _beforeEndTimer = new System.Windows.Threading.DispatcherTimer();              // This timer should trigger only before end of working hours. Serves as reminder if basic timer interval doesn't fit. 
+        private System.Windows.Threading.DispatcherTimer _confirmSentReportTimer = new System.Windows.Threading.DispatcherTimer();      // Reminds to send a report, after the end of the month.
         private EventHandler _onTickEventHandler;
         private EventHandler _onBeforeEndHandler;
         private EventHandler _onConfirmSendReportHandler;
@@ -101,16 +101,17 @@ namespace ProCode.WorkHoursTracker
 
         private void InitAddLogTimer()
         {
-            // Add Log timer.
-            if (_onTickEventHandler != null)
-                _addLogTimer.Tick -= _onTickEventHandler;       // Remove old handler, to keep clean.
-            _onTickEventHandler = new EventHandler(OnAddLogTickNotify);
-            _addLogTimer.Tick += _onTickEventHandler;
+            if (_onTickEventHandler == null)    // Assign only once.
+            {
+                _onTickEventHandler = new EventHandler(OnAddLogTickNotify);
+                _addLogTimer.Tick += _onTickEventHandler;
+            }
 #if !DEBUG
             _addLogTimer.Interval = new TimeSpan(0, (int)Model.Config.TimerIntervalInMinutes, 0);       // Production value.
-#else       
+#else
             _addLogTimer.Interval = new TimeSpan(0, 0, 15);                                             // Debug value = 15 seconds.
 #endif
+            Trace.WriteLine($"Add log interval set to {_addLogTimer.Interval}.");
         }
 
         private void InitBeforeWorkHoursEndTimer()
@@ -165,6 +166,7 @@ namespace ProCode.WorkHoursTracker
                     //BalloonIcon.Info
                     );
                 _ballonType = BalloonType.AddLog;
+                Trace.WriteLine("Add log balloon showed.");
             }
         }
 
