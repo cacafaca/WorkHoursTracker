@@ -37,7 +37,7 @@
                     ToolTipText="Double-click to add log, right-click for menu."
                     DoubleClickCommand="{Binding AddLogCommand}"
                     ContextMenu="{StaticResource SysTrayMenu}">
-        <!-- self-assign a data context (could also be done programmatically) -->
+        <!-- Assign ViewModel !!! -->
         <tb:TaskbarIcon.DataContext>
             <vm:NotifyIconViewModel />
         </tb:TaskbarIcon.DataContext>

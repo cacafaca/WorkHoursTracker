@@ -1,4 +1,5 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
+using ProCode.WorkHoursTracker.Views;
 using System;
 using System.Drawing;
 using System.Reflection;
@@ -38,23 +39,16 @@ namespace ProCode.WorkHoursTracker
         {
             base.OnStartup(e);
 
-            // Create the notifyicon (it's a resource declared in NotifyIconResources.xaml
-            _notifyAddLogIcon = (TaskbarIcon)FindResource("NotifyIcon");
+            _notifyAddLogIcon = (TaskbarIcon)FindResource("NotifyIcon");        // Find already created notify icon (it's a resource declared in NotifyIconResources.xaml).
+
             if (_notifyAddLogIcon != null && _notifyAddLogIcon.DataContext != null && _notifyAddLogIcon.DataContext is ViewModels.NotifyIconViewModel)
             {
-                // Set Log window type.
-                ((ViewModels.NotifyIconViewModel)_notifyAddLogIcon.DataContext).AddLogWindowFactory =
-                    new Views.BaseWindowFactory(typeof(Views.AddLogView));
-
-                // Set Config window type.
-                ((ViewModels.NotifyIconViewModel)_notifyAddLogIcon.DataContext).ConfigWindowFactory =
-                    new Views.BaseWindowFactory(typeof(Views.ConfigView));
+                var notifyIconviewModel = (ViewModels.NotifyIconViewModel)_notifyAddLogIcon.DataContext;
+                notifyIconviewModel.SetViewService(new ViewService());
 
                 Model.Config.ConfigSaved += OnConfigSavedHndler;
                 _notifyAddLogIcon.TrayBalloonTipClicked += NotifyIcon_TrayBalloonTipClicked;
-
                 _baloonIcon = WorkHoursTracker.Properties.Resources.App;
-
                 InitTimers();
             }
         }
@@ -74,7 +68,7 @@ namespace ProCode.WorkHoursTracker
             switch (_ballonType)
             {
                 case BalloonType.AddLog:
-                    (_notifyAddLogIcon.DataContext as ViewModels.NotifyIconViewModel).AddLogCommand.Execute(this);
+                    (_notifyAddLogIcon.DataContext as ViewModels.NotifyIconViewModel)?.AddLogCommand.Execute(this);
                     break;
                 case BalloonType.SendReportConfirmation:
                     ConfirmSendReport();
@@ -150,7 +144,8 @@ namespace ProCode.WorkHoursTracker
                 && DateTime.Now <= Model.Config.WorkHourEndAsDateTime
                 && _notifyAddLogIcon != null && _notifyAddLogIcon.DataContext != null
                 && _notifyAddLogIcon.DataContext is ViewModels.NotifyIconViewModel
-                && !((ViewModels.NotifyIconViewModel)_notifyAddLogIcon.DataContext).AddLogWindowFactory.IsCreated();          // Don't pop-up if Add Log windows is already open. It will annoy.
+                && (!((ViewModels.NotifyIconViewModel)_notifyAddLogIcon.DataContext).GetViewService().IsLoaded()
+                    || !((ViewModels.NotifyIconViewModel)_notifyAddLogIcon.DataContext).GetViewService().IsLoaded());          // Don't pop-up if Add Log windows is already open. It will annoy.
         }
 
         private void OnAddLogTickNotify(object? sender, EventArgs e)

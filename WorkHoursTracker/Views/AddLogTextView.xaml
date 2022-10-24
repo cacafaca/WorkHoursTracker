@@ -1,0 +1,233 @@
+﻿<Window x:Class="ProCode.WorkHoursTracker.Views.AddLogTextView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProCode.WorkHoursTracker.Views"
+        mc:Ignorable="d"
+        Title="Log working hours"
+        Height="111"
+        Width="223"
+        WindowStyle="None"
+        xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels"
+        MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="boolToVis" />
+    </Window.Resources>
+    <!--
+    <Window.DataContext>
+        <vm:AddLogViewModel />
+    </Window.DataContext>
+    -->
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard Name="FormFadeIn">
+                    <DoubleAnimation Name="FormFadeInAnimation"
+                                     Storyboard.TargetProperty="(Window.Opacity)"
+                                     From="0.0"
+                                     To="1.0"
+                                     Duration="0:0:0.5"
+                                     AutoReverse="False"
+                                     RepeatBehavior="1x" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+    <Window.InputBindings>
+        <KeyBinding Key="Escape"
+                    Command="{Binding CancelLogCommand}" />
+    </Window.InputBindings>
+    <Grid>
+        <DockPanel Margin="10,10,10,35"
+                   LastChildFill="True">
+            <StackPanel x:Name="progressBarAnimation"
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsLoading, Converter={StaticResource boolToVis}}"
+                        DockPanel.Dock="Top"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="0 30 0 0">
+                <StackPanel.Triggers>
+                    <EventTrigger RoutedEvent="Rectangle.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard Name="waitingAnimation"
+                                        RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetName="Dot1"
+                                                 BeginTime="0:0:0.1"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="Dot2"
+                                                 BeginTime="0:0:0.2"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="Dot3"
+                                                 BeginTime="0:0:0.3"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="Dot4"
+                                                 BeginTime="0:0:0.4"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="Dot5"
+                                                 BeginTime="0:0:0.5"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                                <DoubleAnimation Storyboard.TargetName="Dot6"
+                                                 BeginTime="0:0:0.6"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 From=".1"
+                                                 To="1"
+                                                 AutoReverse="True"
+                                                 Duration="0:0:0.4" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </StackPanel.Triggers>
+                <Ellipse Name="Dot1"
+                         Fill="Red"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8" />
+                <Ellipse Name="Dot2"
+                         Fill="Orange"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8"
+                         Margin="2,0,0,0" />
+                <Ellipse Name="Dot3"
+                         Fill="Yellow"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8"
+                         Margin="2,0,0,0" />
+                <Ellipse Name="Dot4"
+                         Fill="Green"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8"
+                         Margin="2,0,0,0" />
+                <Ellipse Name="Dot5"
+                         Fill="Blue"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8"
+                         Margin="2,0,0,0" />
+                <Ellipse Name="Dot6"
+                         Fill="Purple"
+                         Opacity=".1"
+                         Width="8"
+                         Height="8"
+                         Margin="2,0,0,0" />
+            </StackPanel>
+            <TextBox x:Name="logTextBox"
+                     TextWrapping="Wrap"
+                     Text="{Binding LogText, UpdateSourceTrigger=PropertyChanged}"
+                     TabIndex="0"
+                     IsReadOnly="{Binding IsLoading}"
+                     Visibility="{Binding IsLoaded, Converter={StaticResource boolToVis}}"
+                     DockPanel.Dock="Top"
+                     TextChanged="logTextBox_TextChanged"
+                     IsVisibleChanged="logTextBox_IsVisibleChanged"
+                     VerticalScrollBarVisibility="Auto">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter"
+                                Command="{Binding SaveLogCommand}" />
+                    <KeyBinding Key="Escape"
+                                Command="{Binding CancelLogCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </DockPanel>
+        <Button x:Name="configButton"
+                Content="⚙"
+                Margin="10,0,0,10"
+                Height="20"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                Width="20"
+                ToolTip="Open configuration window."
+                TabIndex="10"
+                Command="{Binding OpenConfigCommand}" />
+        <Button x:Name="saveButton"
+                Content="✓"
+                FontWeight="Bold"
+                Foreground="ForestGreen"
+                Margin="0,0,10,10"
+                HorizontalAlignment="Right"
+                Width="20"
+                Height="20"
+                VerticalAlignment="Bottom"
+                Command="{Binding SaveLogCommand}"
+                CommandParameter="{Binding ElementName=saveButton}"
+                ToolTip="Save changes."
+                IsEnabled="{Binding SaveLogTextCanExecuteFlag}"
+                TabIndex="1" />
+        <Button x:Name="cancelButton"
+                Content="🗙"
+                FontWeight="Bold"
+                Foreground="Red"
+                Margin="0,0,35,10"
+                HorizontalAlignment="Right"
+                Width="20"
+                Height="20"
+                VerticalAlignment="Bottom"
+                Command="{Binding CancelLogCommand}"
+                CommandParameter="{Binding ElementName=cancelButton}"
+                ToolTip="Cancel changes."
+                TabIndex="2" />
+        <Button x:Name="pasteButton"
+                Content="📋"
+                Margin="35,0,0,10"
+                Height="20"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Width="20"
+                ToolTip="Paste from clipboard."
+                TabIndex="5"
+                Command="{Binding PasteCommand}"
+                CommandParameter="{Binding ElementName=pasteButton}" />
+        <Button x:Name="pasteFormatedButton"
+                Content="📋;"
+                Margin="60,0,0,10"
+                Height="20"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Width="20"
+                ToolTip="Paste from clipboard with separator."
+                TabIndex="3"
+                Command="{Binding PasteFormatedCommand}"
+                CommandParameter="{Binding ElementName=pasteFormatedButton}" />
+        <Button x:Name="switchToTable"
+                Content="🧮;"
+                Margin="85,0,0,10"
+                Height="20"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Width="20"
+                ToolTip="Switch to table view."
+                TabIndex="4"
+                Command="{Binding SwitchToTableViewCommand}"
+                CommandParameter="{Binding ElementName=switchToTable}" />
+    </Grid>
+</Window>

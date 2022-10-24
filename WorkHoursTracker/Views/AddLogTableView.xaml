@@ -1,9 +1,8 @@
-﻿<Window x:Class="ProCode.WorkHoursTracker.Views.AddLogView"
+﻿<Window x:Class="ProCode.WorkHoursTracker.Views.AddLogTableView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ProCode.WorkHoursTracker.Views"
         mc:Ignorable="d"
         Title="Log working hours"
         Height="111"
@@ -14,9 +13,12 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
     </Window.Resources>
+    <!-- Assigning ViewModel !!! -->
+    <!--
     <Window.DataContext>
         <vm:AddLogViewModel />
     </Window.DataContext>
+    -->
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
             <BeginStoryboard>
@@ -39,7 +41,8 @@
     <Grid>
         <DockPanel Margin="10,10,10,35"
                    LastChildFill="True">
-            <StackPanel Orientation="Horizontal"
+            <StackPanel x:Name="progressBarAnimation"
+                        Orientation="Horizontal"
                         Visibility="{Binding IsLoading, Converter={StaticResource boolToVis}}"
                         DockPanel.Dock="Top"
                         HorizontalAlignment="Center"
@@ -132,24 +135,39 @@
                          Height="8"
                          Margin="2,0,0,0" />
             </StackPanel>
-            <TextBox x:Name="logTextBox"
-                     TextWrapping="Wrap"
-                     Text="{Binding Log, UpdateSourceTrigger=PropertyChanged}"
-                     TabIndex="0"
-                     IsReadOnly="{Binding IsLoading}"
-                     Visibility="{Binding IsLoaded, Converter={StaticResource boolToVis}}"
-                     DockPanel.Dock="Top"
-                     TextChanged="logTextBox_TextChanged"
-                     IsVisibleChanged="logTextBox_IsVisibleChanged"
-                     VerticalScrollBarVisibility="Auto">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Enter"
-                                Command="{Binding SaveLogCommand}" />
-                    <KeyBinding Key="Escape"
-                                Command="{Binding CancelLogCommand}" />
-                </TextBox.InputBindings>
-            </TextBox>
+            <DataGrid x:Name="tableLog"
+                      ItemsSource="{Binding LogTable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      AutoGenerateColumns="False"
+                      CanUserDeleteRows="True"
+                      CanUserAddRows="True"
+                      Visibility="{Binding IsLoaded, Converter={StaticResource boolToVis}}"
+                      IsReadOnly="{Binding IsLoading}">
+                <DataGrid.Resources>
+                    <DataTemplate x:Key="logTableTemplate">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding Task, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalContentAlignment="Stretch"
+                                     BorderThickness="0" />
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding Spent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalAlignment="Right" />
+                        </Grid>
+                    </DataTemplate>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Task"
+                                        Binding="{Binding Task, Mode=TwoWay}" />
+                    <DataGridTextColumn Header="Spent"
+                                        Binding="{Binding Spent, Mode=TwoWay}" />
+                </DataGrid.Columns>
+            </DataGrid>
         </DockPanel>
+        <!-- Configuration -->
         <Button x:Name="configButton"
                 Content="⚙"
                 Margin="10,0,0,10"
@@ -159,7 +177,8 @@
                 Width="20"
                 ToolTip="Open configuration window."
                 TabIndex="10"
-                Click="configButton_Click" />
+                Command="{Binding OpenConfigCommand}" />
+        <!-- Save -->
         <Button x:Name="saveButton"
                 Content="✓"
                 FontWeight="Bold"
@@ -172,7 +191,7 @@
                 Command="{Binding SaveLogCommand}"
                 CommandParameter="{Binding ElementName=saveButton}"
                 ToolTip="Save changes."
-                IsEnabled="{Binding SaveLogCanExecuteFlag}"
+                IsEnabled="{Binding SaveLogTableCanExecuteFlag}"
                 TabIndex="1" />
         <Button x:Name="cancelButton"
                 Content="🗙"
@@ -213,5 +232,18 @@
                 TabIndex="3"
                 Command="{Binding PasteFormatedCommand}"
                 CommandParameter="{Binding ElementName=pasteFormatedButton}" />
+        <Button x:Name="switchToText"
+                Content="📝;"
+                Margin="85,0,0,10"
+                Height="20"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Width="20"
+                ToolTip="Switch to text view."
+                TabIndex="4"
+                Command="{Binding SwitchToTextViewCommand}"
+                CommandParameter="{Binding ElementName=switchToText}" />
     </Grid>
 </Window>

@@ -7,16 +7,21 @@ namespace ProCode.WorkHoursTracker.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class AddLogView : Window
+    public partial class AddLogTextView : Window
     {
-        #region Feilds
+        #region Fields
         bool _moveCursorToEnd = true;
         #endregion
 
         #region Constructors
-        public AddLogView()
+        public AddLogTextView(object dataContext)
         {
+            if (dataContext == null)
+                throw new ArgumentNullException(nameof(dataContext));
+
             InitializeComponent();
+
+            DataContext = dataContext;
 
             var dpi = System.Windows.Media.VisualTreeHelper.GetDpi(this);
             Trace.WriteLine($"PrimaryScreen.WorkingArea (Width, Height) = ({Screen.PrimaryScreen.WorkingArea.Width}, {Screen.PrimaryScreen.WorkingArea.Height}).");
@@ -29,15 +34,17 @@ namespace ProCode.WorkHoursTracker.Views
 
             if (DataContext is ViewModels.AddLogViewModel)
             {
-                ((ViewModels.AddLogViewModel)DataContext).Closing += AddLogView_Closing;
-                ((ViewModels.AddLogViewModel)DataContext).AfterPaste += AddLogView_AfterPaste;
+                ((ViewModels.AddLogViewModel)DataContext).AfterPaste += AddLogTextView_AfterPaste;
             }
         }
+
+        public AddLogTextView(IViewService viewService) : this(new ViewModels.AddLogViewModel(viewService)) { }
         #endregion
 
         #region Methods
-        private void AddLogView_Closing()
+        private void AddLogTextView_Closing()
         {
+            ((ViewModels.AddLogViewModel)DataContext).AfterPaste -= AddLogTextView_AfterPaste;
             Close();
         }
 
@@ -57,8 +64,7 @@ namespace ProCode.WorkHoursTracker.Views
 
         private void configButton_Click(object sender, RoutedEventArgs e)
         {
-            ConfigView cfgView = new ConfigView();
-            cfgView.ShowDialog();
+            
         }
 
         protected override void OnActivated(EventArgs e)
@@ -73,7 +79,7 @@ namespace ProCode.WorkHoursTracker.Views
                 logTextBox.Focus();
         }
 
-        private void AddLogView_AfterPaste(object? sender, EventArgs e)
+        private void AddLogTextView_AfterPaste(object? sender, EventArgs e)
         {
             logTextBox.Focus();
             logTextBox.Select(logTextBox.Text.Length, 0);

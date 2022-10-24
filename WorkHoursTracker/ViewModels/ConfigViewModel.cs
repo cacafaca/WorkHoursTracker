@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ProCode.WorkHoursTracker.Views;
 
 namespace ProCode.WorkHoursTracker.ViewModels
 {
@@ -8,13 +9,15 @@ namespace ProCode.WorkHoursTracker.ViewModels
     {
         #region Fields
         ObservableCollection<RegistryPropertyViewModel> _parameters;
+        IViewService _viewService;
         #endregion
 
         #region Constructors
-        public ConfigViewModel()
+        public ConfigViewModel(IViewService viewService)
         {
-            SaveConfigCommand = new RelayCommand(Save, CanSave);
-            CancelCommand = new RelayCommand(Cancel);
+            _viewService = viewService;
+            SaveConfigCommand = new RelayCommand(SaveExecute, SaveCanExecute);
+            CancelCommand = new RelayCommand(CancelExecute);
             _parameters = new ObservableCollection<RegistryPropertyViewModel>();
             PopulateParameters();
         }
@@ -44,7 +47,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #endregion
 
         #region Methods
-        private void Save(object sender)
+        private void SaveExecute(object sender)
         {
             Model.Config.SetRegistryProperties(_parameters.Select(x => new Model.RegistryProperty
             {
@@ -53,15 +56,15 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 Value = x.Value
             }).ToList());
             Model.Config.Save();
-            InvokeClosingEvent();
+            _viewService?.Close();
         }
-        private bool CanSave(object obj)
+        private bool SaveCanExecute(object obj)
         {
             return true;
         }
-        private void Cancel(object sender)
+        private void CancelExecute(object sender)
         {
-            InvokeClosingEvent();
+            _viewService?.Close();
         }
         private void PopulateParameters()
         {

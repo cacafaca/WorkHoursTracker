@@ -13,9 +13,11 @@
         MinHeight="240"
         MinWidth="250"
         xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels">
+    <!--
     <Window.DataContext>
         <vm:ConfigViewModel />
     </Window.DataContext>
+    -->
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
     </Window.Resources>

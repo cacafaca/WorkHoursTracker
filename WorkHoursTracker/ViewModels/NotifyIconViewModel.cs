@@ -1,5 +1,10 @@
-﻿using System;
+﻿/*
+ * Fuck! I need to move whole business logic to the Model. I put everything in ViewModel. :((
+ */
+
+using System;
 using System.Windows.Input;
+using ProCode.WorkHoursTracker.Views;
 
 namespace ProCode.WorkHoursTracker.ViewModels
 {
@@ -8,6 +13,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #region Fields
         string _showCurrentWorkHoursDisplayName;
         string _showPreviousWorkHoursDisplayName;
+        IViewService _viewService;
         #endregion
 
         #region Constructors
@@ -24,14 +30,11 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #endregion
 
         #region Properties
-        public ICommand AddLogCommand { get; set; }
+        public ICommand AddLogCommand { get; set; }                     // Command to show entry window as text/table input.
         public ICommand ConfigCommand { get; set; }
         public ICommand ExitApplicationCommand { get; set; }
         public ICommand ShowCurrentWorkHoursCommand { get; set; }
         public ICommand ShowPreviousWorkHoursCommand { get; set; }
-
-        public IWindowFactory AddLogWindowFactory { get; set; }
-        public IWindowFactory ConfigWindowFactory { get; set; }
 
         public string ShowCurrentWorkHoursDisplayName
         {
@@ -60,16 +63,29 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #endregion
 
         #region Methods
+        public void SetViewService(Views.IViewService viewService)
+        {
+            _viewService = viewService;
+        }
+
+        public IViewService GetViewService()
+        {
+            return _viewService;
+        }
+
         private void AddLogExecute(object obj)
         {
-            if (AddLogWindowFactory != null)
+            switch (Model.Config.AddLogWindowType)
             {
-                if (!AddLogWindowFactory.IsCreated())
-                    AddLogWindowFactory.CreateWindow(obj);
-                if (!AddLogWindowFactory.IsVisible())
-                    AddLogWindowFactory.ShowWindow();
+                case Model.AddLogWindowType.Text:
+                    _viewService?.Open(IViewService.WindowType.AddLogText);
+                    break;
+                case Model.AddLogWindowType.Table:
+                    _viewService?.Open(IViewService.WindowType.AddLogTable);
+                    break;
             }
         }
+
         private void ShowCurrentWorkHoursExecute(object obj)
         {
             WorkHoursMonthlyExcel whExcel = new(Model.Config.WorkHoursCurrentFilePath);
@@ -86,13 +102,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         }
         private void ConfigExecute(object obj)
         {
-            if (ConfigWindowFactory != null)
-            {
-                if (!ConfigWindowFactory.IsCreated())
-                    ConfigWindowFactory.CreateWindow();
-                if (!ConfigWindowFactory.IsVisible())
-                    ConfigWindowFactory.ShowWindow();
-            }
+            _viewService?.Open(IViewService.WindowType.Config);
         }
         #endregion
     }

@@ -46,7 +46,7 @@ namespace ProCode.WorkHoursTracker.Model
         public static event ConfigSavedHandler ConfigSaved;
         #endregion
 
-        #region Properties
+        #region Properties (Saved to Registry)
         [RegistryValue("Please enter work hours directory...")]
         [Description("Work hours directory")]
         public static string WorkHoursDirectory { get; set; }
@@ -107,6 +107,16 @@ namespace ProCode.WorkHoursTracker.Model
         [RegistryValue("24.3.1999", visible: false)]
         public static string LastReportSentDate { get; private set; }
 
+        /// <summary>
+        /// Stores type of the last Add Log window used. 
+        /// There are two types: 1) Add Log with text input, and 2) Add Log with table input. 
+        /// This should not be visible.
+        /// </summary>
+        [RegistryValue(AddLogWindowType.Text, visible: false)]
+        public static AddLogWindowType AddLogWindowType { get; set; }
+        #endregion
+
+        #region Properties (common)
         public static bool StartWithWindowsFlag
         {
             get { return GetStartupFlag(); }
@@ -153,14 +163,13 @@ namespace ProCode.WorkHoursTracker.Model
 
         #region Methods
         public static void Save(string? propertyName = null)
-        {
-            // Start with Windows. This is a special property.
-            if (propertyName == null)
+        {            
+            if (propertyName == null)                                                               // Save this property only when saving all properties (propertyName == null). That sounds logical to me.
             {
                 RegistryKey startUpRegKey = Registry.CurrentUser.OpenSubKey(_winRegRunKey, true);
                 if (startUpRegKey != null)
                 {
-                    if (_startWithWindows != null && (bool)_startWithWindows)
+                    if (_startWithWindows != null && (bool)_startWithWindows)                       // Start with Windows. This is a special property.
                         startUpRegKey.SetValue(GetAppName(), Environment.ProcessPath);
                     else
                     {
@@ -177,7 +186,7 @@ namespace ProCode.WorkHoursTracker.Model
             {
                 foreach (var regProp in GetRegistryProperties())
                 {
-                    if (propertyName == null || propertyName.Equals(regProp.Name))
+                    if (propertyName == null || propertyName.Equals(regProp.Name))      // Save all (propertyName == null), or one property to registry.
                         appRegistrySettings.SetValue(regProp.Name, regProp.Value);
                 }
                 appRegistrySettings.Close();
@@ -293,7 +302,13 @@ namespace ProCode.WorkHoursTracker.Model
                     var prop = typeof(Config).GetProperties().FirstOrDefault(p => p.Name == regProp.Name);
                     if (prop != null)
                     {
-                        prop.SetValue(prop, appRegistrySettings.GetValue(prop.Name, ((RegistryValueAttribute)Attribute.GetCustomAttribute(prop, typeof(RegistryValueAttribute))).DefaultValue));
+                        var defaultValue = ((RegistryValueAttribute)Attribute.GetCustomAttribute(prop, typeof(RegistryValueAttribute))).DefaultValue;
+                        if (!prop.PropertyType.IsEnum)
+                            prop.SetValue(prop, appRegistrySettings.GetValue(prop.Name, defaultValue));
+                        else if (defaultValue is AddLogWindowType)
+                            prop.SetValue(prop, Enum.Parse(typeof(AddLogWindowType), appRegistrySettings.GetValue(prop.Name, defaultValue).ToString()));
+                        else
+                            throw new Exception("Unknown enum.");
                     }
                 }
                 appRegistrySettings.Close();

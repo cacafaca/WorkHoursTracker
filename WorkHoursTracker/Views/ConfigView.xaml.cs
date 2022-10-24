@@ -9,12 +9,15 @@ namespace ProCode.WorkHoursTracker.Views
     public partial class ConfigView : Window
     {
         #region Constructors
-        public ConfigView()
+        public ConfigView(IViewService viewService)
         {
             InitializeComponent();
+
+            if (DataContext == null)
+                DataContext = new ViewModels.ConfigViewModel(viewService);
+
             if (DataContext is ViewModels.ConfigViewModel configViewModel)
             {
-                configViewModel.Closing += ViewModel_Closing;
                 foreach (var param in configViewModel.Parameters)
                 {
                     param.PickTimeEvent += Param_PickTimeEvent; ;
@@ -25,10 +28,6 @@ namespace ProCode.WorkHoursTracker.Views
         #endregion
 
         #region Methods
-        private void ViewModel_Closing()
-        {
-            Close();
-        }
         private void Param_PickTimeEvent(ref TimeOnly time)
         {
             MessageBox.Show("Only in paid version.");
