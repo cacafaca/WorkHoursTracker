@@ -14,7 +14,12 @@ namespace ProCode.WorkHoursTracker.Views
             InitializeComponent();
 
             if (DataContext == null)
-                DataContext = new ViewModels.ConfigViewModel(viewService);
+            {
+                if (viewService != null)
+                    DataContext = new ViewModels.ConfigViewModel(viewService);
+                else
+                    DataContext = new ViewModels.ConfigViewModel();
+            }
 
             if (DataContext is ViewModels.ConfigViewModel configViewModel)
             {

@@ -13,16 +13,15 @@
         MinHeight="240"
         MinWidth="250"
         xmlns:vm="clr-namespace:ProCode.WorkHoursTracker.ViewModels">
-    <!--
-    <Window.DataContext>
+    <!-- For design purpose. -->
+    <d:Window.DataContext>
         <vm:ConfigViewModel />
-    </Window.DataContext>
-    -->
+    </d:Window.DataContext>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
     </Window.Resources>
     <DockPanel Margin="5"
-               LastChildFill="True">       
+               LastChildFill="True">
         <!-- Bottom Buttons -->
         <StackPanel Orientation="Horizontal"
                     MinHeight="20"
@@ -91,9 +90,11 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Parameter"
-                                    Binding="{Binding Description, Mode=OneWay}"  />                
+                                    Binding="{Binding Description, Mode=OneWay}"
+                                    Foreground="Black" />
                 <DataGridTemplateColumn Header="Value"
-                                        CellTemplate="{StaticResource valuesTemplate}" Width="*"/>
+                                        CellTemplate="{StaticResource valuesTemplate}"
+                                        Width="*" />
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

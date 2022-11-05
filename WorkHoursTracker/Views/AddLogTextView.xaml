@@ -14,11 +14,9 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
     </Window.Resources>
-    <!--
-    <Window.DataContext>
+    <d:Window.DataContext>
         <vm:AddLogViewModel />
-    </Window.DataContext>
-    -->
+    </d:Window.DataContext>
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
             <BeginStoryboard>
@@ -163,6 +161,7 @@
                 ToolTip="Open configuration window."
                 TabIndex="10"
                 Command="{Binding OpenConfigCommand}" />
+        <!-- Save -->
         <Button x:Name="saveButton"
                 Content="✓"
                 FontWeight="Bold"
@@ -175,7 +174,7 @@
                 Command="{Binding SaveLogCommand}"
                 CommandParameter="{Binding ElementName=saveButton}"
                 ToolTip="Save changes."
-                IsEnabled="{Binding SaveLogTextCanExecuteFlag}"
+                IsEnabled="{Binding SaveLogCanExecuteFlag}"
                 TabIndex="1" />
         <Button x:Name="cancelButton"
                 Content="🗙"

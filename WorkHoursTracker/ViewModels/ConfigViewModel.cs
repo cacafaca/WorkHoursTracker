@@ -9,11 +9,11 @@ namespace ProCode.WorkHoursTracker.ViewModels
     {
         #region Fields
         ObservableCollection<RegistryPropertyViewModel> _parameters;
-        IViewService _viewService;
+        IViewService? _viewService;
         #endregion
 
         #region Constructors
-        public ConfigViewModel(IViewService viewService)
+        public ConfigViewModel(IViewService? viewService)
         {
             _viewService = viewService;
             SaveConfigCommand = new RelayCommand(SaveExecute, SaveCanExecute);
@@ -21,6 +21,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             _parameters = new ObservableCollection<RegistryPropertyViewModel>();
             PopulateParameters();
         }
+        public ConfigViewModel() : this(null) { }
         #endregion
 
         #region Properties

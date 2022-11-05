@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ProCode.WorkHoursTracker.ViewModels;
+using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace ProCode.WorkHoursTracker.Views
@@ -36,17 +38,38 @@ namespace ProCode.WorkHoursTracker.Views
         #endregion
 
         #region Methods
-        private void Grid_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            DragMove();     // Move window around the screen.
-        }
-
         protected override void OnActivated(EventArgs e)
         {
             base.OnActivated(e);
             Topmost = true;
         }
+
+        private void Grid_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            DragMove();     // Move window around the screen.
+        }
+
+
         #endregion
 
+        private void tableLog_SourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
+        {
+
+        }
+
+        private void tableLog_TargetUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
+        {
+
+        }
+
+        private void tableLog_SelectedCellsChanged(object sender, System.Windows.Controls.SelectedCellsChangedEventArgs e)
+        {
+            if(sender is DataGrid dataGrid)
+            {
+                Console.WriteLine("tableLog_SelectedCellsChanged> dataGrid: " + dataGrid.Items.Count);
+            }
+            
+            //Console.WriteLine("tableLog_SelectedCellsChanged> LogText:" + ((AddLogTableView)sender).tableLog;
+        }
     }
 }
