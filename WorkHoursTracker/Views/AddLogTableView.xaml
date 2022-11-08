@@ -149,9 +149,12 @@
                     <DataGridTextColumn Header="Task"
                                         Binding="{Binding Task, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         Width="*" />
-                    <DataGridTextColumn Header="Spent"
-                                        Binding="{Binding Spent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        TextBlock.TextAlignment="Right" />
+                    <DataGridTextColumn Binding="{Binding Spent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        TextBlock.TextAlignment="Right">
+                        <DataGridTextColumn.Header>
+                            <TextBlock Text="{Binding HeaderColumnSpent, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type local:addLogTableWindow}}}" />
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

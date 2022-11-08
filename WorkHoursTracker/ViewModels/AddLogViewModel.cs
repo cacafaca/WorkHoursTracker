@@ -5,6 +5,7 @@ using ProCode.WorkHoursTracker.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
     public class AddLogViewModel : BaseViewModel
     {
         #region Constants
-        string regexSpentHours = @"\[\d*\.?\d*\]$";
+        private readonly string regexSpentHours = @"\[\d*\" + CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator + @"?\d*\]$";
         #endregion
 
         #region Fields
@@ -66,10 +67,15 @@ namespace ProCode.WorkHoursTracker.ViewModels
             {
                 var oldLog = _logText;
                 _logText = value;
-                OnPropertyChanged();
+
+                _isRecreating = true;
                 RecreateLogTable(true);
+                _isRecreating = false;
+
                 if (_logText != oldLog)     // Allow Save button if Log value is changed.
                 {
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(LogTable));
                     OnPropertyChanged(nameof(SaveLogCanExecuteFlag));
                 }
             }
@@ -106,7 +112,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public string HeaderColumnSpent
         {
             get { return _headerColumnSpent; }
-            private set
+            set
             {
                 _headerColumnSpent = value;
                 OnPropertyChanged();
@@ -175,6 +181,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         private bool SaveLogCanExecute(object obj)
         {
+            Trace.WriteLine("SaveLogCanExecute: obj=" + obj?.ToString());
             return _originalLog != (LogText ?? string.Empty);
         }
 
@@ -273,13 +280,12 @@ namespace ProCode.WorkHoursTracker.ViewModels
         private void LogTableRow_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             RecreateLogText();
-            HeaderColumnSpent = $"Spent (∑ {_logTable.Select(x=>x.Spent).Sum()})";
+            HeaderColumnSpent = $"Spent ({_logTable.Select(x => x.Spent).Sum()})";
             OnPropertyChanged(nameof(SaveLogCanExecuteFlag));
         }
 
         private void RecreateLogTable(bool notify = false)
         {
-            //_logTable.CollectionChanged -= NotifyLogTableChanged;
             _logTable.Clear();
             Regex regex = new Regex(regexSpentHours, RegexOptions.IgnoreCase | RegexOptions.Compiled);
             if (_logText != null)
@@ -323,6 +329,11 @@ namespace ProCode.WorkHoursTracker.ViewModels
             _logText = String.Join(GetSeparator() + " ", _logTable);
             if (notify)
                 OnPropertyChanged(nameof(LogText));
+        }
+
+        private float GetSpentTotal()
+        {
+            return _logTable.Sum(row => row.Spent);
         }
         #endregion
     }
