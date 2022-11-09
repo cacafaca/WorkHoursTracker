@@ -26,6 +26,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         private IViewService? _viewService;
         private ObservableCollection<LogTableRowViewModel> _logTable;
         private bool _isRecreating = false;
+        private string _headerColumnSpent;
         #endregion
 
         #region Constructors
@@ -35,6 +36,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
             _logTable = new ObservableCollection<LogTableRowViewModel>();
             _logTable.CollectionChanged += NotifyLogTableChanged;
+            CalculateHeaderColumnSpent();
 
             SaveLogCommand = new RelayCommand(SaveLogExecute, SaveLogCanExecute);
             CancelLogCommand = new RelayCommand(CancelLogExecute);
@@ -107,12 +109,10 @@ namespace ProCode.WorkHoursTracker.ViewModels
             }
         }
 
-        private string _headerColumnSpent;
-
         public string HeaderColumnSpent
         {
-            get { return _headerColumnSpent; }
-            set
+            get { return _headerColumnSpent ?? "Spent"; }
+            private set
             {
                 _headerColumnSpent = value;
                 OnPropertyChanged();
@@ -169,6 +169,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
                     Trace.WriteLine($"Log value: '{whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log}'.");
                     Trace.WriteLine($"Write to '{whExcel.WorkHoursExcelFilePath}' ...");
                     whExcel.Write();
+                    Trace.WriteLine($"Write completed.");
                 }
                 catch (Exception ex)
                 {
@@ -275,12 +276,18 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 RecreateLogText();
                 OnPropertyChanged(nameof(SaveLogCanExecuteFlag));
             }
+            CalculateHeaderColumnSpent();
+        }
+
+        private void CalculateHeaderColumnSpent()
+        {
+            HeaderColumnSpent = $"Spent ({_logTable?.Select(x => x.Spent).Sum()}h)";
         }
 
         private void LogTableRow_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             RecreateLogText();
-            HeaderColumnSpent = $"Spent ({_logTable.Select(x => x.Spent).Sum()})";
+            CalculateHeaderColumnSpent();
             OnPropertyChanged(nameof(SaveLogCanExecuteFlag));
         }
 
@@ -329,11 +336,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
             _logText = String.Join(GetSeparator() + " ", _logTable);
             if (notify)
                 OnPropertyChanged(nameof(LogText));
-        }
-
-        private float GetSpentTotal()
-        {
-            return _logTable.Sum(row => row.Spent);
         }
         #endregion
     }
