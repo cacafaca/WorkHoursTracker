@@ -21,8 +21,8 @@ namespace ProCode.WorkHoursTracker.Model
 
         #region Fields
         static bool? _startWithWindows;
-        public static string _workHourStart;
-        public static string _workHourEnd;
+        public static string _workHourStart = String.Empty;
+        public static string _workHourEnd = String.Empty;
         #endregion
 
         #region Constructors
@@ -43,7 +43,7 @@ namespace ProCode.WorkHoursTracker.Model
         /// <summary>
         /// Triggered when configuration is saved.
         /// </summary>
-        public static event ConfigSavedHandler ConfigSaved;
+        public static event ConfigSavedHandler? ConfigSaved;
         #endregion
 
         #region Properties (Saved to Registry)

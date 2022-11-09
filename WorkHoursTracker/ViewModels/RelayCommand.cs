@@ -9,32 +9,28 @@ namespace ProCode.WorkHoursTracker.ViewModels
 {
     public class RelayCommand : ICommand
     {
-        Action<object> _execute;
-        Func<object, bool> _canExecute;
+        Action<object?> _execute;
+        Func<object?, bool> _canExecute;
 
 
-        public RelayCommand(Action<object> execute, Func<object, bool>? canExecute = null)
+        public RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute = null)
         {
             _execute = execute;
             if (canExecute != null)
                 _canExecute = canExecute;
             else
-                _canExecute = new Func<object, bool>((obj) => true);
+                _canExecute = new Func<object?, bool>((obj) => true);
         }
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             if (_canExecute != null)
-            {
                 return _canExecute(parameter);
-            }
             else
-            {
                 return false;
-            }
         }
 
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add
             {
@@ -46,7 +42,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             }
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             _execute(parameter);
         }

@@ -19,11 +19,11 @@ namespace ProCode.WorkHoursTracker.ViewModels
         #region Constructors
         public NotifyIconViewModel()
         {
-            AddLogCommand = new RelayCommand(AddLogExecute, new Func<object, bool>((obj) => true));
-            ConfigCommand = new RelayCommand(ConfigExecute, new Func<object, bool>((obj) => true));
-            ExitApplicationCommand = new RelayCommand(ExitApplicationExecute, new Func<object, bool>((obj) => true));
-            ShowCurrentWorkHoursCommand = new RelayCommand(ShowCurrentWorkHoursExecute, new Func<object, bool>((obj) => true));
-            ShowPreviousWorkHoursCommand = new RelayCommand(ShowPreviousWorkHoursExecute, new Func<object, bool>((obj) => true));
+            AddLogCommand = new RelayCommand(AddLogExecute, new Func<object?, bool>((obj) => true));
+            ConfigCommand = new RelayCommand(ConfigExecute, new Func<object?, bool>((obj) => true));
+            ExitApplicationCommand = new RelayCommand(ExitApplicationExecute, new Func<object?, bool>((obj) => true));
+            ShowCurrentWorkHoursCommand = new RelayCommand(ShowCurrentWorkHoursExecute, new Func<object?, bool>((obj) => true));
+            ShowPreviousWorkHoursCommand = new RelayCommand(ShowPreviousWorkHoursExecute, new Func<object?, bool>((obj) => true));
             ShowCurrentWorkHoursDisplayName = $"Show Work Hours ({DateTime.Today:MMM})";
             ShowPreviousWorkHoursDisplayName = $"Show Work Hours ({DateTime.Today.AddMonths(-1):MMM})";
         }
