@@ -88,12 +88,12 @@ namespace ProCode.WorkHoursTracker.ViewModels
 
         private void ShowCurrentWorkHoursExecute(object obj)
         {
-            WorkHoursMonthlyExcel whExcel = new(Model.Config.WorkHoursCurrentFilePath);
+            Model.WorkHoursMonthlyExcel whExcel = new(Model.Config.WorkHoursCurrentFilePath);
             whExcel.Show();
         }
         private void ShowPreviousWorkHoursExecute(object obj)
         {
-            WorkHoursMonthlyExcel whExcel = new(Model.Config.WorkHoursPreviousFilePath);
+            Model.WorkHoursMonthlyExcel whExcel = new(Model.Config.WorkHoursPreviousFilePath);
             whExcel.Show();
         }
         private void ExitApplicationExecute(object obj)

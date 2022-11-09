@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ProCode.WorkHoursTracker.ViewModels
@@ -143,7 +144,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
                     _originalLog = whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log ?? string.Empty;
                     _isLoaded = true;
                     _logText = _originalLog;
-                    //RecreateLogTable();
                     OnPropertyChanged(nameof(LogText));
                     OnPropertyChanged(nameof(LogTable));
                     OnPropertyChanged(nameof(IsLoaded));
@@ -152,6 +152,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 catch (Exception ex)
                 {
                     Trace.WriteLine(ex.Message);
+                    MessageBox.Show(ex.Message);
                 }
         }
 

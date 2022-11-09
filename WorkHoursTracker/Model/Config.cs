@@ -224,6 +224,9 @@ namespace ProCode.WorkHoursTracker.Model
 
         public static string GetWorkHoursFilePath(DateTime date)
         {
+            if (string.IsNullOrWhiteSpace(WorkHoursDirectory))
+                throw new Exception("Please define Directory in Configuration window.");
+
             return Path.Combine(WorkHoursDirectory, GetFileName(date));
         }
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ProCode.WorkHoursTracker
+namespace ProCode.WorkHoursTracker.Model
 {
     public class WorkHoursMonthlyModel
     {

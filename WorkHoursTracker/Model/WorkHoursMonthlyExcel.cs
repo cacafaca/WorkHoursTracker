@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProCode.WorkHoursTracker
+namespace ProCode.WorkHoursTracker.Model
 {
     public class WorkHoursMonthlyExcel : WorkHoursMonthlyModel
     {
@@ -19,6 +19,9 @@ namespace ProCode.WorkHoursTracker
         #region Constructors
         public WorkHoursMonthlyExcel(string workHoursExcelFilePath)
         {
+            if(string.IsNullOrWhiteSpace(workHoursExcelFilePath))
+                throw new ArgumentNullException(workHoursExcelFilePath);
+
             _workHoursExcelFilePath = workHoursExcelFilePath;
             _workHours = new List<WorkHours>();
             _exceptions = new List<Exception>();
