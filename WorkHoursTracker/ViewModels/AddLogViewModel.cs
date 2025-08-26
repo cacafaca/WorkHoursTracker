@@ -139,7 +139,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             if (!_isLoaded)
                 try
                 {
-                    WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(Model.Config.WorkHoursCurrentFilePath);
+                    WorkHoursMonthlyExcel whExcel = new WorkHoursMonthlyExcel(Config.WorkHoursCurrentFilePath);
                     whExcel.Read();
                     _originalLog = whExcel.WorkHours.Where(wh => wh.Date == DateOnly.FromDateTime(DateTime.Now)).First().Log ?? string.Empty;
                     _isLoaded = true;
@@ -151,7 +151,6 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine(ex.Message);
                     MessageBox.Show(ex.Message);
                 }
         }

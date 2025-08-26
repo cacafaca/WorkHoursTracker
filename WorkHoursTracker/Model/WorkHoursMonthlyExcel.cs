@@ -19,7 +19,7 @@ namespace ProCode.WorkHoursTracker.Model
         #region Constructors
         public WorkHoursMonthlyExcel(string workHoursExcelFilePath)
         {
-            if(string.IsNullOrWhiteSpace(workHoursExcelFilePath))
+            if (string.IsNullOrWhiteSpace(workHoursExcelFilePath))
                 throw new ArgumentNullException(workHoursExcelFilePath);
 
             _workHoursExcelFilePath = workHoursExcelFilePath;
@@ -60,6 +60,9 @@ namespace ProCode.WorkHoursTracker.Model
 
                 if (File.Exists(_workHoursExcelFilePath))
                 {
+                    if (!IsFileAvailable(_workHoursExcelFilePath))
+                        throw new ArgumentException($"File '{_workHoursExcelFilePath}' don't exists.");
+
                     excelApp = new Microsoft.Office.Interop.Excel.Application();
                     Trace.WriteLine($"Opening Excel with file '{_workHoursExcelFilePath}' ...");
                     workbook = excelApp.Workbooks.Open(_workHoursExcelFilePath);
@@ -132,7 +135,7 @@ namespace ProCode.WorkHoursTracker.Model
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message);
+                Trace.WriteLine(ex.Message);    // Log and rethrow.
                 throw;
             }
             finally
@@ -140,6 +143,7 @@ namespace ProCode.WorkHoursTracker.Model
                 SafeCloseExcel(ref excelApp, ref workbook, ref worksheet);
             }
         }
+
         public void Show()
         {
             ValidateExcelPath();
@@ -247,9 +251,11 @@ namespace ProCode.WorkHoursTracker.Model
         {
             try
             {
-                Stream s = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.None);
-                s.Close();
-                return true;
+                using (Stream temp_stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    temp_stream.Close();
+                    return true;
+                }
             }
             catch (Exception)
             {
