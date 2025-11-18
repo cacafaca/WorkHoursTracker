@@ -185,8 +185,9 @@ namespace ProCode.WorkHoursTracker.Model
 
                     // Start date.
                     ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.StartDate.Row, WorkHoursExcelMap.StartDate.Column]).Value = _startDate.ToDateTime(TimeOnly.MinValue);
+                    
                     // Days in month.
-                    ((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.NumberOfWorkingDays.Row, WorkHoursExcelMap.NumberOfWorkingDays.Column]).Value = _numberOfWorkingDaysPerMonth;
+                    //((Microsoft.Office.Interop.Excel.Range)worksheet.Cells[WorkHoursExcelMap.NumberOfWorkingDays.Row, WorkHoursExcelMap.NumberOfWorkingDays.Column]).Value = _numberOfWorkingDaysPerMonth;    // Not needed anymore. It's calculated in excel with excel function.
 
                     if (_workHours != null)
                         for (int day = 0; day < _workHours.Count; day++)

@@ -36,16 +36,21 @@
         <KeyBinding Key="Escape"
                     Command="{Binding CancelLogCommand}" />
     </Window.InputBindings>
-    <Grid>
-        <DockPanel Margin="10,10,10,35"
-                   LastChildFill="True">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <DockPanel LastChildFill="True"
+                   Grid.Row="0"
+                   Margin="0,0,0,5">
             <StackPanel x:Name="progressBarAnimation"
                         Orientation="Horizontal"
                         Visibility="{Binding IsLoading, Converter={StaticResource boolToVis}}"
                         DockPanel.Dock="Top"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Margin="0 30 0 0">
+                        >
                 <StackPanel.Triggers>
                     <EventTrigger RoutedEvent="Rectangle.Loaded">
                         <BeginStoryboard>
@@ -144,7 +149,8 @@
                       IsSynchronizedWithCurrentItem="True"
                       SourceUpdated="tableLog_SourceUpdated"
                       TargetUpdated="tableLog_TargetUpdated"
-                      SelectedCellsChanged="tableLog_SelectedCellsChanged">
+                      SelectedCellsChanged="tableLog_SelectedCellsChanged"
+                      TabIndex="0" >
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Task"
                                         Binding="{Binding Task, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -159,83 +165,101 @@
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
-        <!-- Configuration -->
-        <Button x:Name="configButton"
-                Content="⚙"
-                Margin="10,0,0,10"
-                Height="20"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Left"
-                Width="20"
-                ToolTip="Open configuration window."
-                TabIndex="10"
-                Command="{Binding OpenConfigCommand}" />
-        <!-- Save -->
-        <Button x:Name="saveButton"
-                Content="✓"
-                FontWeight="Bold"
-                Foreground="ForestGreen"
-                Margin="0,0,10,10"
-                HorizontalAlignment="Right"
-                Width="20"
-                Height="20"
-                VerticalAlignment="Bottom"
-                Command="{Binding SaveLogCommand}"
-                CommandParameter="{Binding ElementName=saveButton}"
-                ToolTip="Save changes."
-                IsEnabled="{Binding SaveLogCanExecuteFlag}"
-                TabIndex="1" />
-        <Button x:Name="cancelButton"
-                Content="🗙"
-                FontWeight="Bold"
-                Foreground="Red"
-                Margin="0,0,35,10"
-                HorizontalAlignment="Right"
-                Width="20"
-                Height="20"
-                VerticalAlignment="Bottom"
-                Command="{Binding CancelLogCommand}"
-                CommandParameter="{Binding ElementName=cancelButton}"
-                ToolTip="Cancel changes."
-                TabIndex="2" />
-        <Button x:Name="pasteButton"
-                Content="📋"
-                Margin="35,0,0,10"
-                Height="20"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Left"
-                VerticalContentAlignment="Center"
-                HorizontalContentAlignment="Center"
-                Width="20"
-                ToolTip="Paste from clipboard."
-                TabIndex="5"
-                Command="{Binding PasteCommand}"
-                CommandParameter="{Binding ElementName=pasteButton}" />
-        <Button x:Name="pasteFormatedButton"
-                Content="📋;"
-                Margin="60,0,0,10"
-                Height="20"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Left"
-                VerticalContentAlignment="Center"
-                HorizontalContentAlignment="Center"
-                Width="20"
-                ToolTip="Paste from clipboard with separator."
-                TabIndex="3"
-                Command="{Binding PasteFormatedCommand}"
-                CommandParameter="{Binding ElementName=pasteFormatedButton}" />
-        <Button x:Name="switchToText"
-                Content="📝;"
-                Margin="85,0,0,10"
-                Height="20"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Left"
-                VerticalContentAlignment="Center"
-                HorizontalContentAlignment="Center"
-                Width="20"
-                ToolTip="Switch to text view."
-                TabIndex="4"
-                Command="{Binding SwitchToTextViewCommand}"
-                CommandParameter="{Binding ElementName=switchToText}" />
+        <Grid x:Name="bottomButtonGrid" 
+              Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel x:Name="leftButtonsStackPanel"
+                        Orientation="Horizontal" 
+                        Grid.Column="0">
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="0,0,3,0"/>
+                    </Style>
+                </StackPanel.Resources>
+                <!-- Configuration -->
+                <Button x:Name="configButton"
+                        Content="⚙"
+                        Height="20"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Left"
+                        Width="20"
+                        ToolTip="Open configuration window."
+                        TabIndex="1"
+                        Command="{Binding OpenConfigCommand}" 
+                        />
+                <Button x:Name="pasteButton"
+                        Content="📋"
+                        Height="20"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        Width="20"
+                        ToolTip="Paste from clipboard."
+                        TabIndex="2"
+                        Command="{Binding PasteCommand}"
+                        CommandParameter="{Binding ElementName=pasteButton}" />
+                <Button x:Name="appendEmptyTaskButton"
+                        Content="+"
+                        Height="20"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        Width="20"
+                        ToolTip="Add new task."
+                        TabIndex="3"
+                        Command="{Binding AppendNewTaskToTable}"
+                        CommandParameter="{Binding ElementName=appendTaskButton}" />
+                <Button x:Name="switchToText"
+                        Content="📝;"
+                        Height="20"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        Width="20"
+                        ToolTip="Switch to text view."
+                        TabIndex="4"
+                        Command="{Binding SwitchToTextViewCommand}"
+                        CommandParameter="{Binding ElementName=switchToText}" />
+            </StackPanel>
+            <StackPanel x:Name="rightButtonsStackPanel"
+                        Orientation="Horizontal"                             
+                            HorizontalAlignment="Right"
+                            Grid.Column="1">
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="3,0,0,0"/>
+                    </Style>
+                </StackPanel.Resources>
+                <!-- Cancel -->
+                <Button x:Name="cancelButton"
+                        Content="🗙"
+                        FontWeight="Bold"
+                        Foreground="Red"
+                        Width="20"
+                        Height="20"
+                        Command="{Binding CancelLogCommand}"
+                        CommandParameter="{Binding ElementName=cancelButton}"
+                        ToolTip="Cancel changes."
+                        TabIndex="5" />
+                <!-- Save -->
+                <Button x:Name="saveButton"
+                        Content="✓"
+                        FontWeight="Bold"
+                        Foreground="ForestGreen"
+                        Width="20"
+                        Height="20"
+                        Command="{Binding SaveLogCommand}"
+                        CommandParameter="{Binding ElementName=saveButton}"
+                        ToolTip="Save changes."
+                        IsEnabled="{Binding SaveLogCanExecuteFlag}"
+                        TabIndex="6" HorizontalAlignment="Right" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

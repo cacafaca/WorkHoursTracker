@@ -46,6 +46,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
             PasteFormatedCommand = new RelayCommand(PasteFormatedExecute, PasteCanExecute);
             SwitchToTableViewCommand = new RelayCommand(SwitchToTableViewExecute, SwitchToTableViewCanExecute);
             SwitchToTextViewCommand = new RelayCommand(SwitchToTextViewExecute, SwitchToTextViewCanExecute);
+            AppendNewTaskToTable = new RelayCommand(AppendNewTaskToTableExecute);
 
             _isLoaded = false;
 
@@ -131,6 +132,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
         public ICommand PasteFormatedCommand { get; set; }
         public ICommand SwitchToTableViewCommand { get; set; }         // Opens Add Log as table view
         public ICommand SwitchToTextViewCommand { get; set; }          // Opens Add log as default (text) view.
+        public ICommand AppendNewTaskToTable { get; set; }
         #endregion
 
         #region Methods
@@ -225,7 +227,7 @@ namespace ProCode.WorkHoursTracker.ViewModels
                 addition += " ";
             }
 
-            return addition + System.Windows.Clipboard.GetText().Trim().TrimEnd(GetSeparator().ToArray());
+            return addition + Clipboard.GetText().Trim().TrimEnd(GetSeparator().ToArray());
         }
 
         private string GetSeparator()
@@ -337,6 +339,11 @@ namespace ProCode.WorkHoursTracker.ViewModels
             _logText = String.Join(GetSeparator() + " ", _logTable);
             if (notify)
                 OnPropertyChanged(nameof(LogText));
+        }
+
+        private void AppendNewTaskToTableExecute(object obj)
+        {
+            LogTable.Add(new LogTableRowViewModel());
         }
         #endregion
     }

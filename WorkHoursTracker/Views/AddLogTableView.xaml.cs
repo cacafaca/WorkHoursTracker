@@ -3,6 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using DataGrid = System.Windows.Controls.DataGrid;
 
 namespace ProCode.WorkHoursTracker.Views
 {
@@ -34,7 +35,7 @@ namespace ProCode.WorkHoursTracker.Views
             Trace.WriteLine($"AddLog (Left, Top) = ({Left}, {Top}).");
         }
 
-        public AddLogTableView(IViewService viewService) : this(new ViewModels.AddLogViewModel(viewService)) { }
+        public AddLogTableView(IViewService viewService) : this(new AddLogViewModel(viewService)) { }
         #endregion
 
         #region Methods
